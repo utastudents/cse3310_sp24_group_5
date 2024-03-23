@@ -1,0 +1,27 @@
+import java.util.ArrayList;
+
+public class GridField {
+    private ArrayList<String> words;
+    private int wordLength;
+    private int remainingWords;
+    private int gridSize;
+    private char[][] grid;
+
+    public void generateGrid() {
+    }
+
+    public boolean checkWord(String word) {
+    }
+
+    public int getRemainingWords() {
+    }
+
+    public void revealWord(String words) {
+    }
+
+    public void addWord(String word, Direction direction) {
+    }
+
+    public void displayGrid() {
+    }
+}
