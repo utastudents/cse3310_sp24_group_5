@@ -69,4 +69,10 @@ public class Game
     {
         
     }
+
+    // Method to display rules of game
+    public void displayRules()
+    {
+        
+    }
 }
