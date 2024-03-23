@@ -1,6 +1,6 @@
 package uta.cse3310;
 
-public class Game implements Chat, Timer, GridField, LeaderBoard, Wordlist
+public class Game //implements Chat, Timer, GridField, LeaderBoard, Wordlist
 {
     private int gameMode;
     private String gameID;
