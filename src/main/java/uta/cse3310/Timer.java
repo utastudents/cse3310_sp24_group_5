@@ -19,16 +19,17 @@ public class Timer
 
     public int getTimeRemaining() 
     {
-        
+        return timeRemaining;
     }
 
     public boolean isRunning() 
     {
-        
+        return isRunning;
     }
 
     public boolean isStopped() 
     {
+        return isStopped;
         
     }
 }
