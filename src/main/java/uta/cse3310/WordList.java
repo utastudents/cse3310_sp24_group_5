@@ -2,7 +2,7 @@ package uta.cse3310;
 
 import java.util.List;
 
-public class WordList extends Direction 
+public class WordList //extends Direction 
 {
     private Word[] words;
 
