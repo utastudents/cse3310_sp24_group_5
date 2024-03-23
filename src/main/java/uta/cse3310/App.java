@@ -66,105 +66,99 @@ public class App extends WebSocketServer
   // All games currently underway on this server are stored in
   // the vector activeGames
     private Vector<Game> activeGames;
-    private HTTPServer server;
+    //private HTTPServer server;
 
     // Constructor
     public App(int port) 
     {
-      // Initialize activeGames Vector and httpserver
+      //Initialize activeGames Vector and httpserver
     }
 
-    // Method to begin
-    public void begin() 
-    {
-      
-    }
-
-    // Method for handling websocket on open event
+    //Method for handling websocket on open event
     public void onOpen(WebSocket conn, ClientHandshake handshake) 
     {
         
     }
 
-    // Method for handling websocket on close event
+    //Method for handling websocket on close event
     public void onClose(WebSocket conn, int code, String reason, boolean remote) 
     {
         
     }
 
-    // Method for handling websocket message event
+    //Method for handling websocket message event
     public void onMessage(WebSocket conn, String message) 
     {
       
     }
 
-    // Method to update lobby
+    //Method to update lobby
     public void updateLobby() 
     {
       
     }
 
-    // Method for help tab
+    //Method for help tab
     public void help() 
     {
         
     }
 
-    // Main method
+    //Main method
     public static void main(String[] args) 
     {
         
     }
 
-    // Method for adding a player
+    //Method for adding a player
     public Player addPlayer() 
     {
         return new Player();
     }
 
-    // Method for nameselect
+    //Method for nameselect
     public void toNameSelect() 
     {
        
     }
 
-    // Method for creategame
+    //Method for creategame
     public Game createGame(int gameId, int mode) 
     {
         return new Game();
     }
 
-    // Method to join a game
+    //Method to join a game
     public void joinGame(Game game, Player player) 
     {
         
     }
 
-    // Method to end a game
+    //Method to end a game
     public void endGame(Game game) 
     {
         
     }
 
-    // Method to move to the lobby
+    //Method to move to the lobby
     public void toLobby() 
     {
       
     }
 
-    // Method for global chat
+    //Method for global chat
     public void globalChat() 
     {
         
     }
 
-    // Method to get player color
+    //Method to get player color
     public void getPlayerColor() 
     {
        
     }
 
-    // Method to select a game
+    //Method to select a game
     public void selectGame() 
     {
        
