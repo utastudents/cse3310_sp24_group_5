@@ -1,12 +1,16 @@
-public class Chat {
+public class Chat 
+{
     private String message;
 
-    // to send message
-    public void sendMessage(String message) {
+    // method to send input message
+    public void sendMessage(String message) 
+    {
         
     }
 
-    // to receive message
-    public void receiveMessage(String message) {
+    // method to receive input message
+    public void receiveMessage(String message) 
+    {
+        
     }
 }
