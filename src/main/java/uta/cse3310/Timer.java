@@ -1,6 +1,6 @@
 package uta.cse3310;
 
-interface Timer 
+public class Timer 
 {
     private int timeRemaining;
     private boolean isRunning;
