@@ -60,7 +60,8 @@ import java.time.Duration;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-public class App extends WebSocketServer {
+public class App extends WebSocketServer 
+{
 
   // All games currently underway on this server are stored in
   // the vector activeGames
@@ -69,15 +70,15 @@ public class App extends WebSocketServer {
 
     // Constructor
     public App(int port) 
-  {
+    {
       // Initialize activeGames Vector and httpserver
-  }
+    }
 
     // Method to begin
     public void begin() 
-  {
+    {
       
-  }
+    }
 
     // Method for handling websocket on open event
     public void onOpen(WebSocket conn, ClientHandshake handshake) 
