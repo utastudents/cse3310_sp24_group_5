@@ -1,6 +1,6 @@
 package uta.cse3310;
 
-interface Chat 
+public class Chat 
 {
     private String message;
 
