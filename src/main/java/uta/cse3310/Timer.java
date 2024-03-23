@@ -26,6 +26,7 @@ public class Timer
     {
         return isRunning;
     }
+    
 
     public boolean isStopped() 
     {
