@@ -16,17 +16,17 @@ import net.freeutils.httpserver.HTTPServer.VirtualHost;
 
 public class HTTPServer
 {
-   private String HTML;
-   private int port;
+    private String HTML;
+    private int port;
 
-   //contructor
-   public HTTPServer(int portNum) 
-   {  
-      this.port = portNum;
-   }
-
-   public void begin() 
-   {
+    //contructor
+    public HTTPServer(int portNum) 
+    {  
+        this.port = portNum;
+    }
+    //method begin
+    public void begin() 
+    {
       
-   }
+    }
 }
