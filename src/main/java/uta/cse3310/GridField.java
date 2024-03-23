@@ -2,7 +2,7 @@ package uta.cse3310;
 
 import java.util.ArrayList;
 
-public class GridField extends WordList
+public class GridField //extends WordList
 {
     private ArrayList<String> word;
     private int wordLength;
