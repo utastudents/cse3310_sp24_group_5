@@ -14,13 +14,13 @@ import net.freeutils.httpserver.HTTPServer.VirtualHost;
 // http server include is a GPL licensed package from
 //            http://www.freeutils.net/source/jlhttp/
 
-public class HTTPServer
+public class HttpServer
 {
     private String HTML;
     private int port;
 
     //contructor
-    public HTTPServer(int portNum) 
+    public HttpServer(int portNum) 
     {  
         port = portNum;
     }
