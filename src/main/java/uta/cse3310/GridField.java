@@ -17,12 +17,12 @@ public class GridField //extends WordList
 
     public boolean checkWord(String word) 
     {
-        
+        return true;
     }
 
     public int getRemainingWords() 
     {
-        
+        return 0;
     }
 
     public void revealWord(String words) 

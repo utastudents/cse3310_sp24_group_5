@@ -1,19 +1,20 @@
 package uta.cse3310;
 
 import java.util.List;
-
+import java.util.ArrayList;
 public class WordList //extends Direction 
 {
-    private Word[] words;
+    public ArrayList<String> Word;
+    //private [] words;
 
     //method for accesing the word list from file
-    public List<String> getWordList(String wordsFile) 
+    List<String> getWordList(String wordsFile) 
     {
         return null;
     }
 
     //method to update word list
-    public void updateWordList(Grid grid) 
+    public void updateWordList(GridField grid) 
     {
         
     }
@@ -24,3 +25,4 @@ public class WordList //extends Direction
       
     }
 }
+

@@ -60,7 +60,7 @@ import java.time.Duration;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-public class App extends WebSocketServer 
+public abstract class App extends WebSocketServer 
 {
 
   // All games currently underway on this server are stored in

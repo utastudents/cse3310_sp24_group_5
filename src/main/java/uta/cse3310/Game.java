@@ -58,8 +58,8 @@ public class Game //implements Chat, Timer, GridField, LeaderBoard, Wordlist
         return false;
     }
 
-    // Method for handlind chosen word
-    public String[] wordChosen(Data file) 
+    // Method for handling chosen word
+    public String[] wordChosen(String file) 
     {
         return null;
     }

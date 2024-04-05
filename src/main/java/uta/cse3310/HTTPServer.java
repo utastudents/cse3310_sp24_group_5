@@ -22,7 +22,7 @@ public class HTTPServer
     //contructor
     public HTTPServer(int portNum) 
     {  
-        this.port = portNum;
+        port = portNum;
     }
     //method begin
     public void begin() 
