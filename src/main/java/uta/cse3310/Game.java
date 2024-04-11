@@ -1,78 +1,67 @@
 package uta.cse3310;
 
-public class Game //implements Chat, Timer, GridField, LeaderBoard, Wordlist
+public class Game // implements Chat, Timer, GridField, LeaderBoard, Wordlist
 {
     private int gameMode;
     private String gameID;
     private Player[] playersList;
     private boolean gameStatus;
     private String wordsDone;
-    private Timer timer;
+    private MyTimer timer;
     private int gameCount;
 
-     // Method to determine gamemode
-    public int getGameMode() 
-    {
+    // Method to determine gamemode
+    public int getGameMode() {
         return gameMode;
     }
 
-     // Method to get players game ID
-    public String getGameID() 
-    {
+    // Method to get players game ID
+    public String getGameID() {
         return gameID;
     }
 
-     // Method to start game
-    public void startGame() 
-    {
-        
+    // Method to start game
+    public void startGame() {
+
     }
 
-     // Method for adding players to the game screen
-    public Player[] addPlayers() 
-    {
+    // Method for adding players to the game screen
+    public Player[] addPlayers() {
         return null;
     }
 
-     // Method to update game state
-    public void updateGame() 
-    {
-       
+    // Method to update game state
+    public void updateGame() {
+
     }
 
-     // Method for players to exit game
-    public void exitGame() 
-    {
-        
+    // Method for players to exit game
+    public void exitGame() {
+
     }
 
-     // Method for chat implementation in game
-    public void chat(String message) 
-    {
-       
+    // Method for chat implementation in game
+    public void chat(String message) {
+
     }
 
     // Method to check for a valid word
-    public boolean validWord(String word) 
-    {
+    public boolean validWord(String word) {
         return false;
     }
 
     // Method for handling chosen word
-    public String[] wordChosen(String file) 
-    {
+    public String[] wordChosen(String file) {
         return null;
     }
 
     // Method to update the game timer"Shot Clock"
-    public void updateTimer() 
-    {
-        
+    public void updateTimer() {
+
     }
 
     // Method to display rules of game
-    public void displayRules()
-    {
-        
+    public void displayRules() {
+
     }
 }
