@@ -1,6 +1,7 @@
 package uta.cse3310;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Scanner;
 public class Game //implements Chat, Timer, GridField, LeaderBoard, Wordlist
 {
@@ -55,7 +56,7 @@ public class Game //implements Chat, Timer, GridField, LeaderBoard, Wordlist
     }
 
      // Method to update game state
-    public void updateGame() 
+    public void updateGame(UserEvent chooseWord) 
     {
        
     }
@@ -65,24 +66,26 @@ public class Game //implements Chat, Timer, GridField, LeaderBoard, Wordlist
     {
         //declare winner
         int highestScore=0;
-        Player winner;
-        while(playersList.hasNext())
+        Player winner=null;
+        Iterator i=playersList.iterator();
+        while(i.hasNext())
         {
-            Player currPlayer=playersList.next();
-            if(currPlayer.score>highestScore)
+            Player currPlayer=(Player)i.next();
+            if(currPlayer.getScore()>highestScore)
             {
-                highestScore=currPlayer.score;
+                highestScore=currPlayer.getScore();
                 winner=currPlayer;
             }
         }
-        System.out.pritntln(winner.nick +" is the winner")
-        System.out.println(winner.nick+" scored "winner.score+" points")
-        while(playersList.hasNext())
+        System.out.println(winner.getNick() + " is the winner");
+        System.out.println(winner.getNick() +" scored "+ winner.getScore() +" points");
+        i=playersList.iterator();
+        while(i.hasNext())
         {
-            Player currPlayer=playersList.next();
+            Player currPlayer=(Player)i.next();
             if(currPlayer!=winner)
             {
-                System.out.println(currPlayer.nick+" scored "currPlayer.score+" points")
+                System.out.println(currPlayer.getNick()+" scored "+ currPlayer.getScore() +" points");
             }
             
         }
