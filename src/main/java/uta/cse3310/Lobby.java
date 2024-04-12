@@ -26,13 +26,15 @@ public class Lobby {
         Game game = games.get(gameName);
         
         //game mode (number of players) matches the mode specified when the game was created?
-        if (game.getMaxPlayers() != gameMode) {
+        if (game.getMaxPlayers() != gameMode) 
+        {
             return "Game mode mismatch for the game '" + gameName + "'.";
         }
         
         // add the player to the game
         String response = game.addPlayer(nick);
-        if (response.contains("joined")) {
+        if (response.contains("joined")) 
+        {
             playerToGameMap.put(nick, gameName);
         }
         return response;
@@ -44,7 +46,8 @@ public class Lobby {
 
     public String leaveGame(String nick) {
         String gameName = playerToGameMap.get(nick);
-        if (gameName != null && games.containsKey(gameName)) {
+        if (gameName != null && games.containsKey(gameName)) 
+        {
             Game game = games.get(gameName);
             game.removePlayer(nick);
             playerToGameMap.remove(nick);
@@ -53,7 +56,8 @@ public class Lobby {
         return "Player with nickname '" + nick + "' not found in any game.";
     }
 
-    public String listGames() {
+    public String listGames() 
+    {
         StringBuilder sb = new StringBuilder("Available games:\n");
         games.forEach((name, game) -> sb.append(name)
                 .append(" - Slots filled: ")
