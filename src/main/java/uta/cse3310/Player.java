@@ -66,10 +66,6 @@ public class Player {
         this.gameWins++;
     }
 
-    // Method for player to select word in game (Assuming placeholder for actual implementation)
-    public void selectWord() {
-        // Implement functionality depending on game rules
-    }
 
     @Override
     public String toString() {

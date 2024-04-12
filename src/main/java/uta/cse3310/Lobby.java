@@ -5,8 +5,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class Lobby {
     private final ConcurrentHashMap<String, Game> games = new ConcurrentHashMap<>();
-    private final ConcurrentHashMap<String, String> playerToGameMap = new ConcurrentHashMap<>(); // Map player nicknames to the game names they are participating in
-    private final ConcurrentHashMap<String, ArrayList<String>> gameToPlayersMap = new ConcurrentHashMap<>(); // Map game names to list of player nicknames
+    private final ConcurrentHashMap<String, String> playerToGameMap = new ConcurrentHashMap<>(); // map player nicknames to the game names they are participating in
+    private final ConcurrentHashMap<String, ArrayList<String>> gameToPlayersMap = new ConcurrentHashMap<>(); // map game names to list of player nicknames
 
     public String createOrJoinGame(String gameName, String nick, int gameMode) {
         if (playerToGameMap.containsKey(nick)) {
@@ -16,7 +16,7 @@ public class Lobby {
         games.computeIfAbsent(gameName, k -> new Game());
         ArrayList<String> players = gameToPlayersMap.computeIfAbsent(gameName, k -> new ArrayList<>());
 
-        // Assuming gameMode is now used here to limit the number of players
+        // gameMode to limit the number of players
         if (players.size() >= gameMode) {
             return "Game is full.";
         }
