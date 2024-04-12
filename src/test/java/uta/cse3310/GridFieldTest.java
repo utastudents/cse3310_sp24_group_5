@@ -1,68 +1,51 @@
-import org.junit.Before;
+package uta.cse3310;
+
 import org.junit.Test;
-import static org.junit.Assert.*;
+
+import static org.junit.Assert.assertEquals;
 
 public class GridFieldTest {
-    private GridField gridField;
-
-    @Before
-    public void setUp() {
-        gridField = new GridField();
-    }
 
     @Test
     public void testGenerateGrid() {
-        // Test logic for the generateGrid method
+        GridField gridField = new GridField();
         gridField.generateGrid();
-        // Add assertions to verify the generated grid meets expectations
-        // For example:
-        // assertNotNull(gridField.getGrid());
-        // assertEquals(expectedSize, gridField.getGridSize());
-        // assertTrue(gridField.isValidGrid());
+        // Implement test logic to verify the generated grid
     }
 
     @Test
     public void testCheckWord() {
-        // Test logic for the checkWord method
-        boolean result = gridField.checkWord("example");
-        // Add assertions to verify the result of the checkWord method
-        // For example:
-        // assertTrue(result);
+        GridField gridField = new GridField();
+        assertTrue(gridField.checkWord("word"));
+        assertFalse(gridField.checkWord("invalid"));
     }
 
     @Test
     public void testGetRemainingWords() {
-        // Test logic for the getRemainingWords method
-        int remainingWords = gridField.getRemainingWords();
-        // Add assertions to verify the value returned by the getRemainingWords method
-        // For example:
-        // assertEquals(expectedRemainingWords, remainingWords);
+        GridField gridField = new GridField();
+        assertEquals(0, gridField.getRemainingWords());
     }
 
     @Test
     public void testRevealWord() {
-        // Test logic for the revealWord method
-        gridField.revealWord("example");
-        // Add assertions to verify the behavior of the revealWord method
-        // For example:
-        // assertTrue(gridField.isWordRevealed("example"));
+        GridField gridField = new GridField();
+        gridField.revealWord("words");
+        // Implement test logic to verify word revealing
     }
 
     @Test
     public void testAddWord() {
-        // Test logic for the addWord method
-        gridField.addWord("example", Direction.HORIZONTAL);
-        // Add assertions to verify the behavior of the addWord method
-        // For example:
-        // assertTrue(gridField.isWordAdded("example"));
+        GridField gridField = new GridField();
+        gridField.addWord("word", Direction.HORIZONTAL);
+        // Implement test logic to verify word addition
     }
 
     @Test
     public void testDisplayGrid() {
-        // Test logic for the displayGrid method
+        GridField gridField = new GridField();
         gridField.displayGrid();
-        // Add assertions or validation logic as needed
+        // Implement test logic to verify grid display
     }
 
-    // Add more test methods for other methods in the GridField class
+    // Add more test methods as needed
 }
