@@ -56,9 +56,29 @@ public class Game //implements Chat, Timer, GridField, LeaderBoard, Wordlist
     }
 
      // Method to update game state
-    public void updateGame(UserEvent chooseWord) 
+    public void updateGame(ArrayList<UserEvent> attempt) 
     {
-       
+       //if the first action is a click and the last action was a release
+       if((attempt.get(0)).action==0 && (attempt.get(attempt.size()-1)).action==2 )
+       {
+            Player player=(attempt.get(0)).player;
+            String word="";
+            char[][]grid=gridField.getGrid();
+            Iterator i= attempt.iterator();
+            //iterate through each event and get the character that was affected
+            //concatenate each letter until a word is formed
+            while(i.hasNext())
+            {
+                UserEvent U = (UserEvent)i.next();
+                int index= U.cell;
+                int row = index/50;
+                int column= index%50;
+                
+                word=word+grid[index][column];
+                System.out.println(word);
+            }
+            wordChosen(word,player);
+       }
     }
 
      // Method for players to exit game
@@ -100,16 +120,29 @@ public class Game //implements Chat, Timer, GridField, LeaderBoard, Wordlist
     }
 
     // Method to check for a valid word
+    //may be obsolete
     public boolean validWord(String word) 
     {
         
         return gridField.checkWord(word);
     }
 
-    // Method for handling chosen word
-    public String[] wordChosen(String selectedWord) 
+    /* Method for handling chosen word
+    the word if valid should be highlighted in the player's color
+    and after being revealed, the method will check if there are any
+    more remaining words*/
+    public void wordChosen(String selectedWord,Player player) 
     {
-        return null;
+        if(gridField.checkWord(selectedWord)==true)
+        {
+            gridField.revealWord(selectedWord);//fully highlights word
+            player.increaseScore(100*selectedWord.length());//give player points
+            if(gridField.getRemainingWords()==0)//exit game if no words remain
+            {
+                exitGame(playersList);
+            }
+        }
+        
     }
 
     // Method to update the game timer"Shot Clock"

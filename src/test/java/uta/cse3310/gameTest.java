@@ -31,17 +31,18 @@ public class gameTest extends TestCase
     {
         Game game = new Game();
         GridField gridField=game.getGridField();
+        ArrayList<String> wordList = new ArrayList<String>("hello", "goodbye","testing","computer","code");
         ArrayList<String> words= new ArrayList<String>();
         try
         {
-            words.addAll(gridField.getWordList());
+            words.addAll(wordList);
             //test that all words remaining 
             //in the word bank will register as a valid word
             Iterator i=words.iterator();
             while(i.hasNext())
             {
                 String param=String.valueOf(i.next());
-                assertTrue(game.validWord(param)==true);
+                assertTrue(game.validWord()==true);
             }
         }
         catch(Exception e)
@@ -49,5 +50,11 @@ public class gameTest extends TestCase
 
         }
         
+    }
+    public void testWordChosen()
+    {
+        
+
+
     }
 }
