@@ -1,69 +1,51 @@
 package uta.cse3310;
-import java.util.concurrent.ConcurrentHashMap;
 
+import java.util.ArrayList;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class Lobby {
     private final ConcurrentHashMap<String, Game> games = new ConcurrentHashMap<>();
-    private final ConcurrentHashMap<String, String> playerToGameMap = new ConcurrentHashMap<>(); //map player nicknames to the game names they are participating in
+    private final ConcurrentHashMap<String, String> playerToGameMap = new ConcurrentHashMap<>(); // Map player nicknames to the game names they are participating in
+    private final ConcurrentHashMap<String, ArrayList<String>> gameToPlayersMap = new ConcurrentHashMap<>(); // Map game names to list of player nicknames
 
-    //either create a new game or join an existing on
-    //need the game's name, the player's nickname, and the intended game mode (number of players)
-    // check if a game with the specified name already exists. 
-    // If not, create a new game with the given name and game mode.
-    public String createOrJoinGame(String gameName, String nick, int gameMode) 
-    {
-
-        //containsKey to determine whether a map contains an entry for the specified key
-        if (playerToGameMap.containsKey(nick)) 
-        {
+    public String createOrJoinGame(String gameName, String nick, int gameMode) {
+        if (playerToGameMap.containsKey(nick)) {
             return "Nickname is already in use.";
         }
 
-        //checks whether a game with the given gameName already exists in the games map
-        //game will goes with games name, in case there 2 games into server at same time
-        //if not, create a new game
-        games.computeIfAbsent(gameName, k -> new Game(gameName, gameMode));
-        Game game = games.get(gameName);
-        
-        //game mode (number of players) matches the mode specified when the game was created?
-        if (game.getMaxPlayers() != gameMode) 
-        {
-            return "Game mode mismatch for the game '" + gameName + "'.";
-        }
-        
-        // add the player to the game
-        String response = game.addPlayer(nick);
-        if (response.contains("joined")) 
-        {
-            playerToGameMap.put(nick, gameName);
-        }
-        return response;
-    }
+        games.computeIfAbsent(gameName, k -> new Game());
+        ArrayList<String> players = gameToPlayersMap.computeIfAbsent(gameName, k -> new ArrayList<>());
 
-    //Looks up the game the player is currently in
-    // removes the player from that game
-    // updates the mapping to reflect this change. 
+        // Assuming gameMode is now used here to limit the number of players
+        if (players.size() >= gameMode) {
+            return "Game is full.";
+        }
+
+        players.add(nick);
+        playerToGameMap.put(nick, gameName);
+        return nick + " has joined the game.";
+    }
 
     public String leaveGame(String nick) {
         String gameName = playerToGameMap.get(nick);
-        if (gameName != null && games.containsKey(gameName)) 
-        {
-            Game game = games.get(gameName);
-            game.removePlayer(nick);
+        if (gameName != null && gameToPlayersMap.containsKey(gameName)) {
+            ArrayList<String> players = gameToPlayersMap.get(gameName);
+            players.remove(nick);
             playerToGameMap.remove(nick);
+            if (players.isEmpty()) {
+                games.remove(gameName);
+                gameToPlayersMap.remove(gameName);
+            }
             return "Player with nickname '" + nick + "' has left the game.";
         }
         return "Player with nickname '" + nick + "' not found in any game.";
     }
 
-    public String listGames() 
-    {
+    public String listGames() {
         StringBuilder sb = new StringBuilder("Available games:\n");
-        games.forEach((name, game) -> sb.append(name)
+        gameToPlayersMap.forEach((name, players) -> sb.append(name)
                 .append(" - Slots filled: ")
-                .append(game.getCurrentPlayerCount())
-                .append("/")
-                .append(game.getMaxPlayers())
+                .append(players.size())
                 .append("\n"));
         return sb.toString();
     }

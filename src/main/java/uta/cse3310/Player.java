@@ -1,51 +1,84 @@
-package uta.cse3310; 
-import java.util.Objects; 
-public class Player { 
-    private String nick; 
-    private int score; 
-    public Player(String nick) { 
-        this.nick = nick; 
-        this.score = 0; 
+package uta.cse3310;
+
+public class Player {
+    private String nick;
+    private int score;
+    private PlayerStatus status; // Using enum for clearer status management
+    private int totalPoints;
+    private int gameWins; // Renamed for clarity
+
+    public enum PlayerStatus {
+        ACTIVE, INACTIVE, DISCONNECTED
     }
 
-    public String getNick() { // allow other classes to retrieve the player's nickname.
-        return nick; 
+    // Constructor
+    public Player(String nick) {
+        this.nick = nick;
+        this.score = 0;
+        this.status = PlayerStatus.ACTIVE;
+        this.totalPoints = 0;
+        this.gameWins = 0;
     }
 
-    public void setNick(String nick) { // allows other classes to set or change the player's nickname.
-        this.nick = nick; 
+    // Getter for nickname
+    public String getNick() {
+        return nick;
     }
 
-    public int getScore() { // allows other classes to access the player's score.
-        return score; 
+    // Setter for nickname
+    public void setNick(String nick) {
+        this.nick = nick;
     }
 
-    public void setScore(int score) { // allows other classes to set or change the player's score.
-        this.score = score; 
+    // Setter for score
+    public void setScore(int score) {
+        this.score = score;
     }
 
-    public void addScore(int points) { // allows for incrementing the score by a specific number of points.
-        this.score += points; 
+    // Getter for score
+    public int getScore() {
+        return score;
     }
 
-    @Override 
-    public boolean equals(Object o) { 
-        if (this == o) return true; 
-        if (o == null || getClass() != o.getClass()) return false; 
-        Player player = (Player) o; 
-        return Objects.equals(nick, player.nick); 
+    // Method to increase player score
+    public void increaseScore(int points) {
+        this.score += points;
+        this.totalPoints += points; // Assuming totalPoints accumulates all points ever scored
     }
 
-    @Override 
-    public int hashCode() { 
-        return Objects.hash(nick); 
+    // Getter for player status
+    public PlayerStatus getStatus() {
+        return status;
     }
 
-    @Override 
-    public String toString() { 
+    // Setter for status
+    public void setStatus(PlayerStatus status) {
+        this.status = status;
+    }
+
+    // Getter for total game wins
+    public int getGameWins() {
+        return gameWins;
+    }
+
+    // Method to increment the number of games won
+    public void addGameWin() {
+        this.gameWins++;
+    }
+
+    // Method for player to select word in game (Assuming placeholder for actual implementation)
+    public void selectWord() {
+        // Implement functionality depending on game rules
+    }
+
+    @Override
+    public String toString() {
         return "Player{" +
                "nick='" + nick + '\'' +
                ", score=" + score +
-               '}'; 
+               ", status=" + status +
+               ", totalPoints=" + totalPoints +
+               ", gameWins=" + gameWins +
+               '}';
     }
 }
