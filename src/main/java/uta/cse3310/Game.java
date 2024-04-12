@@ -10,10 +10,9 @@ public class Game //implements Chat, Timer, GridField, LeaderBoard, Wordlist
     private ArrayList<Player>playersList = new ArrayList<Player>();
     private boolean gameStatus;
     private String wordsDone;
-    private Timer timer;
+    private MyTimer timer;
     private int gameCount;
     private GridField gridField;
-
      
      // Method to determine gamemode
     public int getGameMode() 
@@ -152,11 +151,11 @@ public class Game //implements Chat, Timer, GridField, LeaderBoard, Wordlist
         {
             System.out.println(timer.getTimeRemaining());
         }
+
     }
 
     // Method to display rules of game
-    public void displayRules()
-    {
-        
+    public void displayRules() {
+
     }
 }

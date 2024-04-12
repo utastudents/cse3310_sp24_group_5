@@ -1,38 +1,45 @@
 package uta.cse3310;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import org.junit.Before;
+import org.junit.Test;
 
-/**
- * Unit test for simple App.
- */
-public class AppTest 
-    extends TestCase
-{
-    /**
-     * Create the test case
-     *
-     * @param testName name of the test case
-     */
-    public AppTest( String testName )
-    {
-        super( testName );
+import static org.junit.Assert.*;
+
+public class AppTest {
+
+    private App app;
+
+    @Before
+    public void setUp() {
+        int port = Integer.parseInt(System.getenv("HTTP_PORT"));
+        this.app = new App(port) {
+            @Override
+            public void onStart() {
+                // Override onStart method for testing
+            }
+
+            @Override
+            public void onOpen(WebSocket conn, ClientHandshake handshake) {
+                // Override onOpen method for testing
+            }
+
+            @Override
+            public void onClose(WebSocket conn, int code, String reason, boolean remote) {
+                // Override onClose method for testing
+            }
+
+            @Override
+            public void onMessage(WebSocket conn, String message) {
+                // Override onMessage method for testing
+            }
+        };
     }
 
-    /**
-     * @return the suite of tests being tested
-     */
-    public static Test suite()
-    {
-        return new TestSuite( AppTest.class );
+    @Test
+    public void testApp() {
+        assertNotNull(app);
     }
 
-    /**
-     * Rigourous Test :-)
-     */
-    public void testApp()
-    {
-        //assertTrue( true );
-    }
+    // Add more test methods for other functionalities of the App class
 }
+

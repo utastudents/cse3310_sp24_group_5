@@ -1,8 +1,16 @@
 package uta.cse3310;
-public class Direction{
+
+/**
+ * Enumeration representing different directions.
+ */
+public class Direction {
+
+    /**
+     * Enum representing the directions: HORIZONTAL, VERTICAL, and DIAGONAL.
+     */
     enum Directions {
-        HORIZONTAL,
-        VERTICAL,
-        DIAGONAL
+        HORIZONTAL, // Represents horizontal direction
+        VERTICAL,   // Represents vertical direction
+        DIAGONAL    // Represents diagonal direction
     }
 }
