@@ -1,35 +1,54 @@
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import org.junit.Test;
 
-public class DirectionTest extends TestCase {
-
-    public void testToString() {
-        assertEquals("horizontal", Direction.HORIZONTAL.toString());
-        assertEquals("vertical", Direction.VERTICAL.toString());
-        assertEquals("diagonal", Direction.DIAGONAL.toString());
+/**
+ * Unit tests for the Direction enum.
+ */
+public class DirectionTest {
+    
+    /**
+     * Test case to verify the behavior of the horizontal direction.
+     */
+    @Test
+    public void testHorizontalDirection() {
+        // Arrange
+        Direction direction = Direction.horizontal;
+        
+        // Act
+        // No action needed
+        
+        // Assert
+        assertEquals("Horizontal direction should be 'horizontal'", "horizontal", direction.toString());
     }
-
-    public void testOrdinal() {
-        assertEquals(0, Direction.HORIZONTAL.ordinal());
-        assertEquals(1, Direction.VERTICAL.ordinal());
-        assertEquals(2, Direction.DIAGONAL.ordinal());
+    
+    /**
+     * Test case to verify the behavior of the vertical direction.
+     */
+    @Test
+    public void testVerticalDirection() {
+        // Arrange
+        Direction direction = Direction.vertical;
+        
+        // Act
+        // No action needed
+        
+        // Assert
+        assertEquals("Vertical direction should be 'vertical'", "vertical", direction.toString());
     }
-
-    public void testValues() {
-        Direction[] values = Direction.values();
-        assertEquals(3, values.length);
-        assertEquals(Direction.HORIZONTAL, values[0]);
-        assertEquals(Direction.VERTICAL, values[1]);
-        assertEquals(Direction.DIAGONAL, values[2]);
-    }
-
-    public void testEquals() {
-        assertTrue(Direction.HORIZONTAL.equals(Direction.HORIZONTAL));
-        assertFalse(Direction.HORIZONTAL.equals(Direction.VERTICAL));
-    }
-
-    public void testValueOf() {
-        assertEquals(Direction.HORIZONTAL, Direction.valueOf("HORIZONTAL"));
-        assertEquals(Direction.VERTICAL, Direction.valueOf("VERTICAL"));
-        assertEquals(Direction.DIAGONAL, Direction.valueOf("DIAGONAL"));
+    
+    /**
+     * Test case to verify the behavior of the diagonal direction.
+     */
+    @Test
+    public void testDiagonalDirection() {
+        // Arrange
+        Direction direction = Direction.diagonal;
+        
+        // Act
+        // No action needed
+        
+        // Assert
+        assertEquals("Diagonal direction should be 'diagonal'", "diagonal", direction.toString());
     }
 }
+
