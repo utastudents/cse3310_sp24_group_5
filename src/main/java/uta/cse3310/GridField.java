@@ -1,38 +1,81 @@
 package uta.cse3310;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class GridField {
-
-    private ArrayList<String> word;
-    private int wordLength;
-    private int remainingWords;
-    private int gridSize;
     private char[][] grid;
+    private ArrayList<String> wordList;
+    private int remainingWords;
 
-    public void generateGrid() {
-        // Logic for generating the grid
+    public GridField(ArrayList<String> wordList) {
+        this.wordList = wordList;
+        this.remainingWords = wordList.size();
+    }
+
+    public char[][] getGrid() {
+        return grid;
+    }
+
+    public ArrayList<String> getWordList() {
+        return wordList;
+    }
+
+    public void generateGrid(int gridSize) {
+        grid = new char[gridSize][gridSize];
+        Random random = new Random();
+        for (int i = 0; i < gridSize; i++) {
+            for (int j = 0; j < gridSize; j++) {
+                grid[i][j] = (char) ('A' + random.nextInt(26)); // Randomly fill grid with alphabets
+            }
+        }
     }
 
     public boolean checkWord(String word) {
-        // Logic for checking if the word is valid
-        return true;
+        return wordList.contains(word);
     }
 
     public int getRemainingWords() {
-        // Logic for getting the remaining words
-        return 0;
+        return remainingWords;
     }
 
-    public void revealWord(String words) {
-        // Logic for revealing a word
+    public void revealWord(String word) {
+        if (wordList.remove(word)) {
+            remainingWords--;
+        }
     }
 
-    public void addWord(String word, Direction direction) {
-        // Logic for adding a word to the grid
+    public void addWord(String word, int row, int column, Direction.Directions direction) {
+        int len = word.length();
+        int dr = 0, dc = 0;
+        switch (direction) {
+            case HORIZONTAL:
+                dc = 1;
+                break;
+            case VERTICAL:
+                dr = 1;
+                break;
+            case DIAGONAL:
+                dr = 1;
+                dc = 1;
+                break;
+        }
+        for (int i = 0; i < len; i++) {
+            grid[row][column] = word.charAt(i);
+            row += dr;
+            column += dc;
+        }
+        wordList.add(word);
+        remainingWords++;
     }
 
     public void displayGrid() {
-        // Logic for displaying the grid
+        for (char[] row : grid) {
+            for (char cell : row) {
+                System.out.print(cell + " ");
+            }
+            System.out.println();
+        }
     }
 }
+
