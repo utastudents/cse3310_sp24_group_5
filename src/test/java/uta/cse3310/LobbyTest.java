@@ -1,50 +1,58 @@
-package uta.cse3310;
-
+import static org.junit.Assert.*;
+import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-
-
-class LobbyTest {
+public class LobbyTest {
     private Lobby lobby;
 
-    @BeforeEach
-    void setUp() {
+    @Before
+    public void setUp() {
         lobby = new Lobby();
     }
 
     @Test
-    void testCreateOrJoinGame() 
-    {
-        // Test creating a new game
-        assertEquals("Alice has joined the game.", lobby.createOrJoinGame("Game1", "Alice", 4));
-        assertEquals("Bob has joined the game.", lobby.createOrJoinGame("Game1", "Bob", 4));
-
-        // Test joining an existing game
-        assertEquals("Charlie has joined the game.", lobby.createOrJoinGame("Game2", "Charlie", 3));
+    public void testEnterNicknameAlreadyTaken() {
+        // Assuming player "player1" already exists in the lobby
+        lobby.enterNickname("player1"); // First entry of the nickname
+        String result = lobby.enterNickname("player1"); // Trying to enter the same nickname again
+        assertEquals("Nickname is taken, please reenter.", result);
     }
 
     @Test
-    void testLeaveGame() 
-    {
-        // Test leaving a game
-        lobby.createOrJoinGame("Game1", "Alice", 2);
-        assertEquals("Player with nickname 'Alice' has left the game.", lobby.leaveGame("Alice"));
-
-        // Test leaving a game with multiple players
-        lobby.createOrJoinGame("Game2", "Bob", 3);
-        lobby.createOrJoinGame("Game2", "Charlie", 3);
-        assertEquals("Player with nickname 'Bob' has left the game.", lobby.leaveGame("Bob"));
+    public void testEnterNicknameAvailable() {
+        String result = lobby.enterNickname("player2");
+        assertEquals("Nickname is available, please select a game.", result);
     }
 
     @Test
-    void testListGames() 
-    {
-        // Test listing games
-        lobby.createOrJoinGame("Game1", "Alice", 2);
-        lobby.createOrJoinGame("Game2", "Bob", 3);
-        lobby.createOrJoinGame("Game2", "Charlie", 3);
+    public void testJoinGameWithValidParameters() {
+        lobby.enterNickname("player3");
+        String result = lobby.joinGame("player3", 0, 0); // Assuming 0 is a valid game and mode index
+        assertTrue(result.contains("has joined Game1"));
+    }
 
-        assertEquals("Available games:\nGame1 - Slots filled: 1\nGame2 - Slots filled: 2\n", lobby.listGames());
+    @Test
+    public void testJoinGameWithInvalidGameIndex() {
+        lobby.enterNickname("player4");
+        String result = lobby.joinGame("player4", 5, 0); // Invalid game index
+        assertEquals("Invalid game selection. Please select a valid game number.", result);
+    }
+
+    @Test
+    public void testJoinGameWithInvalidModeIndex() {
+        lobby.enterNickname("player5");
+        String result = lobby.joinGame("player5", 0, 3); // Invalid mode index
+        assertEquals("Invalid game mode selection. Please select a valid game mode number.", result);
+    }
+
+    @Test
+    public void testLeaveGame() {
+        lobby.enterNickname("player6");
+        lobby.joinGame("player6", 0, 0); // Player joins a game
+        lobby.leaveGame("player6"); // Player leaves the game
+
+        // Check if the game was properly updated after leaving
+        assertTrue(lobby.listGames().stream()
+                .noneMatch(game -> game.get("playerNicks").toString().contains("player6"))); // Ensuring the player is no longer listed in any game
     }
 }
