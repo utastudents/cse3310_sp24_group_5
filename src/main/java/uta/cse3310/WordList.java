@@ -1,7 +1,9 @@
 package uta.cse3310;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 public class WordList //extends Direction 
 {
     public ArrayList<String> Word;
@@ -10,7 +12,15 @@ public class WordList //extends Direction
     //method for accesing the word list from file
     List<String> getWordList(String wordsFile) 
     {
-        return null;
+        List<String> wordList = new ArrayList<>();
+        
+        try {
+            wordList = Files.readAllLines(Paths.get(wordsFile));
+        } catch (IOException e) {
+           System.out.println("not a valid file!");
+        }
+        
+        return wordList;
     }
 
     //method to update word list
@@ -22,7 +32,7 @@ public class WordList //extends Direction
     //method for word shuffling
     public void shuffleWords() 
     {
-      
+      Collections.shuffle(list);
     }
 }
 
