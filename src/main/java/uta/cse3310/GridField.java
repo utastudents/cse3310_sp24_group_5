@@ -2,16 +2,27 @@ package uta.cse3310;
 
 import java.util.ArrayList;
 
-public class GridField {
 
-    private ArrayList<String> word;
+public class GridField //extends WordList
+{
+    private ArrayList<String> word=new ArrayList<String>();
     private int wordLength;
     private int remainingWords;
     private int gridSize;
     private char[][] grid;
 
+    public char[][] getGrid()
+    {
+        return grid;
+    }
+    public ArrayList<String> getWordList()
+    {
+        return word;
+    }
+    
     public void generateGrid() {
         // Logic for generating the grid
+
     }
 
     public boolean checkWord(String word) {

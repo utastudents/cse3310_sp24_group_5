@@ -1,54 +1,94 @@
 package uta.cse3310;
 
+
 public class Player 
 {
     private String nick;
     private int score;
-    private int status;
+    private PlayerStatus status; // Using enum for clearer status management
     private int totalPoints;
-    private int gameWin;
+    private int gameWins; // Renamed for clarity
 
-    //Method for player nickname
+    public enum PlayerStatus 
+    {
+        ACTIVE, INACTIVE, DISCONNECTED
+    }
+
+    // Constructor
+    public Player(String nick) 
+    {
+        this.nick = nick;
+        this.score = 0;
+        this.status = PlayerStatus.ACTIVE;
+        this.totalPoints = 0;
+        this.gameWins = 0;
+    }
+
+    // Getter for nickname
     public String getNick() 
     {
         return nick;
     }
 
-    // Method for player score
+    // Setter for nickname
+    public void setNick(String nick) 
+    {
+        this.nick = nick;
+    }
+
+    // Setter for score
     public void setScore(int score) 
     {
-        
+        this.score = score;
     }
 
-    // Method for player to select word in game
-    public void selectWord() 
-    {
-
-    }
-
-    // Method to return player status
-    public int getStatus() 
-    {
-        return status;
-    }
-
-    // Method to return player score for use elsewhere
+    // Getter for score
     public int getScore() 
     {
         return score;
     }
 
-    // Method used to award a game win to the winning player
-    public int getGameWin() 
-    {
-        return gameWin;
-    }
-
     // Method to increase player score
     public void increaseScore(int points) 
     {
-        
+        this.score += points;
+        this.totalPoints += points; // Assuming totalPoints accumulates all points ever scored
+    }
+
+    // Getter for player status
+    public PlayerStatus getStatus() 
+    {
+        return status;
+    }
+
+    // Setter for status
+    public void setStatus(PlayerStatus status) 
+    {
+        this.status = status;
+    }
+
+    // Getter for total game wins
+    public int getGameWins() 
+    {
+        return gameWins;
+    }
+
+    // Method to increment the number of games won
+    public void addGameWin() 
+    {
+        this.gameWins++;
+    }
+
+
+    @Override
+    public String toString() 
+    {
+        return "Player{" +
+               "nick='" + nick + '\'' +
+               ", score=" + score +
+               ", status=" + status +
+               ", totalPoints=" + totalPoints +
+               ", gameWins=" + gameWins +
+               '}';
     }
 }
-
-
