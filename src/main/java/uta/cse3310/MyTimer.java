@@ -42,7 +42,7 @@ public class MyTimer {
         }
     }
 
-    private void stopTimer() // Stop the timer
+    public void stopTimer() // Stop the timer
     {
         if (isRunning) {
             timer.cancel();
