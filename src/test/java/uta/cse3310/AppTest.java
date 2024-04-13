@@ -11,7 +11,7 @@ public class AppTest {
 
     @Before
     public void setUp() {
-        int port = Integer.parseInt(System.getenv("HTTP_PORT"));
+        int port = Integer.parseInt(System.getenv("HTTP_PORT")); // Retrieving HTTP port from environment
         this.app = new App(port) {
             @Override
             public void onStart() {
