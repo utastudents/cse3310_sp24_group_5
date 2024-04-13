@@ -17,16 +17,43 @@ import net.freeutils.httpserver.HTTPServer.VirtualHost;
 public class HttpServer
 {
     private String HTML;
-    private int port;
+    private int port = 8080;
+    String dirname = HTML;
 
-    //contructor
-    public HttpServer(int portNum) 
-    {  
+    public HttpServer(int portNum, String dirName)
+    {
         port = portNum;
+        dirname = dirName;
     }
     //method begin
     public void begin() 
     {
-      
+        try
+        {
+            File dir = new File(dirname);
+            if (!dir.canRead())
+                throw new FileNotFoundException(dir.getAbsolutePath());
+
+            HTTPServer server = new HTTPServer(port);
+            VirtualHost host = server.getVirtualHost(null); 
+            host.setAllowGeneratedIndex(true); 
+            host.addContext("/", new FileContextHandler(dir));
+            host.addContext("/api/time", new ContextHandler()
+            {
+                public int serve(Request req, Response resp) throws IOException
+                {
+                    long now = System.currentTimeMillis();
+                    resp.getHeaders().add("Content-Type", "text/plain");
+                    resp.send(200, String.format("%tF %<tT", now));
+                    return 0;
+                }
+            });
+            server.start();
+        } catch (Exception e) 
+        {
+            System.err.println("error: " + e);
+        }
+
     }
+
 }
