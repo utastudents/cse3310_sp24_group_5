@@ -1,3 +1,5 @@
+package uta.cse3310;
+
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
@@ -53,6 +55,8 @@ public class LobbyTest {
 
         // Check if the game was properly updated after leaving
         assertTrue(lobby.listGames().stream()
-                .noneMatch(game -> game.get("playerNicks").toString().contains("player6"))); // Ensuring the player is no longer listed in any game
+                .noneMatch(game -> game.get("playerNicks").toString().contains("player6"))); // Ensuring the player is
+                                                                                             // no longer listed in any
+                                                                                             // game
     }
 }
