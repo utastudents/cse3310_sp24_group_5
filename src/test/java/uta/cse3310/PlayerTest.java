@@ -11,41 +11,35 @@ public class PlayerTest {
     public void setUp() 
     {
         player = new Player("TestPlayer");
-        System.out.println("Setup Complete: Player initialized with nickname 'TestPlayer' and score 0.");
     }
 
     @Test
     public void testInitialScore() 
     {
-        assertEquals(0, player.getScore());
-        System.out.println("Test Initial Score: Passed - Score is 0 as expected.");
+        assertEquals("Initial score should be zero", 0, player.getScore());
     }
 
     @Test
     public void testSetAndGetNick() 
     {
         player.setNick("NewNick");
-        assertEquals("NewNick", player.getNick());
-        System.out.println("Test Set and Get Nick: Passed - Nickname is correctly set to 'NewNick'.");
+        assertEquals("Nickname should be set to 'NewNick'", "NewNick", player.getNick());
     }
 
     @Test
     public void testSetAndGetScore() 
     {
         player.setScore(100);
-        assertEquals(100, player.getScore());
-        System.out.println("Test Set and Get Score: Passed - Score is correctly set to 100.");
+        assertEquals("Score should be set to 100", 100, player.getScore());
     }
 
     @Test
-    public void testAddScore() 
+    public void testIncreaseScore() 
     {
-        player.addScore(50);
-        assertEquals(50, player.getScore());
-        System.out.println("Test Add Score: Passed - Score correctly increased by 50 to 50.");
+        player.increaseScore(50);
+        assertEquals("Score should be increased by 50", 50, player.getScore());
 
-        player.addScore(20);
-        assertEquals(70, player.getScore());
-        System.out.println("Test Add Score: Passed - Score correctly increased by 20 to total of 70.");
+        player.increaseScore(20);
+        assertEquals("Score should be increased by 20 to a total of 70", 70, player.getScore());
     }
 }
