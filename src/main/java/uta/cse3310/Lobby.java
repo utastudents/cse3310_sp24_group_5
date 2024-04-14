@@ -2,187 +2,108 @@ package uta.cse3310;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
-
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Map;
+import java.util.stream.Collectors; 
 
 public class Lobby {
-    private final ConcurrentHashMap<String, Game> games = new ConcurrentHashMap<>();
-    private final ConcurrentHashMap<String, String> playerToGameMap = new ConcurrentHashMap<>();
+    private Map<String, Game> games;
+    private Map<String, String> playerToGameMap;
 
-    //Fixed game name and game mode for player to pick
-    private final List<String> availableGames = Arrays.asList("Game1", "Game2", "Game3", "Game4", "Game5");
-    private final List<Integer> availableModes = Arrays.asList(2, 3, 4);
-
-    public Lobby() 
-    {
-        availableGames.forEach(gameName -> games.put(gameName, new Game()));
+    public Lobby() {
+        this.games = new HashMap<>();
+        this.playerToGameMap = new HashMap<>();
+        initializeGames(Arrays.asList("Game1", "Game2", "Game3", "Game4", "Game5"));
     }
 
-    //check if the nick is already used
-    public String enterNickname(String nick) {
-        if (playerToGameMap.containsKey(nick)) {
-            return "Nickname is taken, please reenter.";
-        }
-        return "Nickname is available, please select a game.";
+    public Map<String, String> getPlayerToGameMap() {
+        return playerToGameMap;
     }
 
-    
-    public String joinGame(String nick, int gameIndex, int modeIndex) 
-    {   
+    private void initializeGames(List<String> gameNames) {
+        gameNames.forEach(gameName -> games.put(gameName, new Game()));
+    }
 
-        // The gameIndex and modeIndex will be in form of option for player to pick
-        // these conditions are only to make sure about the range of gameMode and gameIndex
-        if (gameIndex < 0 || gameIndex >= availableGames.size()) {
-            return "Invalid game selection. Please select a valid game number.";
-        }
-        if (modeIndex < 0 || modeIndex >= availableModes.size()) {
-            return "Invalid game mode selection. Please select a valid game mode number.";
-        }
 
-        //get info of the game
-        String gameName = availableGames.get(gameIndex);
-        int gameMode = availableModes.get(modeIndex);
-        
-
-        Game game = games.get(gameName);
-        synchronized (game) 
+    //checks if the nickname is not already in use
+    //adds it to the playerToGameMap if it's available
+    public void enterNickname(String nick) {
+        if (!playerToGameMap.containsKey(nick)) 
         {
-            if (game.playersList.isEmpty()) 
-            {
-                game.setGameMode(gameMode);  // allow to set game mode only if it's the first player joining
-            } 
-            else if (game.getGameMode() != gameMode) // if the second player enter a different game mode with the mode of the available game, error
-            {
-                return "Mismatched game mode. The game mode is already set to " + game.getGameMode();
-            }
-
-            if (game.playersList.size() >= game.getGameMode()) 
-            {
-                return "Game is full.";
-            }
-
-            game.addPlayers(new Player(nick));  // add player to the game
-            playerToGameMap.put(nick, gameName);
-            return nick + " has joined " + gameName + ". Current players: " + game.playersList.size() + "/" + game.getGameMode();
+            playerToGameMap.put(nick, null);
         }
     }
 
-    public void leaveGame(String nick) 
-    {
-        String gameName = playerToGameMap.remove(nick); // Remove player from the game map
-        if (gameName != null) 
-        {
+    public void joinGame(String nick, int gameIndex, int modeIndex) {
+        List<String> availableGames = new ArrayList<>(games.keySet());
+        List<Integer> availableModes = Arrays.asList(2, 3, 4); // direct representation of modes
+
+        if (gameIndex >= 0 && gameIndex < availableGames.size() && modeIndex >= 0 && modeIndex < availableModes.size()) 
+        {   
+            // checks if the indices are valid
+            String gameName = availableGames.get(gameIndex);
+
             Game game = games.get(gameName);
-            if (game != null && game.removePlayer(nick)) 
-            { // Remove player from the game
-                if (game.isEmpty()) 
-                { // remove the game if no players left
-                games.remove(gameName);
+
+            if (game != null) 
+            { // checks if the selected game exists in the list of game
+                int selectedMode = availableModes.get(modeIndex); // directly use the mode from the list
+
+                if (game.getPlayersList().isEmpty()) //if no player in that game before, pick game, then pick mode of the game
+                {
+                    game.setGameMode(selectedMode);
+                } 
+                else if (game.getGameMode() == selectedMode) //or join the game that need  slot filled
+                {
+                    if (game.getPlayersList().size() < game.getGameMode()) 
+                    {
+                        game.addPlayers(new Player(nick));
+                        playerToGameMap.put(nick, gameName);
+                    }
                 }
             }
         }
     }
 
 
-    public List<String> getAvailableGames() {
-        return availableGames;
-    }
-
-    public List<Integer> getAvailableModes() {
-        return availableModes;
-    }
-
-    // return a List of Maps. Each Map represents the state of a game 
-    // collect info for later display in Lobby UI
-    public List<Map<String, Object>> listGames() 
-    {
-    return games.entrySet().stream().map(entry -> {
-        Map<String, Object> gameInfo = new ConcurrentHashMap<>();
-        String gameName = entry.getKey(); // // retrieve the game name -the key in the 'games' map
-        Game game = entry.getValue(); // retrieves the corresponding value in the 'games' map
-        int filledSlots = game.getPlayersList().size(); //// number of players = size of the players list
-        int maxSlots = game.getGameMode(); //// maximum number of players = getGameMode().
-        
-        List<String> playerNicks = game.getPlayersList().stream()
-                                        .map(Player::getNick) // This assumes a method getNick() exists in the Player class.
-                                        .collect(Collectors.toList());
-        
-        gameInfo.put("gameName", gameName);
-        gameInfo.put("filledSlots", filledSlots);
-        gameInfo.put("maxSlots", maxSlots > 0 ? maxSlots : "Not set"); ////"Not set" to indicate the game mode is not defined
-        gameInfo.put("playerNicks", playerNicks);
-        
-        return gameInfo;        
-    }).collect(Collectors.toList());
-    }
-}
-
-
-
-
-
-
-/*package uta.cse3310;
-
-import java.util.ArrayList;
-import java.util.concurrent.ConcurrentHashMap;
-
-public class Lobby {
-    private final ConcurrentHashMap<String, Game> games = new ConcurrentHashMap<>();
-    private final ConcurrentHashMap<String, String> playerToGameMap = new ConcurrentHashMap<>(); // map player nicknames to the game names they are participating in
-    private final ConcurrentHashMap<String, ArrayList<String>> gameToPlayersMap = new ConcurrentHashMap<>(); // map game names to list of player nicknames
-
-    public String createOrJoinGame(String gameName, String nick, int gameMode) 
-    {
-        if (playerToGameMap.containsKey(nick)) 
-        {
-            return "Nickname is already in use.";
-        }
-
-         games.computeIfAbsent(gameName, k -> new Game(gameMode));
-        ArrayList<String> players = gameToPlayersMap.computeIfAbsent(gameName, k -> new ArrayList<>());
-
-        // gameMode to limit the number of players
-        if (players.size() >= gameMode) 
-        { //
-            return "Game is full.";
-        }
-
-        players.add(nick);
-        playerToGameMap.put(nick, gameName);
-        return nick + " has joined the game.";
-    }
-
-    public String leaveGame(String nick) {
+    public void leaveGame(String nick) {
         String gameName = playerToGameMap.get(nick);
-
-        if (gameName != null && gameToPlayersMap.containsKey(gameName)) //remove the player from the game
+        if (gameName != null) 
         {
-            ArrayList<String> players = gameToPlayersMap.get(gameName);
-            players.remove(nick);
-            playerToGameMap.remove(nick);
-
-            if (players.isEmpty()) //remove game if no player
+            Game game = games.get(gameName);
+            if (game != null) 
             {
-                games.remove(gameName);
-                gameToPlayersMap.remove(gameName);
+                game.removePlayer(nick);
+                if (game.getPlayersList().isEmpty()) 
+                {
+                    games.remove(gameName);
+                }
+                playerToGameMap.remove(nick);
             }
-            return "Player with nickname '" + nick + "' has left the game.";
         }
-        return "Player with nickname '" + nick + "' not found in any game.";
     }
 
-    public String listGames() 
-    {
-        StringBuilder sb = new StringBuilder("Available games:\n");
-        gameToPlayersMap.forEach((name, players) -> sb.append(name)
-                .append(" - Slots filled: ")
-                .append(players.size())
-                .append("\n"));
-        return sb.toString();
+
+    //for later if needed to have info for UI file
+    public List<Map<String, Object>> listGames() {
+        List<Map<String, Object>> gameList = new ArrayList<>();
+
+        for (Map.Entry<String, Game> entry : games.entrySet()) 
+        {
+            Map<String, Object> gameInfo = new HashMap<>();
+            String gameName = entry.getKey();
+            Game game = entry.getValue();
+            List<String> playerNicks = game.getPlayersList().stream()
+                    .map(Player::getNick)
+                    .collect(Collectors.toList());
+
+            gameInfo.put("gameName", gameName);
+            gameInfo.put("filledSlots", game.getPlayersList().size());
+            gameInfo.put("maxSlots", game.getGameMode());
+            gameInfo.put("playerNicks", playerNicks);
+            gameList.add(gameInfo);
+        }
+        return gameList;
     }
 }
-*/
