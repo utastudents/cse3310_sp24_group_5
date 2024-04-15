@@ -30,20 +30,24 @@ public class gameTest extends TestCase
     public void testGame()
     {
         Game game = new Game();
-        GridField gridField=game.getGridField();
+        game.startGame();
         ArrayList<String> wordList = new ArrayList<String>("hello", "goodbye","testing","computer","code");
-        ArrayList<String> words= new ArrayList<String>();
+        GridField gridField=GridField(wordList);
+        game.setGridField(gridField);
+        Player player1=new Player("tom");
+        Player player1=new Player("steve");
+        game.addPlayers(player1);
+        game.addPlayers(player2);
         try
-        {
-            words.addAll(wordList);
-            //test that all words remaining 
-            //in the word bank will register as a valid word
-            Iterator i=words.iterator();
+        {   int score=player1.getScore();
+            Iterator i=wordList.iterator();
             while(i.hasNext())
             {
                 String param=String.valueOf(i.next());
-                assertTrue(game.validWord()==true);
+                game.wordChosen(param,player1);
+                assertTrue(player1.getScore()==param.length()+score);
             }
+            assertTrue(gridField.getRemainingWords()==0);
         }
         catch(Exception e)
         {
@@ -51,7 +55,7 @@ public class gameTest extends TestCase
         }
         
     }
-    public void testWordChosen()
+    public void testUpdate()
     {
         
 
