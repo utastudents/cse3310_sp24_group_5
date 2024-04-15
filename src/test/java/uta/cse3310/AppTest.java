@@ -1,5 +1,5 @@
-package uta.cse3310;
-
+import org.java_websocket.WebSocket;
+import org.java_websocket.handshake.ClientHandshake;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -11,7 +11,8 @@ public class AppTest {
 
     @Before
     public void setUp() {
-        int port = Integer.parseInt(System.getenv("HTTP_PORT")); // Retrieving HTTP port from environment
+        // Update port assignment to 9005
+        int port = 9005;
         this.app = new App(port) {
             @Override
             public void onStart() {
