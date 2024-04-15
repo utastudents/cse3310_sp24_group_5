@@ -1,3 +1,5 @@
+package uta.cse3310;
+
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
 import org.junit.Before;
