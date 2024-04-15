@@ -1,50 +1,29 @@
 package uta.cse3310;
 
-import org.junit.Test;
+import junit.framework.TestCase;
 
-import static org.junit.Assert.assertEquals;
+public class LobbyTest extends TestCase {
 
-
-class LobbyTest {
-    private Lobby lobby;
-
-    @BeforeEach
-    void setUp() {
-        lobby = new Lobby();
+    public void testEnterNickname() {
+        Lobby lobby = new Lobby();
+        
+        lobby.enterNickname("Player1");
+        assertTrue(lobby.getPlayerToGameMap().containsKey("Player1"));
     }
 
-    @Test
-    void testCreateOrJoinGame() 
-    {
-        // Test creating a new game
-        assertEquals("Alice has joined the game.", lobby.createOrJoinGame("Game1", "Alice", 4));
-        assertEquals("Bob has joined the game.", lobby.createOrJoinGame("Game1", "Bob", 4));
+    public void testJoinGame() {
+        Lobby lobby = new Lobby();
+        lobby.enterNickname("Player2");
 
-        // Test joining an existing game
-        assertEquals("Charlie has joined the game.", lobby.createOrJoinGame("Game2", "Charlie", 3));
+        lobby.joinGame("Player2", 0, 0);
     }
 
-    @Test
-    void testLeaveGame() 
-    {
-        // Test leaving a game
-        lobby.createOrJoinGame("Game1", "Alice", 2);
-        assertEquals("Player with nickname 'Alice' has left the game.", lobby.leaveGame("Alice"));
+    public void testLeaveGame() {
+        Lobby lobby = new Lobby();
+        lobby.enterNickname("Player3");
+        lobby.joinGame("Player3", 0, 0);
 
-        // Test leaving a game with multiple players
-        lobby.createOrJoinGame("Game2", "Bob", 3);
-        lobby.createOrJoinGame("Game2", "Charlie", 3);
-        assertEquals("Player with nickname 'Bob' has left the game.", lobby.leaveGame("Bob"));
-    }
-
-    @Test
-    void testListGames() 
-    {
-        // Test listing games
-        lobby.createOrJoinGame("Game1", "Alice", 2);
-        lobby.createOrJoinGame("Game2", "Bob", 3);
-        lobby.createOrJoinGame("Game2", "Charlie", 3);
-
-        assertEquals("Available games:\nGame1 - Slots filled: 1\nGame2 - Slots filled: 2\n", lobby.listGames());
+        lobby.leaveGame("Player3");
+        assertNull(lobby.getPlayerToGameMap().get("Player3"));
     }
 }

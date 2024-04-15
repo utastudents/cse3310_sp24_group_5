@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Word Search Game Lobby</title>
+    <link rel="stylesheet" href="style_lobby.css">
+</head>
+<body>
+    <div id="lobbyContainer">
+        <div id="userInputSection">
+            <button id="helpButton">HELP</button>
+            <div>
+                <label for="nickInput">Insert Nick:</label>
+                <input type="text" id="nickInput" placeholder="Type here">
+            </div>
+            <div>
+                <label for="gameSelect">Game:</label>
+                <select id="gameSelect">
+                    <!-- Options will be added by JS -->
+                </select>
+            </div>
+            <div>
+                <label for="modeSelect">Game Mode:</label>
+                <select id="modeSelect">
+                    <!-- Options will be added by JS -->
+                </select>
+            </div>
+            <button id="confirmButton">CONFIRM</button>
+            <h1>The Word Search Game</h1>
+            <button id="startButton">START</button>
+            <button id="leaveButton">LEAVE</button>
+            <button id="refreshButton">Refresh</button>
+        </div>
+        <div id="gameListSection">
+            <!-- Game list will be populated by JS -->
+        </div>
+    </div>
+
+    <script>
+        var socket = new WebSocket("ws://localhost:9080");
+
+        socket.onopen = function(event) {
+        console.log("Connection to the server opened.");
+        requestGameList();
+        };
+
+        socket.onmessage = function(event) {
+        console.log("Message received: " + event.data);
+        var messageData = JSON.parse(event.data);
+
+        switch(messageData.type) {
+            case "serverData":
+                updateGameList(messageData.serverData);
+                break;
+            case "GameCreated":
+                window.location.href = "waiting_room.html";
+                break;
+            // Handle other types of messages as needed
+        }
+        };
+
+        socket.onclose = function(event) {
+        console.log("WebSocket connection closed.");
+        };
+
+        socket.onerror = function(error) {
+        console.error("WebSocket error: " + error.message);
+        };
+
+        // Send a request to the server to get the current game list
+        function requestGameList() {
+        var data = { type: "RequestGameList" };
+        socket.send(JSON.stringify(data));
+        }
+
+        // Function to update the game list in the UI
+        function updateGameList(serverData) 
+        {
+        var gameListSection = document.getElementById('gameListSection');
+        gameListSection.innerHTML = ''; 
+
+        serverData.forEach(function(game) {
+            var gameDiv = document.createElement('div');
+            gameDiv.innerHTML = '<span>' + game.gameName + '</span>' +
+                                '<span>' + game.filledSlots + '/' + game.maxSlots + '</span>' +
+                                '<button onclick="joinGame(' + game.gameId + ')">Join</button>';
+            gameListSection.appendChild(gameDiv);
+        });
+        }
+
+        // Event listeners for user actions
+        document.getElementById('confirmButton').addEventListener('click', function() {
+        var nick = document.getElementById('nickInput').value;
+        var gameIndex = document.getElementById('gameSelect').value;
+        var mode = document.getElementById('modeSelect').value;
+
+        joinGame(nick, gameIndex, mode);
+        });
+
+        // Replace the mock joinGame function with one that sends a WebSocket message
+        function joinGame(nick, gameIndex, mode) {
+        var data = {
+            type: "JoinGame",
+            nick: nick,
+            gameIndex: gameIndex,
+            modeIndex: mode
+        };
+        socket.send(JSON.stringify(data));
+        }
+
+        // Replace the mock leaveGame function with one that sends a WebSocket message
+        function leaveGame(nick) {
+        var data = {
+            type: "LeaveGame",
+            nick: nick
+        };
+        socket.send(JSON.stringify(data));
+        }
+
+        // Add an event listener for the leave button
+        document.getElementById('leaveButton').addEventListener('click', function() {
+        var nick = document.getElementById('nickInput').value;
+        leaveGame(nick);
+        });
+
+        // Add an event listener for the refresh button to request the game list
+        document.getElementById('refreshButton').addEventListener('click', function() {
+        requestGameList();
+        });
+    </script>
+</body>
+</html>
+

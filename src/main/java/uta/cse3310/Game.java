@@ -13,6 +13,17 @@ public class Game //implements Chat, Timer, GridField, LeaderBoard, Wordlist
     private MyTimer timer;
     private int gameCount;
     private GridField gridField;
+
+
+    public ArrayList<Player> getPlayersList() //I need to add this since Lobby class needs to access the game's player list _Liz
+    {
+        return new ArrayList<>(playersList);  
+    }
+
+    public void removePlayer(String nick) //I need to add this since Lobby need to manage players within a game _Liz
+    {
+        playersList.removeIf(player -> player.getNick().equals(nick));
+    }
      
      // Method to determine gamemode
     public int getGameMode() 

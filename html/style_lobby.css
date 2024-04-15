@@ -1,0 +1,144 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    color: #333;
+    line-height: 1.6;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+#lobbyContainer {
+    width: 70%;
+    margin: auto;
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+#userInputSection {
+    flex-basis: 40%;
+    padding: 20px;
+    background: #fff;
+    border: 1px solid #ddd;
+    display: flex;
+    flex-direction: column;
+}
+
+#gameListSection {
+    flex-basis: 60%;
+    padding: 20px;
+    background: #fff;
+    border: 1px solid #ddd;
+    display: flex;
+    flex-direction: column;
+}
+
+h1 {
+    font-size: 2em;
+    font-weight: bold;
+    margin: 20px 0;
+    text-align: center;
+}
+
+input[type="text"],
+select {
+    width: calc(100% - 22px);
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+}
+
+button {
+    padding: 10px;
+    margin: 5px 0;
+    border: 1px solid #ccc;
+    background-color: #f9f9f9;
+    color: #333;
+    cursor: pointer;
+    width: 100px;
+    text-align: center;
+}
+
+#helpButton {
+    float: right;
+    background-color: #007bff;
+}
+
+#confirmButton {
+    background-color: #28a745;
+}
+
+#startButton {
+    background-color: #ffc107;
+}
+
+#leaveButton {
+    background-color: #dc3545;
+}
+
+#refreshButton {
+    background-color: #17a2b8;
+}
+
+button {
+    flex-shrink: 0;
+    flex-grow: 0;
+}
+
+button:hover {
+    opacity: 0.8;
+}
+
+.game-entry {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    padding: 10px;
+    background: #f8f8f8;
+    border: 1px solid #ddd;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.player-names {
+    margin-left: 10px;
+}
+
+.joinButton {
+    padding: 5px 10px;
+    font-size: 0.9em;
+    background-color: #5cb85c;
+    color: white;
+    border: none;
+}
+
+#userInputSection > div {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+label {
+    width: 20%;
+    min-width: 70px;
+    text-align: right;
+    margin-right: 10px;
+}
+
+select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}

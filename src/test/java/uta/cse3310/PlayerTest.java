@@ -1,41 +1,31 @@
 package uta.cse3310;
 
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import junit.framework.TestCase;
 
-public class PlayerTest {
+public class PlayerTest extends TestCase {
     private Player player;
 
-    @Before
-    public void setUp() 
-    {
+    // Set up method named in the convention of JUnit 3
+    protected void setUp() {
         player = new Player("TestPlayer");
     }
 
-    @Test
-    public void testInitialScore() 
-    {
+    // Each test method must start with 'test'
+    public void testInitialScore() {
         assertEquals("Initial score should be zero", 0, player.getScore());
     }
 
-    @Test
-    public void testSetAndGetNick() 
-    {
+    public void testSetAndGetNick() {
         player.setNick("NewNick");
         assertEquals("Nickname should be set to 'NewNick'", "NewNick", player.getNick());
     }
 
-    @Test
-    public void testSetAndGetScore() 
-    {
+    public void testSetAndGetScore() {
         player.setScore(100);
         assertEquals("Score should be set to 100", 100, player.getScore());
     }
 
-    @Test
-    public void testIncreaseScore() 
-    {
+    public void testIncreaseScore() {
         player.increaseScore(50);
         assertEquals("Score should be increased by 50", 50, player.getScore());
 
