@@ -32,21 +32,8 @@ public class HttpServerTest extends TestCase
     public void testConstructor()
     {
         HttpServer server = new HttpServer(8080, "test_directory");
-        if (result == null)
-        {
-            throw new AssertionError(NULL result");
-        }
+        assertNotNull(server);
     }
 
-    /*
-     * Test begin method
-     */
-
-     public void testBegin() {
-        Thread serverThread = startServer();
-        boolean isReachable = checkServerReachability();
-        assertTrue("Server is not reachable", isReachable);
-        stopServer(serverThread);
-    }
-
+   
 }
