@@ -10,7 +10,7 @@ import java.nio.file.Paths;
 
 public class WordList //extends Direction 
 {
-    public ArrayList<String> Word;
+    public ArrayList<String> list;
     //private [] words;
 
     //method for accesing the word list from file
@@ -27,16 +27,10 @@ public class WordList //extends Direction
         return wordList;
     }
 
-    //method to update word list
-    public void updateWordList(GridField grid) 
-    {
-        
-    }
-
     //method for word shuffling
     public void shuffleWords() 
     {
-      //Collections.shuffle(list);
+      Collections.shuffle(list);
     }
 }
 
