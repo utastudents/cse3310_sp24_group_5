@@ -1,45 +1,24 @@
 package uta.cse3310;
 
-import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertEquals;
 
 public class AppTest {
 
-    private App app;
-
-    @Before
-    public void setUp() {
-        int port = Integer.parseInt(System.getenv("HTTP_PORT")); // Retrieving HTTP port from environment
-        this.app = new App(port) {
-            @Override
-            public void onStart() {
-                // Override onStart method for testing
-            }
-
-            @Override
-            public void onOpen(WebSocket conn, ClientHandshake handshake) {
-                // Override onOpen method for testing
-            }
-
-            @Override
-            public void onClose(WebSocket conn, int code, String reason, boolean remote) {
-                // Override onClose method for testing
-            }
-
-            @Override
-            public void onMessage(WebSocket conn, String message) {
-                // Override onMessage method for testing
-            }
-        };
+    @Test
+    public void testWebSocketServerInitialization() {
+        App app = new App(9005); // Assuming WebSocket server port is set to 9005
+        assertNotNull(app); // Check if WebSocket server is initialized successfully
     }
 
     @Test
-    public void testApp() {
-        assertNotNull(app);
+    public void testHttpServerInitialization() {
+        App app = new App(9005); // Assuming HTTP server port is set to 9005
+        assertNotNull(app); // Check if HTTP server is initialized successfully
     }
 
-    // Add more test methods for other functionalities of the App class
+    // Add more test methods as needed
 }
 

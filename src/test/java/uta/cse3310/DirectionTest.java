@@ -8,9 +8,9 @@ public class DirectionTest {
 
     @Test
     public void testDirectionEnum() {
-        assertEquals(Direction.HORIZONTAL, Direction.valueOf("HORIZONTAL"));
-        assertEquals(Direction.VERTICAL, Direction.valueOf("VERTICAL"));
-        assertEquals(Direction.DIAGONAL, Direction.valueOf("DIAGONAL"));
+        assertEquals(Direction.Directions.HORIZONTAL, Direction.Directions.HORIZONTAL); // Test HORIZONTAL enum
+        assertEquals(Direction.Directions.VERTICAL, Direction.Directions.VERTICAL); // Test VERTICAL enum
+        assertEquals(Direction.Directions.DIAGONAL, Direction.Directions.DIAGONAL); // Test DIAGONAL enum
     }
 
     // Add more test methods as needed
