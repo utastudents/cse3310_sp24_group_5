@@ -38,47 +38,24 @@
 
  package uta.cse3310;
 
- import java.io.BufferedReader;
- import java.io.IOException;
- import java.io.InputStreamReader;
- import java.net.InetSocketAddress;
- import java.net.UnknownHostException;
- import java.nio.ByteBuffer;
- import java.util.Collections;
- 
- import org.java_websocket.WebSocket;
- import org.java_websocket.drafts.Draft;
- import org.java_websocket.drafts.Draft_6455;
- import org.java_websocket.handshake.ClientHandshake;
- import org.java_websocket.server.WebSocketServer;
- import java.util.Timer;
- import java.util.TimerTask;
- import java.util.Vector;
- import java.time.Instant;
- import java.time.Duration;
- 
- import com.google.gson.Gson;
- import com.google.gson.GsonBuilder;
- 
- public abstract class App extends WebSocketServer {
+import org.java_websocket.WebSocket;
+import org.java_websocket.handshake.ClientHandshake;
+import org.java_websocket.server.WebSocketServer;
 
+import java.net.InetSocketAddress;
+import java.util.Vector;
+
+public abstract class App extends WebSocketServer {
+
+    // Fields
     private Vector<Game> activeGames;
-    private int httpPort;
-    private int webSocketPort;
-    private int selectedTestGrid;
-    private String version;
 
     public App(int port) {
         super(new InetSocketAddress(port));
         this.activeGames = new Vector<>();
-        this.httpPort = port;
-        this.webSocketPort = port + 100;
-        this.selectedTestGrid = Integer.parseInt(System.getenv("TEST_GRID")); // Retrieving test grid value from environment
-        this.version = System.getenv("VERSION"); // Retrieving version from environment
     }
 
     // WebSocket event handlers
-
     @Override
     public void onOpen(WebSocket conn, ClientHandshake handshake) {
         // Logic for handling websocket on open event
@@ -110,8 +87,8 @@
     }
 
     // Method to add a player
-    public Player addPlayer(String nick) {
-        return new Player(nick);
+    public Player addPlayer(String playerName) {
+        return new Player(playerName);
     }
 
     // Method to navigate to the name selection screen
@@ -153,5 +130,44 @@
     public void selectGame() {
         // Logic for selecting a game
     }
- }
- 
+
+    // Player class
+    public class Player {
+        private String playerName;
+
+        // Constructor
+        public Player(String playerName) {
+            this.playerName = playerName;
+        }
+
+        // Getter
+        public String getPlayerName() {
+            return playerName;
+        }
+    }
+
+    // Game class
+    public class Game {
+        // Define game properties and methods here
+    }
+
+    // ConcreteApp class
+    public class ConcreteApp extends App {
+
+        public ConcreteApp(int port) {
+            super(port);
+        }
+
+        // Implement onStart method
+        @Override
+        public void onStart() {
+            // Logic for handling server start
+        }
+
+        // Implement onError method
+        @Override
+        public void onError(WebSocket conn, Exception ex) {
+            // Logic for handling errors
+        }
+    }
+}
