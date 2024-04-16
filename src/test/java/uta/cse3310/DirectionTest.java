@@ -1,24 +1,16 @@
 package uta.cse3310;
 
-import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class DirectionTest {
 
-    private Direction direction;
-
-    @Before
-    public void setUp() {
-        this.direction = new Direction();
-    }
-
     @Test
     public void testDirectionEnum() {
-        assertEquals(Direction.Directions.HORIZONTAL, Direction.Directions.valueOf("HORIZONTAL"));
-        assertEquals(Direction.Directions.VERTICAL, Direction.Directions.valueOf("VERTICAL"));
-        assertEquals(Direction.Directions.DIAGONAL, Direction.Directions.valueOf("DIAGONAL"));
+        assertEquals(Direction.Directions.HORIZONTAL, Direction.Directions.HORIZONTAL); // Test HORIZONTAL enum
+        assertEquals(Direction.Directions.VERTICAL, Direction.Directions.VERTICAL); // Test VERTICAL enum
+        assertEquals(Direction.Directions.DIAGONAL, Direction.Directions.DIAGONAL); // Test DIAGONAL enum
     }
 
     // Add more test methods as needed

@@ -1,6 +1,5 @@
 package uta.cse3310;
 
-import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -8,13 +7,6 @@ import java.util.ArrayList;
 import static org.junit.Assert.*;
 
 public class GridFieldTest {
-
-    @Before
-    public void setUp() {
-        // Update port assignments to 9005 for HTTP and 9105 for websockets
-        System.setProperty("HTTP_PORT", "9005");
-        System.setProperty("WEBSOCKET_PORT", "9105");
-    }
 
     @Test
     public void testGenerateGrid() {
