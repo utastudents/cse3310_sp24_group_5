@@ -10,6 +10,7 @@
     <div id="lobbyContainer">
         <div id="userInputSection">
             <button id="helpButton">HELP</button>
+            <button id="standbyButton">PUT ON STANDBY</button>
             <div>
                 <label for="nickInput">Insert Nick:</label>
                 <input type="text" id="nickInput" placeholder="Type here">
@@ -51,6 +52,10 @@
 
         socket.onclose = function(evt) {
             console.log("WebSocket connection closed.");
+            var nick = document.getElementById('nickInput').value.trim();
+            if (nick) {
+                leaveGame(nick);
+            }
             document.getElementById("topMessage").innerText = "Server Offline";
         };
 
@@ -117,16 +122,44 @@
             socket.send(JSON.stringify(data));
         }
 
-        // event listener for the leave button
+        // the leave button
         document.getElementById('leaveButton').addEventListener('click', function() {
             var nick = document.getElementById('nickInput').value;
             leaveGame(nick);
         });
 
-        // add an event listener for the refresh button to request the game list
+        // refresh button to request the game list
         document.getElementById('refreshButton').addEventListener('click', function() {
             requestGameList();
         });
+
+        //the help content
+        document.getElementById('helpButton').addEventListener('click', function() {
+            displayHelp();
+        });
+
+        function displayHelp() {
+            alert("This is the rules of this game.");
+        }
+
+        //the standby button
+        document.getElementById('standbyButton').addEventListener('click', function() {
+            var nick = document.getElementById('nickInput').value.trim();
+            var mode = document.getElementById('modeSelect').value;
+            
+            putOnStandby(nick, mode);
+        });
+
+        function putOnStandby(nick, mode) {
+            var data = {
+                type: "JoinGame",
+                nick: nick,
+                gameIndex: "standby",
+                modeIndex: mode
+            };
+            socket.send(JSON.stringify(data));
+            alert("You are now on standby.");
+        }
     </script>
 </body>
 </html>
