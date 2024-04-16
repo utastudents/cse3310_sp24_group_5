@@ -12,13 +12,18 @@ public class Game //implements Chat, Timer, GridField, LeaderBoard, Wordlist
     private boolean gameStatus;
     private String wordsDone;
     private MyTimer timer;
-    private int gameCount;
     private GridField gridField;
-
+    public ArrayList<String> wordList=new ArrayList<String>();
+    public Game()
+    {
+        this.gameMode=gameMode;
+        this.gameID = gameID;
+        gameStatus=false;
+    }
 
     public ArrayList<Player> getPlayersList() //I need to add this since Lobby class needs to access the game's player list _Liz
     {
-        return new ArrayList<>(playersList);  
+        return playersList;  
     }
 
     public void removePlayer(String nick) //I need to add this since Lobby need to manage players within a game _Liz
@@ -57,14 +62,23 @@ public class Game //implements Chat, Timer, GridField, LeaderBoard, Wordlist
          this.gridField=gridField;
     }
 
+    public boolean getGameStatus() 
+    {
+        return gameStatus;
+    }
+    
+    public void setGameStatus(boolean gameStatus) 
+    {
+         this.gameStatus=gameStatus;
+    }
     
     // Method to start game
-    public boolean startGame() 
+    public void startGame() 
     {
         displayRules();
+        //gridField=new GridField(wordList);
         gridField.generateGrid(50);
         gameStatus=true;
-        return gameStatus;
     }
 
      // Method for adding players to the game screen
@@ -131,12 +145,6 @@ public class Game //implements Chat, Timer, GridField, LeaderBoard, Wordlist
        gameStatus=false;
     }
 
-     // Method for chat implementation in game
-    public void chat(Player sender,String message) 
-    {
-       
-    }
-    
 
     /* Method for handling chosen word
     the word if valid should be highlighted in the player's color
