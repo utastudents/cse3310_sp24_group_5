@@ -37,26 +37,28 @@ public class Lobby {
 
     public void joinGame(String nick, int gameIndex, int modeIndex) {
         List<String> availableGames = new ArrayList<>(games.keySet());
-        List<Integer> availableModes = Arrays.asList(2, 3, 4); // direct representation of modes
+        List<Integer> availableModes = Arrays.asList(2, 3, 4); 
 
-        if (gameIndex >= 0 && gameIndex < availableGames.size() && modeIndex >= 0 && modeIndex < availableModes.size()) 
-        {   
-            // checks if the indices are valid
+        if (gameIndex >= 0 && gameIndex < availableGames.size() && modeIndex >= 0 && modeIndex < availableModes.size()) {
             String gameName = availableGames.get(gameIndex);
-
             Game game = games.get(gameName);
 
-            if (game != null) 
-            { // checks if the selected game exists in the list of game
-                int selectedMode = availableModes.get(modeIndex); // directly use the mode from the list
+            if (game != null) {
+                int selectedMode = availableModes.get(modeIndex);
 
-                if (game.getPlayersList().isEmpty()) //if no player in that game before, pick game, then pick mode of the game
+                //check if the game is empty 
+                if (game.getPlayersList().isEmpty()) 
                 {
+                    //set the game mode when the first player joins an empty game
                     game.setGameMode(selectedMode);
+                    game.addPlayers(new Player(nick));
+                    playerToGameMap.put(nick, gameName);
                 } 
-                else if (game.getGameMode() == selectedMode) //or join the game that need  slot filled
+                //or if the existing mode matches the selected mode
+                else if (game.getGameMode() == selectedMode) 
                 {
-                    if (game.getPlayersList().size() < game.getGameMode()) 
+                    // Join the game only if the player count is less than the game mode's capacity
+                    if (game.getPlayersList().size() < selectedMode) 
                     {
                         game.addPlayers(new Player(nick));
                         playerToGameMap.put(nick, gameName);
@@ -65,6 +67,9 @@ public class Lobby {
             }
         }
     }
+
+
+
 
 
     public void leaveGame(String nick) {
