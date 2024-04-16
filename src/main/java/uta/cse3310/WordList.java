@@ -32,5 +32,17 @@ public class WordList //extends Direction
     {
       Collections.shuffle(list);
     }
+
+    public List<String> updatedWordList(List<String> wordBank) {
+        if (wordBank.size() < 500) {
+            System.err.println("Word bank does not contain at least 500 words.");
+            return Collections.emptyList();
+        }
+        
+        List<String> updatedList = new ArrayList<>(wordBank.subList(0, 500)); 
+        
+        return updatedList;
+    }
+
 }
 
