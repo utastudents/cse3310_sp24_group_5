@@ -38,29 +38,14 @@
 
  package uta.cse3310;
 
- import java.io.BufferedReader;
- import java.io.IOException;
- import java.io.InputStreamReader;
- import java.net.InetSocketAddress;
- import java.net.UnknownHostException;
- import java.nio.ByteBuffer;
- import java.util.Collections;
- 
- import org.java_websocket.WebSocket;
- import org.java_websocket.drafts.Draft;
- import org.java_websocket.drafts.Draft_6455;
- import org.java_websocket.handshake.ClientHandshake;
- import org.java_websocket.server.WebSocketServer;
- import java.util.Timer;
- import java.util.TimerTask;
- import java.util.Vector;
- import java.time.Instant;
- import java.time.Duration;
- 
- import com.google.gson.Gson;
- import com.google.gson.GsonBuilder;
- 
- public abstract class App extends WebSocketServer {
+import org.java_websocket.WebSocket;
+import org.java_websocket.handshake.ClientHandshake;
+import org.java_websocket.server.WebSocketServer;
+
+import java.net.InetSocketAddress;
+import java.util.Vector;
+
+public abstract class App extends WebSocketServer {
 
     private Vector<Game> activeGames;
     private int httpPort;
@@ -153,5 +138,37 @@
     public void selectGame() {
         // Logic for selecting a game
     }
- }
- 
+
+    // Player class
+    public class Player {
+        // Default constructor
+        public Player() {
+            // Initialize any required fields or perform any necessary setup here
+        }
+    }
+
+    // Game class
+    public class Game {
+        // Define game properties and methods here
+    }
+
+    // ConcreteApp class
+    public class ConcreteApp extends App {
+
+        public ConcreteApp(int port) {
+            super(port);
+        }
+
+        // Implement onStart method
+        @Override
+        public void onStart() {
+            // Logic for handling server start
+        }
+
+        // Implement onError method
+        @Override
+        public void onError(WebSocket conn, Exception ex) {
+            // Logic for handling errors
+        }
+    }
+}
