@@ -1,5 +1,7 @@
 package uta.cse3310;
 
+import java.util.List;
+import java.util.Arrays;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -7,24 +9,21 @@ import junit.framework.TestSuite;
 /**
  * Unit test for WordList class.
  */
-public class WordListTest extends TestCase
-{
+public class WordListTest extends TestCase {
 
     /**
      * Create the test case
      *
      * @param testName name of the test case
      */
-    public WordListTest(String testName)
-    {
+    public WordListTest(String testName) {
         super(testName);
     }
 
     /**
      * @return the suite of tests being tested
      */
-    public static Test suite()
-    {
+    public static Test suite() {
         return new TestSuite(WordListTest.class);
     }
 
@@ -41,6 +40,4 @@ public class WordListTest extends TestCase
         
         assertEquals(expectedWords, actualWords);
     }
-}
-
 }
