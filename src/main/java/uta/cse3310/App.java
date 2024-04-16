@@ -47,23 +47,15 @@ import java.util.Vector;
 
 public abstract class App extends WebSocketServer {
 
+    // Fields
     private Vector<Game> activeGames;
-    private int httpPort;
-    private int webSocketPort;
-    private int selectedTestGrid;
-    private String version;
 
     public App(int port) {
         super(new InetSocketAddress(port));
         this.activeGames = new Vector<>();
-        this.httpPort = port;
-        this.webSocketPort = port + 100;
-        this.selectedTestGrid = Integer.parseInt(System.getenv("TEST_GRID")); // Retrieving test grid value from environment
-        this.version = System.getenv("VERSION"); // Retrieving version from environment
     }
 
     // WebSocket event handlers
-
     @Override
     public void onOpen(WebSocket conn, ClientHandshake handshake) {
         // Logic for handling websocket on open event
@@ -95,8 +87,8 @@ public abstract class App extends WebSocketServer {
     }
 
     // Method to add a player
-    public Player addPlayer(String nick) {
-        return new Player(nick);
+    public Player addPlayer(String playerName) {
+        return new Player(playerName);
     }
 
     // Method to navigate to the name selection screen
@@ -141,9 +133,16 @@ public abstract class App extends WebSocketServer {
 
     // Player class
     public class Player {
-        // Default constructor
-        public Player() {
-            // Initialize any required fields or perform any necessary setup here
+        private String playerName;
+
+        // Constructor
+        public Player(String playerName) {
+            this.playerName = playerName;
+        }
+
+        // Getter
+        public String getPlayerName() {
+            return playerName;
         }
     }
 
