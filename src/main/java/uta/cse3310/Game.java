@@ -8,6 +8,7 @@ public class Game //implements Chat, Timer, GridField, LeaderBoard, Wordlist
     private int gameMode;
     private String gameID;
     private ArrayList<Player>playersList = new ArrayList<Player>();
+    public Player winner=null;
     private boolean gameStatus;
     private String wordsDone;
     private MyTimer timer;
@@ -62,7 +63,8 @@ public class Game //implements Chat, Timer, GridField, LeaderBoard, Wordlist
     {
         displayRules();
         gridField.generateGrid(50);
-        return true;
+        gameStatus=true;
+        return gameStatus;
     }
 
      // Method for adding players to the game screen
@@ -102,7 +104,6 @@ public class Game //implements Chat, Timer, GridField, LeaderBoard, Wordlist
     {
         //declare winner
         int highestScore=0;
-        Player winner=null;
         Iterator i=playersList.iterator();
         while(i.hasNext())
         {
@@ -127,6 +128,7 @@ public class Game //implements Chat, Timer, GridField, LeaderBoard, Wordlist
         }
        //remove players
        playersList.clear();
+       gameStatus=false;
     }
 
      // Method for chat implementation in game
@@ -134,14 +136,7 @@ public class Game //implements Chat, Timer, GridField, LeaderBoard, Wordlist
     {
        
     }
-
-    // Method to check for a valid word
-    //may be obsolete
-    public boolean validWord(String word) 
-    {
-        
-        return gridField.checkWord(word);
-    }
+    
 
     /* Method for handling chosen word
     the word if valid should be highlighted in the player's color
@@ -172,7 +167,8 @@ public class Game //implements Chat, Timer, GridField, LeaderBoard, Wordlist
     }
 
     // Method to display rules of game
-    public void displayRules() {
+    public void displayRules() 
+    {
 
     }
 }
