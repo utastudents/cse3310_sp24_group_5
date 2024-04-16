@@ -30,14 +30,24 @@ public class gameTest extends TestCase
     public void testGame()
     {
         Game game = new Game();
-        game.startGame();
-        ArrayList<String> wordList = new ArrayList<String>("hello", "goodbye","testing","computer","code");
-        GridField gridField=GridField(wordList);
+        //game.startGame();
+        ArrayList<String> wordList = new ArrayList<String>(){
+            {
+                add("hello");
+                add("goodbye");
+                add("testing");
+                add("computer");
+                add("code");
+            }
+            
+        };
+        GridField gridField=new GridField(wordList);
         game.setGridField(gridField);
         Player player1=new Player("tom");
-        Player player1=new Player("steve");
+        Player player2=new Player("steve");
         game.addPlayers(player1);
         game.addPlayers(player2);
+        game.startGame();
         try
         {   int score=player1.getScore();
             Iterator i=wordList.iterator();
@@ -45,7 +55,8 @@ public class gameTest extends TestCase
             {
                 String param=String.valueOf(i.next());
                 game.wordChosen(param,player1);
-                assertTrue(player1.getScore()==param.length()+score);
+                assertTrue(player1.getScore()==100*param.length()+score);
+                score+=param.length();
             }
             assertTrue(gridField.getRemainingWords()==0);
         }
@@ -66,9 +77,19 @@ public class gameTest extends TestCase
         game.addPlayers(player1);
         game.addPlayers(player2);
         game.addPlayers(player3);
+        
+        ArrayList<String> wordList = new ArrayList<String>(){
+            {
+                add("hello");
+                add("goodbye");
+                add("testing");
+                add("computer");
+                add("code");
+            }
+        };
+        GridField gridField=new GridField(wordList);
+        game.setGridField(gridField);
         game.startGame();
-        ArrayList<String> wordList = new ArrayList<String>("hello", "goodbye","testing","computer","code");
-        GridField gridField=GridField(wordList);
         game.setGridField(gridField);
         game.wordChosen("testing",player1);
         game.wordChosen("computer",player1);
@@ -77,8 +98,9 @@ public class gameTest extends TestCase
         game.wordChosen("hello",player3);
         game.exitGame(game.getPlayersList());
         assertTrue(game.winner==player1);
-        assertTrue((game.getPlayersList()).length==0);
-        assertTrue(game.gameStatus==false);
+        ArrayList<Player> playersList= game.getPlayersList();
+        assertTrue(playersList.size()==0);
+        assertTrue(game.getGameStatus()==false);
 
 
     }
