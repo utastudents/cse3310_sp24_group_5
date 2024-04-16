@@ -106,7 +106,7 @@ public class Game //implements Chat, Timer, GridField, LeaderBoard, Wordlist
                 int row = index/50;
                 int column= index%50;
                 
-                word=word+grid[index][column];
+                word=word+grid[row][column];
                 System.out.println(word);
             }
             wordChosen(word,player);
