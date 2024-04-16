@@ -55,9 +55,30 @@ public class gameTest extends TestCase
         }
         
     }
-    public void testUpdate()
+    public void testExit()
     {
-        
+        Game game= new Game();
+        //create players
+        Player player1= new Player("tom");
+        Player player2= new Player("steve");
+        Player player3= new Player("sam");
+        //add players to the game
+        game.addPlayers(player1);
+        game.addPlayers(player2);
+        game.addPlayers(player3);
+        game.startGame();
+        ArrayList<String> wordList = new ArrayList<String>("hello", "goodbye","testing","computer","code");
+        GridField gridField=GridField(wordList);
+        game.setGridField(gridField);
+        game.wordChosen("testing",player1);
+        game.wordChosen("computer",player1);
+        game.wordChosen("computer",player1);
+        game.wordChosen("code",player2);
+        game.wordChosen("hello",player3);
+        game.exitGame(game.getPlayersList());
+        assertTrue(game.winner==player1);
+        assertTrue((game.getPlayersList()).length==0);
+        assertTrue(game.gameStatus==false);
 
 
     }
