@@ -95,8 +95,8 @@ public abstract class App extends WebSocketServer {
     }
 
     // Method to add a player
-    public Player addPlayer() {
-        return new Player();
+    public Player addPlayer(String nick) {
+        return new Player(nick);
     }
 
     // Method to navigate to the name selection screen
