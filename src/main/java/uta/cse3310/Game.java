@@ -51,11 +51,17 @@ public class Game //implements Chat, Timer, GridField, LeaderBoard, Wordlist
         return gridField;
     }
     
+    public void setGridField(GridField gridField) 
+    {
+         this.gridField=gridField;
+    }
+
+    
     // Method to start game
     public boolean startGame() 
     {
         displayRules();
-        gridField.generateGrid();
+        gridField.generateGrid(50);
         return true;
     }
 
