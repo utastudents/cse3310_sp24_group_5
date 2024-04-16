@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -36,19 +35,27 @@
 
         </div>
     </div>
+    <!--Grid table-->
+    
+    <div>
+        <input type="button" value="Generate Grid" onclick="generateGrid()"/>
+        <table id="wordGrid">
+            
+        </table>
+    </div>
+</body>
+<script>
+    var socket = new WebSocket("ws://localhost:9105");
 
-    <script>
-        var socket = new WebSocket("ws://localhost:9105");
+    socket.onopen = function(evt) {
+        console.log("Open");
+        requestGameList();
+    };
 
-        socket.onopen = function(evt) {
-            console.log("Open");
-            requestGameList();
-        };
-
-        socket.onmessage = function(evt) {
-            console.log("Message received: " + evt.data);
-            var messageData = JSON.parse(evt.data);
-        };
+    socket.onmessage = function(evt) {
+        console.log("Message received: " + evt.data);
+        var messageData = JSON.parse(evt.data);
+    };
 
         socket.onclose = function(evt) {
             console.log("WebSocket connection closed.");
@@ -59,108 +66,106 @@
             document.getElementById("topMessage").innerText = "Server Offline";
         };
 
-        socket.onerror = function(evt) {
-            console.error("WebSocket error: " + evt.message);
-        };
+    socket.onerror = function(evt) {
+        console.error("WebSocket error: " + evt.message);
+    };
 
-        function requestGameList() {
-            var data = { type: "RequestGameList" };
-            socket.send(JSON.stringify(data));
-        }
+    function requestGameList() {
+        var data = { type: "RequestGameList" };
+        socket.send(JSON.stringify(data));
+    }
 
-        function updateGameList(serverData) 
+    function updateGameList(serverData) 
+    {
+        var gameListSection = document.getElementById('gameListSection');
+        gameListSection.innerHTML = ''; 
+
+        serverData.forEach(function(game) {
+            var gameDiv = document.createElement('div');
+            gameDiv.innerHTML = '<span>' + game.gameName + '</span>' +
+                            '<span>' + game.filledSlots + '/' + game.maxSlots + '</span>' +
+                            '<button onclick="joinGame(' + game.gameId + ')">Join</button>';
+            gameListSection.appendChild(gameDiv);
+    });
+    }
+
+    // event listeners for user actions
+    document.getElementById('confirmButton').addEventListener('click', function() {
+        var nick = document.getElementById('nickInput').value.trim();
+        var gameIndex = document.getElementById('gameSelect').value;
+        var mode = document.getElementById('modeSelect').value;
+
+        if (!nick) 
         {
-            var gameListSection = document.getElementById('gameListSection');
-            gameListSection.innerHTML = ''; 
-
-            serverData.forEach(function(game) {
-                var gameDiv = document.createElement('div');
-                gameDiv.innerHTML = '<span>' + game.gameName + '</span>' +
-                                '<span>' + game.filledSlots + '/' + game.maxSlots + '</span>' +
-                                '<button onclick="joinGame(' + game.gameId + ')">Join</button>';
-                gameListSection.appendChild(gameDiv);
-        });
+            alert('Please enter a nickname.');
+            return;
         }
+        if (!gameIndex || !mode) 
+        {
+            alert('Please select a game and mode.');
+            return;
+        }
+        joinGame(nick, gameIndex, mode);
+    });
 
-        // event listeners for user actions
-        document.getElementById('confirmButton').addEventListener('click', function() {
-            var nick = document.getElementById('nickInput').value.trim();
-            var gameIndex = document.getElementById('gameSelect').value;
-            var mode = document.getElementById('modeSelect').value;
 
-            if (!nick) 
+    // replace joinGame function with one that sends a WebSocket message
+    function joinGame(nick, gameIndex, mode) {
+        var data = {
+            type: "JoinGame",
+            nick: nick,
+            gameIndex: gameIndex,
+            modeIndex: mode
+        };
+        socket.send(JSON.stringify(data));
+    }
+
+    // replace leaveGame function with one that sends a WebSocket message
+    function leaveGame(nick) {
+        var data = {
+            type: "LeaveGame",
+            nick: nick
+        };
+        socket.send(JSON.stringify(data));
+    }
+
+    // event listener for the leave button
+    document.getElementById('leaveButton').addEventListener('click', function() {
+        var nick = document.getElementById('nickInput').value;
+        leaveGame(nick);
+    });
+
+    // add an event listener for the refresh button to request the game list
+    document.getElementById('refreshButton').addEventListener('click', function() {
+        requestGameList();
+    });
+
+    //generate 50x50 grid
+    //too big may have to do smaller grid or smaller cells
+    function generateGrid()
+    {
+        const tbl = document.createElement("table");
+        const tblBody = document.createElement("tbody");
+        //create cells
+        for(let i=0;i<50;i++)
+        {
+            //create rows
+            const row = document.createElement("tr");
+            for(let j=0;j<50;j++)
             {
-                alert('Please enter a nickname.');
-                return;
+                //create cells and add it to the row
+                const cell = document.createElement("td");
+                const cellText=document.createTextNode(`${i}`);
+                cell.appendChild(cellText);
+                row.appendChild(cell);
             }
-            if (!gameIndex || !mode) 
-            {
-                alert('Please select a game and mode.');
-                return;
-            }
-            joinGame(nick, gameIndex, mode);
-        });
 
-
-        // replace joinGame function with one that sends a WebSocket message
-        function joinGame(nick, gameIndex, mode) {
-            var data = {
-                type: "JoinGame",
-                nick: nick,
-                gameIndex: gameIndex,
-                modeIndex: mode
-            };
-            socket.send(JSON.stringify(data));
+            //add row to the table body
+            tblBody.appendChild(row);
         }
-
-        // replace leaveGame function with one that sends a WebSocket message
-        function leaveGame(nick) {
-            var data = {
-                type: "LeaveGame",
-                nick: nick
-            };
-            socket.send(JSON.stringify(data));
-        }
-
-        // the leave button
-        document.getElementById('leaveButton').addEventListener('click', function() {
-            var nick = document.getElementById('nickInput').value;
-            leaveGame(nick);
-        });
-
-        // refresh button to request the game list
-        document.getElementById('refreshButton').addEventListener('click', function() {
-            requestGameList();
-        });
-
-        //the help content
-        document.getElementById('helpButton').addEventListener('click', function() {
-            displayHelp();
-        });
-
-        function displayHelp() {
-            alert("This is the rules of this game.");
-        }
-
-        //the standby button
-        document.getElementById('standbyButton').addEventListener('click', function() {
-            var nick = document.getElementById('nickInput').value.trim();
-            var mode = document.getElementById('modeSelect').value;
-            
-            putOnStandby(nick, mode);
-        });
-
-        function putOnStandby(nick, mode) {
-            var data = {
-                type: "JoinGame",
-                nick: nick,
-                gameIndex: "standby",
-                modeIndex: mode
-            };
-            socket.send(JSON.stringify(data));
-            alert("You are now on standby.");
-        }
-    </script>
-</body>
-</html>
+        tbl.appendChild(tblBody);
+        document.body.appendChild(tbl);
+        tbl.setAttribute("border","1.5");
+    }
+</script>
 
