@@ -52,6 +52,10 @@
 
         socket.onclose = function(evt) {
             console.log("WebSocket connection closed.");
+            var nick = document.getElementById('nickInput').value.trim();
+            if (nick) {
+                leaveGame(nick);
+            }
             document.getElementById("topMessage").innerText = "Server Offline";
         };
 
