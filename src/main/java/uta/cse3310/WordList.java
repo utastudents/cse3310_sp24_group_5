@@ -1,8 +1,12 @@
 package uta.cse3310;
 
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class WordList //extends Direction 
 {
@@ -32,7 +36,7 @@ public class WordList //extends Direction
     //method for word shuffling
     public void shuffleWords() 
     {
-      Collections.shuffle(list);
+      //Collections.shuffle(list);
     }
 }
 
