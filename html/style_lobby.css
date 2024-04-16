@@ -6,8 +6,8 @@
 
 body {
     font-family: Arial, sans-serif;
-    background-color: #f0f0f0;
-    color: #333;
+    background-color: white; 
+    color: black; 
     line-height: 1.6;
     display: flex;
     justify-content: center;
@@ -23,22 +23,17 @@ body {
     gap: 20px;
 }
 
-#userInputSection {
-    flex-basis: 40%;
+#userInputSection, #gameListSection {
+    flex-basis: 40%; 
     padding: 20px;
-    background: #fff;
-    border: 1px solid #ddd;
+    background: white; 
+    border: 1px solid black; 
     display: flex;
     flex-direction: column;
 }
 
 #gameListSection {
     flex-basis: 60%;
-    padding: 20px;
-    background: #fff;
-    border: 1px solid #ddd;
-    display: flex;
-    flex-direction: column;
 }
 
 h1 {
@@ -48,49 +43,22 @@ h1 {
     text-align: center;
 }
 
-input[type="text"],
-select {
+input[type="text"], select {
     width: calc(100% - 22px);
     padding: 10px;
     margin: 10px 0;
-    border: 1px solid #ddd;
+    border: 1px solid black;
 }
 
 button {
     padding: 10px;
     margin: 5px 0;
-    border: 1px solid #ccc;
-    background-color: #f9f9f9;
-    color: #333;
+    border: 1px solid black; 
+    background-color: white;
+    color: black; 
     cursor: pointer;
     width: 100px;
     text-align: center;
-}
-
-#helpButton {
-    float: right;
-    background-color: #007bff;
-}
-
-#confirmButton {
-    background-color: #28a745;
-}
-
-#startButton {
-    background-color: #ffc107;
-}
-
-#leaveButton {
-    background-color: #dc3545;
-}
-
-#refreshButton {
-    background-color: #17a2b8;
-}
-
-button {
-    flex-shrink: 0;
-    flex-grow: 0;
 }
 
 button:hover {
@@ -103,8 +71,8 @@ button:hover {
     align-items: center;
     margin-bottom: 10px;
     padding: 10px;
-    background: #f8f8f8;
-    border: 1px solid #ddd;
+    background: #f8f8f8; 
+    border: 1px solid black; 
 }
 
 label {
@@ -112,19 +80,15 @@ label {
     margin-bottom: 5px;
 }
 
-.player-names {
-    margin-left: 10px;
-}
-
 .joinButton {
     padding: 5px 10px;
     font-size: 0.9em;
-    background-color: #5cb85c;
+    background-color: #5cb85c; 
     color: white;
     border: none;
 }
 
-#userInputSection > div {
+#userInputSection > div, #gameListSection > div {
     display: flex;
     align-items: center;
     margin-bottom: 10px;
