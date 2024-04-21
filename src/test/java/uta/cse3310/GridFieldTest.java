@@ -54,6 +54,4 @@ public class GridFieldTest {
         assertEquals(1, gridField.getRemainingWords());
         assertTrue(gridField.checkWord("HELLO"));
     }
-
-    // Add more test methods as needed
 }
