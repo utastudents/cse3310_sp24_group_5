@@ -34,7 +34,7 @@ public class WordListTest extends TestCase {
         WordList wordList = new WordList();
         String testFile = "src/test/java/uta/cse3310/testWords.txt"; 
         
-        List<String> expectedWords = Arrays.asList("This", "a", "file"); 
+        List<String> expectedWords = Arrays.asList("This", "is", "a", "test", "file");
         
         List<String> actualWords = wordList.getWordList(testFile);
         
