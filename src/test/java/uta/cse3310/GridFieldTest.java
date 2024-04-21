@@ -55,3 +55,4 @@ public class GridFieldTest {
         assertTrue(gridField.checkWord("HELLO"));
     }
 }
+
