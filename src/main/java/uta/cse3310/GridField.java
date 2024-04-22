@@ -11,6 +11,7 @@ public class GridField {
     public GridField(ArrayList<String> wordList) {
         this.wordList = wordList;
         this.remainingWords = wordList.size();
+        generateGrid(5); // Initialize grid with default size (e.g., 5x5)
     }
 
     public char[][] getGrid() {

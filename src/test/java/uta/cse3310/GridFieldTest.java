@@ -50,9 +50,8 @@ public class GridFieldTest {
     public void testAddWord() {
         ArrayList<String> wordList = new ArrayList<>();
         GridField gridField = new GridField(wordList);
-        gridField.addWord("HELLO", 0, 0, Direction.Directions.HORIZONTAL);
+        gridField.addWord("HELLO", 0, 0, Direction.Directions.HORIZONTAL); // Adjusted here
         assertEquals(1, gridField.getRemainingWords());
         assertTrue(gridField.checkWord("HELLO"));
     }
 }
-
