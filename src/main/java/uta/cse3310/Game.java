@@ -76,7 +76,7 @@ public class Game // implements Chat, Timer, GridField, LeaderBoard, Wordlist
     public void startGame() {
         displayRules();
         // gridField=new GridField(wordList);
-        gridField.generateGrid(50);
+        gridField.generateGrid(36);
         gameStatus = true;
     }
 
@@ -98,8 +98,8 @@ public class Game // implements Chat, Timer, GridField, LeaderBoard, Wordlist
             while (i.hasNext()) {
                 UserEvent U = (UserEvent) i.next();
                 int index = U.cell;
-                int row = index / 50;
-                int column = index % 50;
+                int row = index / 35;
+                int column = index % 35;
 
                 word = word + grid[row][column];
                 System.out.println(word);
