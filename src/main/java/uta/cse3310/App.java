@@ -311,15 +311,26 @@ public class App extends WebSocketServer {
     public static void main(String[] args) {
 
         // Set up the http server
-        int port = 9080;
+        String HttpPort = System.getenv("HTTP_PORT");
+        int port = 9005;
+        if(HttpPort!=null)
+        {
+            port= Integer.valueOf(HttpPort);
+        }
         HttpServer H = new HttpServer(port, "./html");
         H.begin();
         System.out.println("http Server started on port: " + port);
 
         // create and start the websocket server
 
-        port = 9880;
+        port = 9105;
+        String WsocketPort= System.getenv("WEBSOCKET_PORT");
+        if(WsocketPort!=null)
+        {
+            port=Integer.valueOf(WsocketPort);
+        }
         App A = new App(port);
+        A.setReuseAddr(true);
         A.start();
         System.out.println("websocket Server started on port: " + port);
 

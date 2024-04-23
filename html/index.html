@@ -17,12 +17,24 @@
             <div>
                 <label for="gameSelect">Game:</label>
                 <select id="gameSelect">
+                  
+                    <option value="game1">Game1</option>
+                    <option value="game2">Game2</option>
+                    <option value="game3">Game3</option>
+                    <option value="game4">Game4</option>
+                    <option value="game5">Game5</option>
+
 
                 </select>
             </div>
             <div>
                 <label for="modeSelect">Game Mode:</label>
                 <select id="modeSelect">
+
+                    <option value="2players">2 Players</option>
+                    <option value="3players">3 Players</option>
+                    <option value="4players">4 Players</option>
+
                 </select>
             </div>
             <button id="confirmButton">CONFIRM</button>
@@ -47,15 +59,16 @@
 <script>
     var socket = new WebSocket("ws://localhost:9105");
 
+
     socket.onopen = function(evt) {
         console.log("Open");
         requestGameList();
-    }
+    };
 
     socket.onmessage = function(evt) {
         console.log("Message received: " + evt.data);
         var messageData = JSON.parse(evt.data);
-    }
+    };
 
         socket.onclose = function(evt) {
             console.log("WebSocket connection closed.");
@@ -64,7 +77,8 @@
                 leaveGame(nick);
             }
             document.getElementById("topMessage").innerText = "Server Offline";
-        }
+        };
+
 
     socket.onerror = function(evt) {
         console.error("WebSocket error: " + evt.message);
@@ -140,18 +154,22 @@
         requestGameList();
     });
 
-    //generate 50x50 grid
+
+    //generate 35*35 grid
+
     //too big may have to do smaller grid or smaller cells
     function generateGrid()
     {
         const tbl = document.createElement("table");
         const tblBody = document.createElement("tbody");
         //create cells
-        for(let i=0;i<50;i++)
+
+        for(let i=0;i<=35;i++)
         {
             //create rows
             const row = document.createElement("tr");
-            for(let j=0;j<50;j++)
+            for(let j=0;j<=35;j++)
+
             {
                 //create cells and add it to the row
                 const cell = document.createElement("td");
