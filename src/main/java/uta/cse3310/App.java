@@ -44,12 +44,19 @@ import org.java_websocket.server.WebSocketServer;
 
 import java.net.InetSocketAddress;
 import java.util.Vector;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 public abstract class App extends WebSocketServer {
 
     // Fields
     private Vector<Game> activeGames;
-
+    private HashMap<String, HashMap<String, ArrayList<UserEvent>>> everyAttempt = new HashMap<String, HashMap<String, ArrayList<UserEvent>>>();
     public App(int port) {
         super(new InetSocketAddress(port));
         this.activeGames = new Vector<>();
@@ -69,8 +76,52 @@ public abstract class App extends WebSocketServer {
     @Override
     public void onMessage(WebSocket conn, String message) {
         // Logic for handling websocket message event
-    }
+        System.out.println(conn +": " +message);
 
+        //Bring in data from the webpage
+        //Take in userEvents and make into an arrayList
+        GsonBuilder builder = new GsonBuilder();
+        Gson gson = builder.create();
+        UserEvent U = gson.fromJson(message,UserEvent.class);
+        insertInnerMap(U,everyAttempt);
+
+        
+
+    }
+    public ArrayList<UserEvent> insertEvent(UserEvent U,HashMap<String, ArrayList<UserEvent>> innerMap)
+    {
+        //declare list
+        ArrayList<UserEvent> events = innerMap.get(U.player);
+        //if the arrayList of events is null create it, add data, put it in the innermap
+        if(events==null)
+        {
+            events = new ArrayList<UserEvent>();
+            events.add(U);
+            innerMap.put((U.player).getNick(),events);
+        }
+        else
+        {
+            events.add(U);
+        }
+        return events;
+    }
+    public void insertInnerMap(UserEvent U,HashMap<String, HashMap<String, ArrayList<UserEvent>>> everyAttempt)
+    {
+        //declare inner map
+        HashMap<String,ArrayList<UserEvent>> innerMap =everyAttempt.get(U.gameId);
+        //if inner map is null create it and add the events,then put it in the outer map
+        if(innerMap==null)
+        {
+            innerMap=new HashMap<String,ArrayList<UserEvent>>();
+            innerMap.put(U.player.getNick(),insertEvent(U,innerMap));
+            everyAttempt.put(U.gameId,innerMap);
+        }
+        else
+        {
+            innerMap.put(U.player.getNick(),insertEvent(U,innerMap));
+            everyAttempt.put(U.gameId,innerMap);
+        }
+    }
     // Method to update the lobby
     public void updateLobby() {
         // Logic for updating the lobby
