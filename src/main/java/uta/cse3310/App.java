@@ -36,36 +36,91 @@
  *  OTHER DEALINGS IN THE SOFTWARE.
  */
 
- package uta.cse3310;
+package uta.cse3310;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.InetSocketAddress;
+import java.net.UnknownHostException;
+import java.nio.ByteBuffer;
+import java.util.Collections;
 
 import org.java_websocket.WebSocket;
+import org.java_websocket.drafts.Draft;
+import org.java_websocket.drafts.Draft_6455;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
-
-import java.net.InetSocketAddress;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.UUID;
 import java.util.Vector;
-import java.util.Map;
+
 import java.util.HashMap;
-import java.util.ArrayList;
+import java.util.Map;
 import java.util.List;
+import java.util.ArrayList;
+import java.time.Instant;
+import java.time.Duration;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 
-public abstract class App extends WebSocketServer {
 
-    // Fields
-    private Vector<Game> activeGames;
+import java.util.ArrayList;
+
+
+public class App extends WebSocketServer {
+
+    public Vector<Game> activeGames = new Vector<Game>();
     private HashMap<String, HashMap<String, ArrayList<UserEvent>>> everyAttempt = new HashMap<String, HashMap<String, ArrayList<UserEvent>>>();
-    public App(int port) {
-        super(new InetSocketAddress(port));
+    private Map<WebSocket, Player> playerMap;
+    private Map<String, WebSocket> playerNickMap;
+    public Map<WebSocket, Player> Connections = new HashMap<WebSocket, Player>();
+    public Map<String, Player> Actives = new HashMap<String, Player>();
+    public Lobby lobbies = new Lobby();
+
+    public App(int webSocketPort) {
+        super(new InetSocketAddress(webSocketPort));
         this.activeGames = new Vector<>();
+        this.playerMap = new HashMap<>();
+        this.playerNickMap = new HashMap<>();
     }
 
-    // WebSocket event handlers
+    public App(InetSocketAddress address) {
+        super(address);
+    }
+
+    public App(int webSocketPort, Draft_6455 draft) {
+        super(new InetSocketAddress(webSocketPort), Collections.<Draft>singletonList(draft));
+    }
+
     @Override
     public void onOpen(WebSocket conn, ClientHandshake handshake) {
+        System.out.println(conn.getRemoteSocketAddress().getAddress().getHostAddress() + " connected");
+        Gson gson = new Gson();
+        String jsonString;
+        jsonString = gson.toJson("New Server Connection");
+        newNetwork(conn, gson);
+        broadcast(jsonString);
         // Logic for handling websocket on open event
+    }
+
+    public void newNetwork(WebSocket conn, Gson gson) {
+        // Logic for handling new network connections
+        String id = UUID.randomUUID().toString();
+        Player newPlayer = new Player(id);
+        Connections.put(conn, newPlayer);
+        Actives.put(id, newPlayer);
+        lobbies.updateLobby(activeGames);
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("screen", "landing");
+        jsonObject.addProperty("type", "newSession");
+        jsonObject.addProperty("id", id);
+        jsonObject.addProperty("lobby", gson.toJson(lobbies));
+        conn.send(jsonObject.toString()); // Sendinfo about lobby & ID to the client
+
     }
 
     @Override
@@ -122,103 +177,129 @@ public abstract class App extends WebSocketServer {
             everyAttempt.put(U.gameId,innerMap);
         }
     }
-    // Method to update the lobby
+
+    @Override
+    public void onError(WebSocket conn, Exception ex) {
+        ex.printStackTrace();
+        if (conn != null) {
+            // some errors like port binding failed may not be assignable to a specific
+            // websocket
+        }
+        System.out.println("[ERROR] onError()");
+    }
+
+    @Override
+    public void onStart() {
+        System.out.println("Server has started!");
+        setConnectionLostTimeout(0);
+    }
+
+
     public void updateLobby() {
         // Logic for updating the lobby
     }
 
-    // Method for displaying help information
     public void help() {
         // Logic for displaying help information
     }
 
-    // Main method to start the application
-    public static void main(String[] args) {
-        // Logic for starting the application
-    }
-
-    // Method to add a player
     public Player addPlayer(String playerName) {
-        return new Player(playerName);
+        Player player = new Player(playerName);
+        playerMap.put(player.getWebSocket(), player);
+        playerNickMap.put(playerName, player.getWebSocket());
+        return player;
     }
 
-    // Method to navigate to the name selection screen
     public void toNameSelect() {
         // Logic for navigating to the name selection screen
     }
 
-    // Method to create a game
     public Game createGame(int gameId, int mode) {
-        return new Game();
+        Game game = new Game();
+        activeGames.add(game);
+        return game;
     }
 
-    // Method to allow a player to join a game
     public void joinGame(Game game, Player player) {
         // Logic for allowing a player to join a game
     }
 
-    // Method to end a game
     public void endGame(Game game) {
         // Logic for ending a game
     }
 
-    // Method to navigate to the lobby
     public void toLobby() {
         // Logic for navigating to the lobby
     }
 
-    // Method for handling global chat
     public void globalChat() {
         // Logic for handling global chat
     }
 
-    // Method to get player color
     public void getPlayerColor() {
         // Logic for getting player color
     }
 
-    // Method to select a game
     public void selectGame() {
         // Logic for selecting a game
     }
 
-    // Player class
     public class Player {
         private String playerName;
+        private WebSocket webSocket;
 
-        // Constructor
         public Player(String playerName) {
             this.playerName = playerName;
         }
 
-        // Getter
         public String getPlayerName() {
             return playerName;
         }
+
+        public WebSocket getWebSocket() {
+            return webSocket;
+        }
+
+        public void setWebSocket(WebSocket webSocket) {
+            this.webSocket = webSocket;
+        }
     }
 
-    // Game class
-    public class Game {
-        // Define game properties and methods here
-    }
+    // public class Game {
+    // // Define game properties and methods here
+    // }
 
-    // ConcreteApp class
-    public class ConcreteApp extends App {
+    // public class ConcreteApp extends App {
 
-        public ConcreteApp(int port) {
-            super(port);
-        }
+    // public ConcreteApp(int webSocketPort) {
+    // super(webSocketPort);
+    // }
 
-        // Implement onStart method
-        @Override
-        public void onStart() {
-            // Logic for handling server start
-        }
+    // @Override
+    // public void onStart() {
+    // // Logic for handling server start
+    // }
 
-        // Implement onError method
-        @Override
-        public void onError(WebSocket conn, Exception ex) {
-            // Logic for handling errors
-        }
+    // @Override
+    // public void onError(WebSocket conn, Exception ex) {
+    // // Logic for handling errors
+    // }
+    // }
+
+    public static void main(String[] args) {
+
+        // Set up the http server
+        int port = 9080;
+        HttpServer H = new HttpServer(port, "./html");
+        H.begin();
+        System.out.println("http Server started on port: " + port);
+
+        // create and start the websocket server
+
+        port = 9880;
+        App A = new App(port);
+        A.start();
+        System.out.println("websocket Server started on port: " + port);
+
     }
 }
