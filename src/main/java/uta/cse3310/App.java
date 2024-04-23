@@ -36,39 +36,40 @@
  *  OTHER DEALINGS IN THE SOFTWARE.
  */
 
- package uta.cse3310;
+package uta.cse3310;
 
- import java.io.BufferedReader;
- import java.io.IOException;
- import java.io.InputStreamReader;
- import java.net.InetSocketAddress;
- import java.net.UnknownHostException;
- import java.nio.ByteBuffer;
- import java.util.Collections;
- 
- import org.java_websocket.WebSocket;
- import org.java_websocket.drafts.Draft;
- import org.java_websocket.drafts.Draft_6455;
- import org.java_websocket.handshake.ClientHandshake;
- import org.java_websocket.server.WebSocketServer;
- import java.util.Timer;
- import java.util.TimerTask;
- import java.util.Vector;
- import java.util.HashMap;
- import java.util.Map;
- import java.util.List;
- import java.time.Instant;
- import java.time.Duration;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.InetSocketAddress;
+import java.net.UnknownHostException;
+import java.nio.ByteBuffer;
+import java.util.Collections;
 
- 
- import com.google.gson.Gson;
- import com.google.gson.GsonBuilder;
- 
- import java.util.ArrayList;
+import org.java_websocket.WebSocket;
+import org.java_websocket.drafts.Draft;
+import org.java_websocket.drafts.Draft_6455;
+import org.java_websocket.handshake.ClientHandshake;
+import org.java_websocket.server.WebSocketServer;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.Vector;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.List;
+import java.time.Instant;
+import java.time.Duration;
 
- public abstract class App extends WebSocketServer {
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
-    private Vector<Game> activeGames;
+import java.util.ArrayList;
+
+public class App extends WebSocketServer {
+
+    public int games = 0;
+    int GameId = 1;
+    private Vector<Game> activeGames = new Vector<Game>();
     private Map<WebSocket, Player> playerMap;
     private Map<String, WebSocket> playerNickMap;
 
@@ -77,6 +78,14 @@
         this.activeGames = new Vector<>();
         this.playerMap = new HashMap<>();
         this.playerNickMap = new HashMap<>();
+    }
+
+    public App(InetSocketAddress address) {
+        super(address);
+    }
+
+    public App(int webSocketPort, Draft_6455 draft) {
+        super(new InetSocketAddress(webSocketPort), Collections.<Draft>singletonList(draft));
     }
 
     @Override
@@ -92,6 +101,21 @@
     @Override
     public void onMessage(WebSocket conn, String message) {
         // Logic for handling websocket message event
+    }
+
+    @Override
+    public void onError(WebSocket conn, Exception ex) {
+        ex.printStackTrace();
+        if (conn != null) {
+            // some errors like port binding failed may not be assignable to a specific
+            // websocket
+        }
+    }
+
+    @Override
+    public void onStart() {
+        System.out.println("Server started!");
+        setConnectionLostTimeout(0);
     }
 
     public void updateLobby() {
@@ -168,20 +192,37 @@
         // Define game properties and methods here
     }
 
-    public class ConcreteApp extends App {
+    // public class ConcreteApp extends App {
 
-        public ConcreteApp(int webSocketPort) {
-            super(webSocketPort);
-        }
+    // public ConcreteApp(int webSocketPort) {
+    // super(webSocketPort);
+    // }
 
-        @Override
-        public void onStart() {
-            // Logic for handling server start
-        }
+    // @Override
+    // public void onStart() {
+    // // Logic for handling server start
+    // }
 
-        @Override
-        public void onError(WebSocket conn, Exception ex) {
-            // Logic for handling errors
-        }
+    // @Override
+    // public void onError(WebSocket conn, Exception ex) {
+    // // Logic for handling errors
+    // }
+    // }
+
+    public static void main(String[] args) {
+
+        // Set up the http server
+        int port = 9080;
+        HttpServer H = new HttpServer(port, "./html");
+        H.begin();
+        System.out.println("http Server started on port:" + port);
+
+        // create and start the websocket server
+
+        port = 9880;
+        App A = new App(port);
+        A.start();
+        System.out.println("websocket Server started on port: " + port);
+
     }
 }
