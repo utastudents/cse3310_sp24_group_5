@@ -53,6 +53,7 @@ import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.UUID;
 import java.util.Vector;
 import java.util.HashMap;
 import java.util.Map;
@@ -62,14 +63,18 @@ import java.time.Duration;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
 
 public class App extends WebSocketServer {
 
-    private Vector<Game> activeGames;
+    public Vector<Game> activeGames = new Vector<Game>();
     private Map<WebSocket, Player> playerMap;
     private Map<String, WebSocket> playerNickMap;
+    public Map<WebSocket, Player> Connections = new HashMap<WebSocket, Player>();
+    public Map<String, Player> Actives = new HashMap<String, Player>();
+    public Lobby lobbies = new Lobby();
 
     public App(int webSocketPort) {
         super(new InetSocketAddress(webSocketPort));
@@ -88,7 +93,29 @@ public class App extends WebSocketServer {
 
     @Override
     public void onOpen(WebSocket conn, ClientHandshake handshake) {
+        System.out.println(conn.getRemoteSocketAddress().getAddress().getHostAddress() + " connected");
+        Gson gson = new Gson();
+        String jsonString;
+        jsonString = gson.toJson("New Server Connection");
+        newNetwork(conn, gson);
+        broadcast(jsonString);
         // Logic for handling websocket on open event
+    }
+
+    public void newNetwork(WebSocket conn, Gson gson) {
+        // Logic for handling new network connections
+        String id = UUID.randomUUID().toString();
+        Player newPlayer = new Player(id);
+        Connections.put(conn, newPlayer);
+        Actives.put(id, newPlayer);
+        lobbies.updateLobby(activeGames);
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("screen", "landing");
+        jsonObject.addProperty("type", "newSession");
+        jsonObject.addProperty("id", id);
+        jsonObject.addProperty("lobby", gson.toJson(lobbies));
+        conn.send(jsonObject.toString()); // Sendinfo about lobby & ID to the client
+
     }
 
     @Override
@@ -108,11 +135,12 @@ public class App extends WebSocketServer {
             // some errors like port binding failed may not be assignable to a specific
             // websocket
         }
+        System.out.println("[ERROR] onError()");
     }
 
     @Override
     public void onStart() {
-        System.out.println("Server started!");
+        System.out.println("Server has started!");
         setConnectionLostTimeout(0);
     }
 
@@ -186,9 +214,9 @@ public class App extends WebSocketServer {
         }
     }
 
-    public class Game {
-        // Define game properties and methods here
-    }
+    // public class Game {
+    // // Define game properties and methods here
+    // }
 
     // public class ConcreteApp extends App {
 
@@ -213,7 +241,7 @@ public class App extends WebSocketServer {
         int port = 9080;
         HttpServer H = new HttpServer(port, "./html");
         H.begin();
-        System.out.println("http Server started on port:" + port);
+        System.out.println("http Server started on port: " + port);
 
         // create and start the websocket server
 

@@ -5,11 +5,14 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors; 
+import java.util.Vector;
+import java.util.stream.Collectors;
 
 public class Lobby {
     private Map<String, Game> games;
     private Map<String, String> playerToGameMap;
+    public ArrayList<Game> openGames; // Games open to join
+    public Map<String, ArrayList<Player>> LeaderBoard; // Concurrent Leaderboard
 
     public Lobby() {
         this.games = new HashMap<>();
@@ -25,41 +28,37 @@ public class Lobby {
         gameNames.forEach(gameName -> games.put(gameName, new Game()));
     }
 
-
-    //checks if the nickname is not already in use
-    //adds it to the playerToGameMap if it's available
+    // checks if the nickname is not already in use
+    // adds it to the playerToGameMap if it's available
     public void enterNickname(String nick) {
-        if (!playerToGameMap.containsKey(nick)) 
-        {
+        if (!playerToGameMap.containsKey(nick)) {
             playerToGameMap.put(nick, null);
         }
     }
 
     public void joinGame(String nick, int gameIndex, int modeIndex) {
         List<String> availableGames = new ArrayList<>(games.keySet());
-        List<Integer> availableModes = Arrays.asList(2, 3, 4); 
+        List<Integer> availableModes = Arrays.asList(2, 3, 4);
 
-        if (gameIndex >= 0 && gameIndex < availableGames.size() && modeIndex >= 0 && modeIndex < availableModes.size()) {
+        if (gameIndex >= 0 && gameIndex < availableGames.size() && modeIndex >= 0
+                && modeIndex < availableModes.size()) {
             String gameName = availableGames.get(gameIndex);
             Game game = games.get(gameName);
 
             if (game != null) {
                 int selectedMode = availableModes.get(modeIndex);
 
-                //check if the game is empty 
-                if (game.getPlayersList().isEmpty()) 
-                {
-                    //set the game mode when the first player joins an empty game
+                // check if the game is empty
+                if (game.getPlayersList().isEmpty()) {
+                    // set the game mode when the first player joins an empty game
                     game.setGameMode(selectedMode);
                     game.addPlayers(new Player(nick));
                     playerToGameMap.put(nick, gameName);
-                } 
-                //or if the existing mode matches the selected mode
-                else if (game.getGameMode() == selectedMode) 
-                {
+                }
+                // or if the existing mode matches the selected mode
+                else if (game.getGameMode() == selectedMode) {
                     // Join the game only if the player count is less than the game mode's capacity
-                    if (game.getPlayersList().size() < selectedMode) 
-                    {
+                    if (game.getPlayersList().size() < selectedMode) {
                         game.addPlayers(new Player(nick));
                         playerToGameMap.put(nick, gameName);
                     }
@@ -68,20 +67,13 @@ public class Lobby {
         }
     }
 
-
-
-
-
     public void leaveGame(String nick) {
         String gameName = playerToGameMap.get(nick);
-        if (gameName != null) 
-        {
+        if (gameName != null) {
             Game game = games.get(gameName);
-            if (game != null) 
-            {
+            if (game != null) {
                 game.removePlayer(nick);
-                if (game.getPlayersList().isEmpty()) 
-                {
+                if (game.getPlayersList().isEmpty()) {
                     games.remove(gameName);
                 }
                 playerToGameMap.remove(nick);
@@ -89,13 +81,11 @@ public class Lobby {
         }
     }
 
-
-    //for later if needed to have info for UI file
+    // for later if needed to have info for UI file
     public List<Map<String, Object>> listGames() {
         List<Map<String, Object>> gameList = new ArrayList<>();
 
-        for (Map.Entry<String, Game> entry : games.entrySet()) 
-        {
+        for (Map.Entry<String, Game> entry : games.entrySet()) {
             Map<String, Object> gameInfo = new HashMap<>();
             String gameName = entry.getKey();
             Game game = entry.getValue();
@@ -110,5 +100,17 @@ public class Lobby {
             gameList.add(gameInfo);
         }
         return gameList;
+    }
+
+    public void updateLobby(Vector<Game> activeGames) {
+        this.games.clear();
+        for (Game game : activeGames) {
+            if (game.gameStatus) { // if true add to openGames = yes can join
+                openGames.add(game);
+            } else {
+                LeaderBoard.put(game.gameID, game.leaderboard);
+            }
+        }
+
     }
 }
