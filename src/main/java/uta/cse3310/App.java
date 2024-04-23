@@ -65,7 +65,7 @@ import com.google.gson.GsonBuilder;
 
 import java.util.ArrayList;
 
-public abstract class App extends WebSocketServer {
+public class App extends WebSocketServer {
 
     private Vector<Game> activeGames;
     private Map<WebSocket, Player> playerMap;
@@ -99,6 +99,21 @@ public abstract class App extends WebSocketServer {
     @Override
     public void onMessage(WebSocket conn, String message) {
         // Logic for handling websocket message event
+    }
+
+    @Override
+    public void onError(WebSocket conn, Exception ex) {
+        ex.printStackTrace();
+        if (conn != null) {
+            // some errors like port binding failed may not be assignable to a specific
+            // websocket
+        }
+    }
+
+    @Override
+    public void onStart() {
+        System.out.println("Server started!");
+        setConnectionLostTimeout(0);
     }
 
     public void updateLobby() {
@@ -175,22 +190,22 @@ public abstract class App extends WebSocketServer {
         // Define game properties and methods here
     }
 
-    public class ConcreteApp extends App {
+    // public class ConcreteApp extends App {
 
-        public ConcreteApp(int webSocketPort) {
-            super(webSocketPort);
-        }
+    // public ConcreteApp(int webSocketPort) {
+    // super(webSocketPort);
+    // }
 
-        @Override
-        public void onStart() {
-            // Logic for handling server start
-        }
+    // @Override
+    // public void onStart() {
+    // // Logic for handling server start
+    // }
 
-        @Override
-        public void onError(WebSocket conn, Exception ex) {
-            // Logic for handling errors
-        }
-    }
+    // @Override
+    // public void onError(WebSocket conn, Exception ex) {
+    // // Logic for handling errors
+    // }
+    // }
 
     public static void main(String[] args) {
 
