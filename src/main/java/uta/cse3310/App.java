@@ -296,7 +296,7 @@ public class App extends WebSocketServer {
             port= Integer.valueOf(HttpPort);
         }
         HttpServer H = new HttpServer(port, "./html");
-        H.start();
+        H.begin();
         System.out.println("http Server started on port: " + port);
 
         // create and start the websocket server
