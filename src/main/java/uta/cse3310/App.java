@@ -138,7 +138,29 @@ public class App extends WebSocketServer {
         GsonBuilder builder = new GsonBuilder();
         Gson gson = builder.create();
         UserEvent U = gson.fromJson(message,UserEvent.class);
+        System.out.println(U.cell+ "was selected");
         insertInnerMap(U,everyAttempt);
+
+        if(U.action==2)
+        {
+            ArrayList<UserEvent> attempt= new ArrayList<UserEvent>();
+            attempt=everyAttempt.get(U.gameId).get(U.player.getNick());
+            Game G = null;
+            for(Game i : activeGames)
+            {
+                if(i.getGameID().equals(U.gameId))
+                {
+                    G = i;
+                    G.updateGame(attempt);
+                    break;
+                }
+            }
+            String jsonString;
+            jsonString = gson.toJson(G);
+
+            System.out.println(jsonString);
+            broadcast(jsonString);
+        }
 
         
 
