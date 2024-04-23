@@ -50,12 +50,12 @@
     socket.onopen = function(evt) {
         console.log("Open");
         requestGameList();
-    };
+    }
 
     socket.onmessage = function(evt) {
         console.log("Message received: " + evt.data);
         var messageData = JSON.parse(evt.data);
-    };
+    }
 
         socket.onclose = function(evt) {
             console.log("WebSocket connection closed.");
@@ -64,7 +64,7 @@
                 leaveGame(nick);
             }
             document.getElementById("topMessage").innerText = "Server Offline";
-        };
+        }
 
     socket.onerror = function(evt) {
         console.error("WebSocket error: " + evt.message);

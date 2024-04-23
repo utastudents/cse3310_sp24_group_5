@@ -2,7 +2,7 @@ package uta.cse3310;
 // User events are sent from the webpage to the server
 
 public class UserEvent {
-    public int gameId;//id of the game in which the event took place
+    public String gameId;//id of the game in which the event took place
     public Player player;//the player that made the event
     public int cell;//refers to the cell containing a selected letter
     public int action; //click=0,hover=1,release=2
