@@ -57,7 +57,7 @@
     </div>
 </body>
 <script>
-    var socket = new WebSocket("ws://localhost:9105");
+    var socket = new WebSocket("ws://"+ window.location.hostname+":9105");
 
 
     socket.onopen = function(evt) {
@@ -68,6 +68,7 @@
     socket.onmessage = function(evt) {
         console.log("Message received: " + evt.data);
         var messageData = JSON.parse(evt.data);
+
     };
 
         socket.onclose = function(evt) {
@@ -83,6 +84,23 @@
     socket.onerror = function(evt) {
         console.error("WebSocket error: " + evt.message);
     };
+    gameId;
+    class Player
+    {
+        nick;
+        score;
+        status;
+        totalPoints;
+        gameWins;
+    }
+
+    class UserEvent
+    {
+        gameId;
+        player;
+        cell;
+        action;
+    }
 
     function requestGameList() {
         var data = { type: "RequestGameList" };
@@ -131,7 +149,7 @@
             gameIndex: gameIndex,
             modeIndex: mode
         };
-        socket.send(JSON.stringify(data));
+        //socket.send(JSON.stringify(data));
     }
 
     // replace leaveGame function with one that sends a WebSocket message
@@ -164,15 +182,16 @@
         const tblBody = document.createElement("tbody");
         //create cells
 
-        for(let i=0;i<=35;i++)
+        for(let i=0;i<35;i++)
         {
             //create rows
             const row = document.createElement("tr");
-            for(let j=0;j<=35;j++)
+            for(let j=0;j<35;j++)
 
             {
                 //create cells and add it to the row
                 const cell = document.createElement("td");
+                //cell.setAttribute("id",)
                 const cellText=document.createTextNode(`${i}`);
                 cell.appendChild(cellText);
                 row.appendChild(cell);
@@ -184,6 +203,11 @@
         tbl.appendChild(tblBody);
         document.body.appendChild(tbl);
         tbl.setAttribute("border","1.5");
+    }
+
+    function buttonClick(i)
+    {
+
     }
 </script>
 

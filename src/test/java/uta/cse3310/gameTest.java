@@ -144,16 +144,16 @@ public class gameTest extends TestCase
         UserEvent U4= new UserEvent();
         UserEvent U5= new UserEvent();
         U1.player=player1;
-        U1.cell=50;
+        U1.cell=35;
         U1.action=0;
         U2.player=player1;
-        U2.cell=51;
+        U2.cell=36;
         U2.action=1;
         U3.player=player1;
-        U3.cell=52;
+        U3.cell=37;
         U3.action=1;
         U4.player=player1;
-        U4.cell=53;
+        U4.cell=38;
         U4.action=2;
         ArrayList<UserEvent> attempt = new ArrayList<UserEvent>(){
             {
