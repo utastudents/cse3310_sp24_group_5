@@ -217,7 +217,7 @@
         var cells = document.querySelectorAll("td");
         for(var i=0;i<cells.length;i++)
         {
-            cells[i].addEventListener("click",buttonEvent(k.toString(),0));
+            cells[i].addEventListener("click",buttonEvent(cells[i].toString(),0));
             cells[i].addEventListener("mouseover",buttonEvent(cells[i].getAttribute("id"),1));
         }
     }
