@@ -196,7 +196,7 @@
                 //create cells and add it to the row
                 const cell = document.createElement("td");
                 cell.setAttribute("id",k.toString());
-                cell.addEventListener("click",buttonEvent(k.toString(),0));
+                //cell.addEventListener("click",buttonEvent(k.toString(),0));
                 
                 const cellText=document.createTextNode(`${k}`);
                 cell.appendChild(cellText);
@@ -216,7 +216,7 @@
         for(var i=0;i<cells.length;i++)
         {
             //cells[i]
-            //cells[i].addEventListener("mouseover",buttonEvent(cells[i].getAttribute("id"),1));
+            cells[i].addEventListener("mouseover",buttonEvent(cells[i].getAttribute("id"),1));
         }
     function buttonEvent(cell,action)
     {
