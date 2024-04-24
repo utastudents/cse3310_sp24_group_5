@@ -84,7 +84,11 @@
     socket.onerror = function(evt) {
         console.error("WebSocket error: " + evt.message);
     };
+
+    
     var gameId;
+    var player = new Player;
+
     class Player
     {
         nick;
@@ -182,17 +186,19 @@
         const tblBody = document.createElement("tbody");
         //create cells
 
-        for(let i=0;i<35;i++)
+        for(let i=0,k=0;i<35;i++)
         {
             //create rows
             const row = document.createElement("tr");
-            for(let j=0;j<35;j++)
+            for(let j=0;j<35;j++,k++)
 
             {
                 //create cells and add it to the row
                 const cell = document.createElement("td");
-                //cell.setAttribute("id",)
-                const cellText=document.createTextNode(`${i}`);
+                cell.setAttribute("id",k.toString());
+                cell.onclick=buttonClick(k,1);
+                cell.onmouseover=buttonClick(k,2);
+                const cellText=document.createTextNode(`${k}`);
                 cell.appendChild(cellText);
                 row.appendChild(cell);
             }
@@ -205,9 +211,16 @@
         tbl.setAttribute("border","1.5");
     }
 
-    function buttonClick(i)
+    function buttonClick(cell,action)
     {
+        U = new UserEvent();
+        U.cell=cell;
+        U.action=action;
+        U.player=player;
+        U.gameId=gameId;
 
+        socket.send(JSON.stringify(U));
+        console.log(JSON.stringify(U));
     }
 </script>
 
