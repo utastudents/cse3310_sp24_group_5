@@ -188,7 +188,7 @@
     });
 
 
-    //generate 35*35 grid
+    //generate 25*25 grid
 
     //too big may have to do smaller grid or smaller cells
     function generateGrid()
@@ -197,11 +197,11 @@
         const tblBody = document.createElement("tbody");
         //create cells
 
-        for(let i=0,k=0;i<35;i++)
+        for(let i=0,k=0;i<25;i++)
         {
             //create rows
             const row = document.createElement("tr");
-            for(let j=0;j<35;j++,k++)
+            for(let j=0;j<25;j++,k++)
 
             {
                 //create cells and add it to the row
