@@ -211,16 +211,23 @@
         document.body.appendChild(tbl);
         tbl.setAttribute("border","1.5");
     }
-
-    function buttonClick(cell,action)
+    var cells = document.querySelectorAll("td");
+    for(var i=0;i<cells.length;i++)
     {
+        cells[i].addEventListener("click",buttonEvent(cells[i].getAttribute("id"),0));
+        cells[i].addEventListener("mouseover",buttonEvent(cells[i].getAttribute("id"),1));
+    }
+    function buttonEvent(cell,action)
+    {
+        const button= document.getElementById(cell.toString());
+        button.style.backgroundColor="blue";
         U = new UserEvent();
         U.cell=cell;
         U.action=action;
         U.player=player;
         U.gameId=gameId;
 
-        socket.send(JSON.stringify(U));
+        //socket.send(JSON.stringify(U));
         console.log(JSON.stringify(U));
     }
 </script>
