@@ -58,9 +58,27 @@
 </body>
 <script>
     var socket = new WebSocket("ws://"+ window.location.hostname+":9105");
-    var gameId;
-    var player;
+    
+    class Player
+    {
+        nick="";
+        score=0;
+        status;
+        totalPoints=0;
+        gameWins=0;
+    }
 
+    class UserEvent
+    {
+        gameId=-1;
+        player="";
+        cell=-1;
+        action=-1;
+    }
+
+    
+    var gameId="";
+    var player=new Player();
     socket.onopen = function(evt) {
         console.log("Open");
         requestGameList();
@@ -70,12 +88,12 @@
        // console.log("Message received: " + evt.data);
         var messageData = JSON.parse(evt.data);
         console.log("Message received: " + messageData);
-
-        if(messageData.type=="JoinGame")
+        const type= messageData.type;
+        if(type==="JoinGame")
         {
-            player= messageData.player;
-            gameId = messageData.gameId;
-            gameId= game.gameId;
+            player= JSON.parse(messageData.player);
+            game = JSON.parse(messageData.game);
+            gameId= gameId+messageData.gameId;
             console.log(gameId);
         }
 
@@ -96,25 +114,6 @@
     };
 
     
-    var gameId;
-    var player;
-
-    class Player
-    {
-        nick="";
-        score=0;
-        //status;
-        totalPoints=0;
-        gameWins=0;
-    }
-
-    class UserEvent
-    {
-        gameId=-1;
-        player="";
-        cell=-1;
-        action=-1;
-    }
 
     function requestGameList() {
         var data = { type: "RequestGameList" };
