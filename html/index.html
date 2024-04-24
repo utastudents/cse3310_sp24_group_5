@@ -218,10 +218,8 @@
         U.action=action;
         U.player=player;
         U.gameId=gameId;
-        if(isOpen(socket))
-        {
-            socket.send(JSON.stringify(U));
-        }
+
+        socket.send(JSON.stringify(U));
         console.log(JSON.stringify(U));
     }
 </script>
