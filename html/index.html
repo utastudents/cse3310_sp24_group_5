@@ -265,5 +265,27 @@
         socket.send(JSON.stringify(U));
         console.log(JSON.stringify(U));
     }
+
+    // Timer countdown logic
+    var timerElement = document.getElementById('timer');
+    var timerInterval;
+
+    function startTimer() {
+        var timeLeft = 30; // 30 seconds
+        updateTimerDisplay(timeLeft);
+
+        timerInterval = setInterval(function() {
+            timeLeft--;
+            updateTimerDisplay(timeLeft);
+            if (timeLeft === 0) {
+                clearInterval(timerInterval);
+                // Handle timer expiration (e.g., reset timer, end game)
+            }
+        }, 1000);
+    }
+
+
+
+
 </script>
 
