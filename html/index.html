@@ -87,23 +87,23 @@
 
     
     var gameId;
-    var player = new Player;
+    var player;
 
     class Player
     {
-        nick;
-        score;
-        status;
-        totalPoints;
-        gameWins;
+        nick="";
+        score=0;
+        //status;
+        totalPoints=0;
+        gameWins=0;
     }
 
     class UserEvent
     {
-        gameId;
-        player;
-        cell;
-        action;
+        gameId=-1;
+        player="";
+        cell=-1;
+        action=-1;
     }
 
     function requestGameList() {
@@ -153,7 +153,8 @@
             gameIndex: gameIndex,
             modeIndex: mode
         };
-        //socket.send(JSON.stringify(data));
+
+        socket.send(JSON.stringify(data));
     }
 
     // replace leaveGame function with one that sends a WebSocket message
@@ -196,8 +197,8 @@
                 //create cells and add it to the row
                 const cell = document.createElement("td");
                 cell.setAttribute("id",k.toString());
-                cell.onclick=buttonClick(k,1);
-                cell.onmouseover=buttonClick(k,2);
+                
+                
                 const cellText=document.createTextNode(`${k}`);
                 cell.appendChild(cellText);
                 row.appendChild(cell);
@@ -209,16 +210,43 @@
         tbl.appendChild(tblBody);
         document.body.appendChild(tbl);
         tbl.setAttribute("border","1.5");
+        eventListener();
+       
     }
-
-    function buttonClick(cell,action)
+    function eventListener()
     {
+        var cells = document.querySelectorAll("td");
+        for(var i=0;i<cells.length;i++)
+        {
+            cells[i].addEventListener("click",function()
+            {
+                buttonEvent(this.getAttribute("id"),0);
+            });
+            cells[i].addEventListener("mouseover",function()
+            {
+                buttonEvent(this.getAttribute("id"),1);
+            });
+            cells[i].addEventListener("mouseover",function()
+            {
+                buttonEvent(this.getAttribute("id"),2);
+            });
+            
+        }
+    }
+    function buttonEvent(cell,action)
+    {
+        let button= document.getElementById(cell);
+        button.style.backgroundColor="blue";
         U = new UserEvent();
-        U.cell=cell;
+        U.cell=parseInt(cell);
         U.action=action;
         U.player=player;
         U.gameId=gameId;
 
+        var data = {
+            type: "UpdateGame",
+            events: U
+        };
         socket.send(JSON.stringify(U));
         console.log(JSON.stringify(U));
     }
