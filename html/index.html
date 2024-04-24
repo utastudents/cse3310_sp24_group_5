@@ -209,13 +209,15 @@
         tbl.appendChild(tblBody);
         document.body.appendChild(tbl);
         tbl.setAttribute("border","1.5");
+
+        var cells = document.querySelectorAll("td");
+        for(var i=0;i<cells.length;i++)
+        {
+            cells[i].addEventListener("click",buttonEvent(cells[i].getAttribute("id"),0));
+            cells[i].addEventListener("mouseover",buttonEvent(cells[i].getAttribute("id"),1));
+        }
     }
-    var cells = document.querySelectorAll("td");
-    for(var i=0;i<cells.length;i++)
-    {
-        cells[i].addEventListener("click",buttonEvent(cells[i].getAttribute("id"),0));
-        cells[i].addEventListener("mouseover",buttonEvent(cells[i].getAttribute("id"),1));
-    }
+    
     function buttonEvent(cell,action)
     {
         const button= document.getElementById(cell.toString());
