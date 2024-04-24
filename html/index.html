@@ -87,19 +87,19 @@
     var gameId;
     class Player
     {
-        nick;
-        score;
-        status;
-        totalPoints;
-        gameWins;
+        nick="";
+        score=0;
+        //status;
+        totalPoints=0;
+        gameWins=0;
     }
 
     class UserEvent
     {
-        gameId;
-        player;
-        cell;
-        action;
+        gameId=-1;
+        player="";
+        cell=-1;
+        action=-1;
     }
 
     function requestGameList() {
