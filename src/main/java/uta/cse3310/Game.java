@@ -74,7 +74,7 @@ public class Game // implements Chat, Timer, GridField, LeaderBoard, Wordlist
 
     // Method to start game
     public void startGame() {
-        displayRules();
+        
         // gridField=new GridField(wordList);
         gridField.generateGrid(35);
         gameStatus = true;
