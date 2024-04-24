@@ -225,6 +225,10 @@
             {
                 buttonEvent(this.getAttribute("id"),1);
             });
+            cells[i].addEventListener("mousemove",function()
+            {
+                this.style.backgroundColor="white";
+            });
         }
     }
     function buttonEvent(cell,action)
