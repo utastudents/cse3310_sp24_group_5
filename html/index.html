@@ -219,11 +219,11 @@
         {
             cells[i].addEventListener("click",function()
             {
-                buttonEvent(cells[i].toString(),0);
+                buttonEvent(this.getAttribute("id"),0);
             });
             cells[i].addEventListener("mouseover",function()
             {
-                buttonEvent(cells[i].getAttribute("id"),1);
+                buttonEvent(this.getAttribute("id"),1);
             });
         }
     }
