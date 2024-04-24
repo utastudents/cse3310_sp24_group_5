@@ -153,7 +153,8 @@
             gameIndex: gameIndex,
             modeIndex: mode
         };
-        //socket.send(JSON.stringify(data));
+
+        socket.send(JSON.stringify(data));
     }
 
     // replace leaveGame function with one that sends a WebSocket message
@@ -225,10 +226,11 @@
             {
                 buttonEvent(this.getAttribute("id"),1);
             });
-            cells[i].addEventListener("mousemove",function()
+            cells[i].addEventListener("mouseover",function()
             {
-                this.style.backgroundColor="white";
+                buttonEvent(this.getAttribute("id"),2);
             });
+            
         }
     }
     function buttonEvent(cell,action)
@@ -241,7 +243,11 @@
         U.player=player;
         U.gameId=gameId;
 
-        //socket.send(JSON.stringify(U));
+        var data = {
+            type: "UpdateGame",
+            events: U
+        };
+        socket.send(JSON.stringify(U));
         console.log(JSON.stringify(U));
     }
 </script>
