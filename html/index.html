@@ -84,9 +84,11 @@
     socket.onerror = function(evt) {
         console.error("WebSocket error: " + evt.message);
     };
+
     
     var gameId;
     var player = new Player;
+
     class Player
     {
         nick;
