@@ -137,6 +137,7 @@ public class App extends WebSocketServer {
         //Take in userEvents and make into an arrayList
         GsonBuilder builder = new GsonBuilder();
         Gson gson = builder.create();
+        messageHandler(gson,message,conn);
         UserEvent U = gson.fromJson(message,UserEvent.class);
         System.out.println(U.cell+ "was selected");
         insertInnerMap(U,everyAttempt);
