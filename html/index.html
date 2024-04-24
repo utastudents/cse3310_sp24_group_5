@@ -58,7 +58,8 @@
 </body>
 <script>
     var socket = new WebSocket("ws://"+ window.location.hostname+":9105");
-
+    var gameId;
+    var player;
 
     socket.onopen = function(evt) {
         console.log("Open");
@@ -66,8 +67,17 @@
     };
 
     socket.onmessage = function(evt) {
-        console.log("Message received: " + evt.data);
+       // console.log("Message received: " + evt.data);
         var messageData = JSON.parse(evt.data);
+        console.log("Message received: " + messageData);
+
+        if(messageData.type=="JoinGame")
+        {
+            player= messageData.player;
+            gameId = messageData.gameId;
+            gameId= game.gameId;
+            console.log(gameId);
+        }
 
     };
 
