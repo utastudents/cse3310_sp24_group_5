@@ -62,10 +62,14 @@ import java.util.List;
 import java.util.ArrayList;
 import java.time.Instant;
 import java.time.Duration;
+import java.lang.Character;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+
 
 
 import java.util.ArrayList;
@@ -75,17 +79,13 @@ public class App extends WebSocketServer {
 
     public Vector<Game> activeGames = new Vector<Game>();
     private HashMap<String, HashMap<String, ArrayList<UserEvent>>> everyAttempt = new HashMap<String, HashMap<String, ArrayList<UserEvent>>>();
-    private Map<WebSocket, Player> playerMap;
-    private Map<String, WebSocket> playerNickMap;
     public Map<WebSocket, Player> Connections = new HashMap<WebSocket, Player>();
     public Map<String, Player> Actives = new HashMap<String, Player>();
     public Lobby lobbies = new Lobby();
 
     public App(int webSocketPort) {
         super(new InetSocketAddress(webSocketPort));
-        this.activeGames = new Vector<>();
-        this.playerMap = new HashMap<>();
-        this.playerNickMap = new HashMap<>();
+        
     }
 
     public App(InetSocketAddress address) {
@@ -110,7 +110,7 @@ public class App extends WebSocketServer {
     public void newNetwork(WebSocket conn, Gson gson) {
         // Logic for handling new network connections
         String id = UUID.randomUUID().toString();
-        Player newPlayer = new Player(id);
+        Player newPlayer = new Player();
         Connections.put(conn, newPlayer);
         Actives.put(id, newPlayer);
         lobbies.updateLobby(activeGames);
@@ -227,8 +227,7 @@ public class App extends WebSocketServer {
 
     public Player addPlayer(String playerName) {
         Player player = new Player(playerName);
-        playerMap.put(player.getWebSocket(), player);
-        playerNickMap.put(playerName, player.getWebSocket());
+       
         return player;
     }
 
@@ -236,14 +235,21 @@ public class App extends WebSocketServer {
         // Logic for navigating to the name selection screen
     }
 
-    public Game createGame(int gameId, int mode) {
+    public Game createGame(String gameId,int mode) {
         Game game = new Game();
+        game.setGameID(gameId);
+        game.setGameMode(mode);
         activeGames.add(game);
         return game;
     }
 
     public void joinGame(Game game, Player player) {
         // Logic for allowing a player to join a game
+        game.addPlayers(player);
+        if(game.getPlayersList().size()==game.getGameMode())
+        {
+            game.startGame();
+        }
     }
 
     public void endGame(Game game) {
@@ -266,27 +272,7 @@ public class App extends WebSocketServer {
         // Logic for selecting a game
     }
 
-    public class Player {
-        private String playerName;
-        private WebSocket webSocket;
-
-        public Player(String playerName) {
-            this.playerName = playerName;
-        }
-
-        public String getPlayerName() {
-            return playerName;
-        }
-
-        public WebSocket getWebSocket() {
-            return webSocket;
-        }
-
-        public void setWebSocket(WebSocket webSocket) {
-            this.webSocket = webSocket;
-        }
-    }
-
+    
     // public class Game {
     // // Define game properties and methods here
     // }
@@ -334,5 +320,61 @@ public class App extends WebSocketServer {
         A.start();
         System.out.println("websocket Server started on port: " + port);
 
+    }
+
+    public void messageHandler(Gson gson, String jsonString, WebSocket conn)
+    {
+        //get string and turn it into a json object
+        JsonElement element = JsonParser.parseString(jsonString);
+        JsonObject object = element.getAsJsonObject();
+        //each message has a specific type
+        String messageType = object.get("type").getAsString();
+        //the way to handle a message determined by type
+        switch(messageType)
+        {
+            case ("JoinGame"):
+                String gameId= object.get("gameIndex").getAsString();
+                String gameMode = object.get("modeIndex").getAsString();
+                int mode = Character.getNumericValue(gameMode.toCharArray()[0]);
+                Player player= Connections.get(conn);
+                player.setNick(object.get("nick").getAsString());
+                int numGames= 0;
+                Game G = new Game();
+                //search through active games
+                for(Game i : activeGames)
+                {
+                    //if the game exists join it
+                    G = i;
+                    if(i.getGameID().equals(gameId))
+                    {
+                        joinGame(i,player);
+                        break;
+                    }
+                    else
+                    {
+                        numGames++;
+                    }
+
+                }
+                //if game doesn't exist, create it then join
+                if(numGames==activeGames.size())
+                {
+                    G = createGame(gameId,mode);
+                    joinGame(G,player);
+                }
+                //create data to send back
+                
+                String json = gson.toJson(player);
+                JsonObject jsonObject = new JsonObject();
+                jsonObject.addProperty("type","JoinGame");
+                //add player to json object to send back
+                jsonObject.addProperty("player",json);
+                json=gson.toJson(G);
+                //add game to json Object to send back
+                jsonObject.addProperty("game",json);
+                //send back to all connections
+                broadcast(jsonObject.toString());
+            break;
+        }
     }
 }

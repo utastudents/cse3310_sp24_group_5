@@ -24,6 +24,13 @@ public class Player
         this.gameWins = 0;
     }
 
+    public Player()
+    {
+        this.score = 0;
+        this.status = PlayerStatus.ACTIVE;
+        this.totalPoints = 0;
+        this.gameWins = 0;   
+    }
     // Getter for nickname
     public String getNick() 
     {
