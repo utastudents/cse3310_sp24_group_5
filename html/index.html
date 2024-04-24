@@ -220,7 +220,7 @@
         }
     function buttonEvent(cell,action)
     {
-        const button= document.getElementById(cell);
+        let button= document.getElementById(cell);
         button.style.backgroundColor="blue";
         U = new UserEvent();
         U.cell=parseInt(cell);
