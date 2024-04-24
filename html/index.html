@@ -264,6 +264,8 @@
         };
         socket.send(JSON.stringify(U));
         console.log(JSON.stringify(U));
+
+        resetTimer();
     }
 
     // Timer countdown logic
@@ -287,6 +289,13 @@
     function updateTimerDisplay(time) {
             timerElement.textContent = time;
     }
+    function resetTimer() {
+        clearInterval(timerInterval);
+        startTimer();
+    }
+
+    // Call startTimer() when the page loads or when a player selects a letter
+    window.onload = startTimer;
 
 
 
