@@ -86,7 +86,7 @@ public class Game // implements Chat, Timer, GridField, LeaderBoard, Wordlist
     }
 
     // Method to update game state
-    public void updateGame(ArrayList<UserEvent> attempt) {
+    public boolean updateGame(ArrayList<UserEvent> attempt) {
         // if the first action is a click and the last action was a release
         if ((attempt.get(0)).action == 0 && (attempt.get(attempt.size() - 1)).action == 2) {
             Player player = (attempt.get(0)).player;
@@ -104,8 +104,9 @@ public class Game // implements Chat, Timer, GridField, LeaderBoard, Wordlist
                 word = word + grid[row][column];
                 System.out.println(word);
             }
-            wordChosen(word, player);
+            return wordChosen(word, player);
         }
+        else{return false;}
     }
 
     // Method for players to exit game
@@ -141,16 +142,19 @@ public class Game // implements Chat, Timer, GridField, LeaderBoard, Wordlist
      * and after being revealed, the method will check if there are any
      * more remaining words
      */
-    public void wordChosen(String selectedWord, Player player) {
-        if (gridField.checkWord(selectedWord) == true) {
+    public boolean wordChosen(String selectedWord, Player player) {
+        if (gridField.checkWord(selectedWord) == true) 
+        {
             gridField.revealWord(selectedWord);// fully highlights word
             player.increaseScore(100 * selectedWord.length());// give player points
             if (gridField.getRemainingWords() == 0)// exit game if no words remain
             {
                 exitGame(playersList);
             }
+            return true;
         }
-
+        else{return false;}
+        
     }
 
     // Method to update the game timer"Shot Clock"

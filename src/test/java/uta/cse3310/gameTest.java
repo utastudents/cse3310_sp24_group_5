@@ -165,7 +165,7 @@ public class gameTest extends TestCase
         };
         
         
-        game.updateGame(attempt);
+        boolean var=game.updateGame(attempt);
         assertTrue(wordList.size()==5);
 
     }
