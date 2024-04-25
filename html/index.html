@@ -117,6 +117,7 @@
             player= JSON.parse(messageData.player);
             //game = JSON.parse(messageData.game);
             gameId= gameId+messageData.gameId;
+            console.log(messageData.game);
             console.log(gameId);
         }
         else if(type==="UpdateGame")
