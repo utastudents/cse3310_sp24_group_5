@@ -139,6 +139,7 @@ select {
 #leaderboardTable th,
 #leaderboardTable td {
     border: 1px solid black;
+    border-bottom: 1px solid black; /* Add this line */
     padding: 8px;
     text-align: left;
 }
