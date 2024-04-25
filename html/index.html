@@ -291,7 +291,11 @@
             });
             cells[i].addEventListener("mouseout",function()
             {
-                this.style.backgroundColor="white";
+                if(clicked<=0)
+                {
+                   this.style.backgroundColor="white"; 
+                }
+                
             });
             
         }
