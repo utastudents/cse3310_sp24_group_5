@@ -115,3 +115,11 @@ select {
     border-radius: 5px; /* Add rounded corners to the border */
     text-align: center; /* Center the timer text */
 }
+
+/* Add styles for the timer text */
+#timer {
+    font-size: 24px; /* Change the font size of the timer text */
+    color: #333; /* Change the color of the timer text */
+    font-weight: bold; /* Make the timer text bold */
+}
+
