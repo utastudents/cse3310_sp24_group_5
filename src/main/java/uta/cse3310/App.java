@@ -406,6 +406,7 @@ public class App extends WebSocketServer {
         jsonString="";//if update happens, will become jsonString of updated game 
         JsonObject jsonObject=new JsonObject();//will be sent to various connections
         Game G = null;
+        boolean valid=false;//will determine if word is valid
         ArrayList<UserEvent> attempt= new ArrayList<UserEvent>();//series of userevents that make up an attempted word
         if(U.action==2)
         {
@@ -429,6 +430,7 @@ public class App extends WebSocketServer {
         jsonObject.addProperty("type","UpdateGame");
         jsonObject.addProperty("gameData",jsonString);
         jsonObject.addProperty("attempt",attempt.toString());
+        jsonObject.addProperty("valid",String.valueOf(valid));
         conn.send(jsonObject.toString());
         //search through the game's player lis
         for(Player i:G.getPlayersList())

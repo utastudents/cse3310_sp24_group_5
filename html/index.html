@@ -114,9 +114,23 @@
         if(type==="JoinGame")
         {
             player= JSON.parse(messageData.player);
-            game = JSON.parse(messageData.game);
+            //game = JSON.parse(messageData.game);
             gameId= gameId+messageData.gameId;
             console.log(gameId);
+        }
+        else if(type==="UpdateGame")
+        {
+            if(messageData.valid==="true")
+            {
+                let U= new UserEvent();
+                const attemptArr= JSON.parse(messageData.attempt)
+                for(let i=0;i<attemptArr.length();i++)
+                {
+                    U =attemptArr[i];
+                    document.getElementById(U.cell.toString()).style.backgroundColor="red";
+
+                }
+            }
         }
 
     };
