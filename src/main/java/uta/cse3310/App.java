@@ -58,6 +58,7 @@ import java.util.Vector;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.List;
 import java.util.ArrayList;
 import java.time.Instant;
@@ -330,6 +331,8 @@ public class App extends WebSocketServer {
         JsonObject object = element.getAsJsonObject();
         //each message has a specific type
         String messageType = object.get("type").getAsString();
+        //jsonObject will be sent back to client
+        JsonObject jsonObject = new JsonObject();
         //the way to handle a message determined by type
         switch(messageType)
         {
@@ -366,7 +369,6 @@ public class App extends WebSocketServer {
                 //create data to send back
                 
                 String json = gson.toJson(player);
-                JsonObject jsonObject = new JsonObject();
                 jsonObject.addProperty("type","JoinGame");
                 //add player to json object to send back
                 jsonObject.addProperty("player",json);
@@ -379,6 +381,69 @@ public class App extends WebSocketServer {
 
                 broadcast(jsonObject.toString());
             break;
+
+            case("UpdateGame"):
+                
+                updateHandler(gson,jsonString,conn); 
+                
+                
+                break;
+                
+
+
+
+
         }
+    }
+
+
+    public String updateHandler(Gson gson, String message, WebSocket conn)
+    {
+        UserEvent U = gson.fromJson(message,UserEvent.class);//turn message into userEvent instance
+        System.out.println(U.cell+ "was selected");
+        insertInnerMap(U,everyAttempt);//add U to arraylist
+        String jsonString= new String();//will be returned
+        jsonString="";//if update happens, will become jsonString of updated game 
+        JsonObject jsonObject=new JsonObject();//will be sent to various connections
+        Game G = null;
+        ArrayList<UserEvent> attempt= new ArrayList<UserEvent>();//series of userevents that make up an attempted word
+        if(U.action==2)
+        {
+            attempt=everyAttempt.get(U.gameId).get(U.player.getNick());
+            
+            for(Game i : activeGames)
+            {
+                if(i.getGameID().equals(U.gameId))
+                {
+                    G = i;
+                    G.updateGame(attempt);
+                    break;
+                }
+            }
+            
+            jsonString = gson.toJson(G);
+           
+            //System.out.println(jsonString);
+            //broadcast(jsonString);
+        }
+        jsonObject.addProperty("type","UpdateGame");
+        jsonObject.addProperty("gameData",jsonString);
+        jsonObject.addProperty("attempt",attempt.toString());
+        conn.send(jsonObject.toString());
+        //search through the game's player lis
+        for(Player i:G.getPlayersList())
+        {
+            //search through the key/value pairs
+            for(Entry<WebSocket,Player> entry:Connections.entrySet())
+            {
+                if(entry.getValue()==i)//if the player in the map is the same as in outer loop
+                {
+                    entry.getKey().send(jsonObject.toString());//send the jsonObject to their connection
+                    break;
+                }
+            }
+        }
+        attempt.clear();
+        return jsonString;
     }
 }
