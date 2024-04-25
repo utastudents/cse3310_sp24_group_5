@@ -267,10 +267,11 @@
         {
             cells[i].addEventListener("onmousedown",function()
             {
-                this.addEventListener("mouseover",function(){
+                /*this.addEventListener("mouseover",function(){
                     this.style.backgroundColor="blue";
-                });
+                });*/
                 buttonEvent(this.getAttribute("id"),0);
+                this.style.backgroundColor="blue";
             });
             cells[i].addEventListener("mouseover",function()
             {
