@@ -277,9 +277,10 @@
             {
                 buttonEvent(this.getAttribute("id"),1);
             });
-            cells[i].addEventListener("onmouseup",function()
+            cells[i].addEventListener("mouseup",function()
             {
                 buttonEvent(this.getAttribute("id"),2);
+                document.getElementById(this.getAttribute("id")).style.backgroundColor="blue";
             });
             cells[i].addEventListener("mouseout",function()
             {
