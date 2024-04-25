@@ -101,7 +101,7 @@
     
     var gameId="";
     var player=new Player();
-    
+    var clicked=0;
     socket.onopen = function(evt) {
         console.log("Open");
         requestGameList();
@@ -272,10 +272,16 @@
                 });*/
                 buttonEvent(this.getAttribute("id"),0);
                 document.getElementById(this.getAttribute("id")).style.backgroundColor="blue";
+                clicked++;
             });
             cells[i].addEventListener("mouseover",function()
             {
-                buttonEvent(this.getAttribute("id"),1);
+                if(clicked>0)
+                {
+                    buttonEvent(this.getAttribute("id"),1);
+                    document.getElementById(this.getAttribute("id")).style.backgroundColor="blue";
+                }
+                
             });
             cells[i].addEventListener("mouseup",function()
             {
