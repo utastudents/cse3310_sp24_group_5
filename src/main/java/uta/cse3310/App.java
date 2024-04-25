@@ -68,6 +68,7 @@ import java.lang.Character;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 
@@ -100,7 +101,9 @@ public class App extends WebSocketServer {
     @Override
     public void onOpen(WebSocket conn, ClientHandshake handshake) {
         System.out.println(conn.getRemoteSocketAddress().getAddress().getHostAddress() + " connected");
-        Gson gson = new Gson();
+        GsonBuilder builder = new GsonBuilder();
+        Gson gson = builder.excludeFieldsWithoutExposeAnnotation().create();
+        //Gson gson = new Gson();
         String jsonString;
         jsonString = gson.toJson("New Server Connection");
         newNetwork(conn, gson);
@@ -137,32 +140,9 @@ public class App extends WebSocketServer {
         //Bring in data from the webpage
         //Take in userEvents and make into an arrayList
         GsonBuilder builder = new GsonBuilder();
-        Gson gson = builder.create();
+        Gson gson = builder.excludeFieldsWithoutExposeAnnotation().create();
         messageHandler(gson,message,conn);
-        UserEvent U = gson.fromJson(message,UserEvent.class);
-        System.out.println(U.cell+ "was selected");
-        insertInnerMap(U,everyAttempt);
-
-        if(U.action==2)
-        {
-            ArrayList<UserEvent> attempt= new ArrayList<UserEvent>();
-            attempt=everyAttempt.get(U.gameId).get(U.player.getNick());
-            Game G = null;
-            for(Game i : activeGames)
-            {
-                if(i.getGameID().equals(U.gameId))
-                {
-                    G = i;
-                    G.updateGame(attempt);
-                    break;
-                }
-            }
-            String jsonString;
-            jsonString = gson.toJson(G);
-
-            System.out.println(jsonString);
-            broadcast(jsonString);
-        }
+        
 
         
 
@@ -170,29 +150,34 @@ public class App extends WebSocketServer {
     public ArrayList<UserEvent> insertEvent(UserEvent U,HashMap<String, ArrayList<UserEvent>> innerMap)
     {
         //declare list
-        ArrayList<UserEvent> events = innerMap.get(U.player);
+        ArrayList<UserEvent> events = new ArrayList<UserEvent>();
+        //innerMap.get(U.player);
         //if the arrayList of events is null create it, add data, put it in the innermap
-        if(events==null)
+        if(!(innerMap.containsKey(U.player.getNick())))
         {
-            events = new ArrayList<UserEvent>();
+            
             events.add(U);
             innerMap.put((U.player).getNick(),events);
         }
         else
         {
-            events.add(U);
+            //events.add(U);
+            innerMap.get(U.player.getNick()).add(U);
         }
         return events;
     }
     public void insertInnerMap(UserEvent U,HashMap<String, HashMap<String, ArrayList<UserEvent>>> everyAttempt)
     {
         //declare inner map
-        HashMap<String,ArrayList<UserEvent>> innerMap =everyAttempt.get(U.gameId);
+        HashMap<String,ArrayList<UserEvent>> innerMap = new HashMap<String, ArrayList<UserEvent>>();
+        innerMap=everyAttempt.get(U.gameId);
         //if inner map is null create it and add the events,then put it in the outer map
         if(innerMap==null)
         {
             innerMap=new HashMap<String,ArrayList<UserEvent>>();
-            innerMap.put(U.player.getNick(),insertEvent(U,innerMap));
+            //System.out.println((U.player.getNick()));
+            ArrayList<UserEvent> events=insertEvent(U,innerMap);
+            innerMap.put(U.player.getNick(),events);
             everyAttempt.put(U.gameId,innerMap);
         }
         else
@@ -248,6 +233,7 @@ public class App extends WebSocketServer {
     public void joinGame(Game game, Player player) {
         // Logic for allowing a player to join a game
         game.addPlayers(player);
+        System.out.println("gameMode:"+game.getGameMode()+" Num players "+game.getPlayersList().size());
         if(game.getPlayersList().size()==game.getGameMode())
         {
             game.startGame();
@@ -333,6 +319,7 @@ public class App extends WebSocketServer {
         String messageType = object.get("type").getAsString();
         //jsonObject will be sent back to client
         JsonObject jsonObject = new JsonObject();
+        JsonArray jsonArray = new JsonArray();
         //the way to handle a message determined by type
         switch(messageType)
         {
@@ -361,18 +348,23 @@ public class App extends WebSocketServer {
 
                 }
                 //if game doesn't exist, create it then join
-                if(numGames==activeGames.size())
+                if(numGames>=activeGames.size())
                 {
                     G = createGame(gameId,mode);
+                    System.out.println("creating game "+gameId);
                     joinGame(G,player);
                 }
                 //create data to send back
                 
-                String json = gson.toJson(player);
+                String json = player.toString();
+                System.out.println(player.toString()+": "+player.getNick()+": "+player.getScore());
+                //jsonArray.add(json);
                 jsonObject.addProperty("type","JoinGame");
                 //add player to json object to send back
-                jsonObject.addProperty("player",json);
-                json=gson.toJson(G);
+                jsonObject.addProperty("player",gson.toJson(jsonArray));
+                //json=gson.toJson(G);
+                json= gson.toJson(G);
+                jsonArray.add(json);
                 //add game to json Object to send back
                 jsonObject.addProperty("game",json);
                 
@@ -380,7 +372,7 @@ public class App extends WebSocketServer {
                 //send back to all connections
 
                 broadcast(jsonObject.toString());
-            break;
+                break;
 
             case("UpdateGame"):
                 
@@ -388,6 +380,15 @@ public class App extends WebSocketServer {
                 
                 
                 break;
+
+            case("RequestGameList"):
+                jsonObject.addProperty("type","RequestGameList");
+                String jsonGameList= gson.toJson(activeGames);
+                jsonObject.addProperty("gameList",jsonGameList);
+                conn.send(jsonObject.toString());
+                break;
+            default:
+                System.out.println("Unexpected message");
                 
 
 

@@ -3,7 +3,7 @@ package uta.cse3310;
 
 public class UserEvent {
     public String gameId;//id of the game in which the event took place
-    public Player player;//the player that made the event
+    public Player player=new Player();//the player that made the event
     public int cell;//refers to the cell containing a selected letter
     public int action; //click=0,hover=1,release=2
     /*  in the script section of index.html there will

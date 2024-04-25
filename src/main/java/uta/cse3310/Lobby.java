@@ -11,8 +11,8 @@ import java.util.stream.Collectors;
 public class Lobby {
     private Map<String, Game> games;
     private Map<String, String> playerToGameMap;
-    public ArrayList<Game> openGames; // Games open to join
-    public Map<String, ArrayList<Player>> LeaderBoard; // Concurrent Leaderboard
+    public ArrayList<Game> openGames=new ArrayList<Game>(); // Games open to join
+    public HashMap<String, ArrayList<Player>> LeaderBoard=new HashMap<String, ArrayList<Player>>(); // Concurrent Leaderboard
 
     public Lobby() {
         this.games = new HashMap<>();
@@ -108,7 +108,7 @@ public class Lobby {
             if (game.gameStatus) { // if true add to openGames = yes can join
                 openGames.add(game);
             } else {
-                LeaderBoard.put(game.gameID, game.leaderboard);
+                LeaderBoard.put(game.getGameID(), game.leaderboard);
             }
         }
 

@@ -10,16 +10,18 @@ import java.nio.file.Paths;
 
 public class WordList //extends Direction 
 {
-    public ArrayList<String> list;
+    public static List<String> list;
     //private [] words;
 
     //method for accesing the word list from file
-    List<String> getWordList(String wordsFile) 
+    public static ArrayList<String> getWordList(String wordsFile) 
     {
-        List<String> wordList = new ArrayList<>();
+        ArrayList<String> wordList = new ArrayList<>();
         
         try {
-            wordList = Files.readAllLines(Paths.get(wordsFile));
+            list = Files.readAllLines(Paths.get(wordsFile));
+            shuffleWords();
+            wordList.addAll(list);
         } catch (IOException e) {
            System.out.println("not a valid file!");
         }
@@ -28,16 +30,16 @@ public class WordList //extends Direction
     }
 
     //method for word shuffling
-    public void shuffleWords() 
+    public static void shuffleWords() 
     {
       Collections.shuffle(list);
     }
 
-    public List<String> updatedWordList(List<String> wordBank)
+    public static ArrayList<String> updatedWordList(ArrayList<String> wordBank)
     {
         int totalCharacters = 0;
         int index = 0;
-        List<String> updatedList = new ArrayList<>();
+        ArrayList<String> updatedList = new ArrayList<>();
 
         while (totalCharacters < 2000 && index < wordBank.size())
         {

@@ -8,13 +8,13 @@ import java.util.UUID;
 public class Game // implements Chat, Timer, GridField, LeaderBoard, Wordlist
 {
     private int gameMode;
-    public String gameID;
+    private String gameID;
     private ArrayList<Player> playersList = new ArrayList<Player>();
     public Player winner = null;
     public boolean gameStatus;
     private String wordsDone;
     private MyTimer timer;
-    private GridField gridField;
+    private GridField gridField=new GridField();
     public ArrayList<String> wordList = new ArrayList<String>();
     public ArrayList<Player> leaderboard;
 
@@ -76,7 +76,7 @@ public class Game // implements Chat, Timer, GridField, LeaderBoard, Wordlist
     public void startGame() {
         
         // gridField=new GridField(wordList);
-        gridField.generateGrid(35);
+        gridField.generateGrid(25);
         gameStatus = true;
     }
 
@@ -98,8 +98,8 @@ public class Game // implements Chat, Timer, GridField, LeaderBoard, Wordlist
             while (i.hasNext()) {
                 UserEvent U = (UserEvent) i.next();
                 int index = U.cell;
-                int row = index / 35;
-                int column = index % 35;
+                int row = index / 25;
+                int column = index % 25;
 
                 word = word + grid[row][column];
                 System.out.println(word);
@@ -162,7 +162,10 @@ public class Game // implements Chat, Timer, GridField, LeaderBoard, Wordlist
         while (timer.isRunning()) {
             System.out.println(timer.getTimeRemaining());
         }
-
+        if(timer.isStopped())
+        {
+            this.exitGame(playersList);
+        }
     }
 
     // Method to display rules of game

@@ -37,7 +37,10 @@ public class WordListTest extends TestCase {
         List<String> expectedWords = Arrays.asList("This", "is", "a", "test", "file");
         
         List<String> actualWords = wordList.getWordList(testFile);
+        for(String i:expectedWords)
+        {
+            assertTrue(actualWords.contains(i));
+        }
         
-        assertEquals(expectedWords, actualWords);
     }
 }

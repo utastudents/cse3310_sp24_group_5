@@ -109,16 +109,24 @@
 
     socket.onmessage = function(evt) {
        // console.log("Message received: " + evt.data);
-        var messageData = JSON.parse(evt.data);
+        let messageData = JSON.parse(evt.data);
         console.log("Message received: " + messageData);
         const type= messageData.type;
         if(type==="JoinGame")
         {
+            let game;
+            let gameData;
+            let playerData;
+            game = JSON.parse(messageData.game);
+            gameData = JSON.stringify(game);
             player= JSON.parse(messageData.player);
-            //game = JSON.parse(messageData.game);
-            gameId= gameId+messageData.gameId;
-            console.log(messageData.game);
-            console.log(gameId);
+            playerData = JSON.stringify(player)
+            gameId= messageData.gameId;
+            console.log("Game Data: "+gameData);
+            console.log("GameId: "+ gameId);
+            console.log("Player Data: "+ playerData);
+
+            
         }
         else if(type==="UpdateGame")
         {
@@ -133,6 +141,10 @@
 
                 }
             }
+        }
+        else if(type==="RequestGameList")
+        {
+            console.log(messageData.gameList)
         }
 
     };

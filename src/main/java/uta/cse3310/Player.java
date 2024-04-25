@@ -3,7 +3,7 @@ package uta.cse3310;
 
 public class Player 
 {
-    private String nick;
+    private String nick=new String();
     private int score;
     private PlayerStatus status; // Using enum for clearer status management
     private int totalPoints;

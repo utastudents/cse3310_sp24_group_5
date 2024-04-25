@@ -13,6 +13,13 @@ public class GridField {
         this.remainingWords = wordList.size();
         generateGrid(5); // Initialize grid with default size (e.g., 5x5)
     }
+    public GridField() {
+        this.wordList = WordList.getWordList("Data/words");
+        this.wordList = WordList.updatedWordList(wordList);
+        this.remainingWords = wordList.size();
+         // Initialize grid with default size (e.g., 5x5)
+    }
+
 
     public char[][] getGrid() {
         return grid;
