@@ -132,7 +132,7 @@ select {
     background: white; 
     border: 1px solid black;
     overflow-y: scroll; 
-    overflow-x: hidden;
+    overflow-x: auto;
 }
 #leaderboardTable {
     width: 100%;
