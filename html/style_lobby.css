@@ -125,3 +125,24 @@ select {
     font-weight: bold; /* Make the timer text bold */
 }
 
+/* Add styles for the leaderboard section */
+#leaderboardContainer {
+    flex-basis: 30%; 
+    padding: 20px;
+    background: white; 
+    border: 1px solid black; 
+}
+#leaderboardTable {
+    width: 100%;
+    border-collapse: collapse;
+}
+#leaderboardTable th,
+#leaderboardTable td {
+    border: 1px solid black;
+    padding: 8px;
+    text-align: left;
+}
+#leaderboardTable th {
+    background-color: #f2f2f2;
+}
+
