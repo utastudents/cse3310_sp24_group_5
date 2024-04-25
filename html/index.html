@@ -320,7 +320,17 @@
         firstLetterCell.style.backgroundColor = "yellow";
     }
 
+    // Update leaderboard function
+    function updateLeaderboard(players) {
+        const leaderboardList = document.getElementById('leaderboardList');
+        leaderboardList.innerHTML = ''; // Clear existing leaderboard
 
+        players.forEach(function(player, index) {
+            const listItem = document.createElement('li');
+            listItem.textContent = `${index + 1}. ${player.nick} - Score: ${player.score}`;
+            leaderboardList.appendChild(listItem);
+        });
+}
 
 
 </script>
