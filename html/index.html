@@ -267,6 +267,9 @@
         {
             cells[i].addEventListener("onmousedown",function()
             {
+                this.addEventListener("mouseover",function(){
+                    this.style.backgroundColor="blue";
+                });
                 buttonEvent(this.getAttribute("id"),0);
             });
             cells[i].addEventListener("mouseover",function()
@@ -287,7 +290,7 @@
     function buttonEvent(cell,action)
     {
         let button= document.getElementById(cell);
-        button.style.backgroundColor="blue";
+        //button.style.backgroundColor="blue";
         U = new UserEvent();
         U.cell=parseInt(cell);
         U.action=action;
