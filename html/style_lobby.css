@@ -106,3 +106,20 @@ select {
     -webkit-appearance: none;
     -moz-appearance: none;
 }
+
+/* Add styles for the timer section */
+#timerSection {
+    margin-top: 20px; /* Adjust the margin as needed */
+    padding: 10px; /* Add padding for space around the timer */
+    border: 2px solid #ccc; /* Add a border around the timer section */
+    border-radius: 5px; /* Add rounded corners to the border */
+    text-align: center; /* Center the timer text */
+}
+
+/* Add styles for the timer text */
+#timer {
+    font-size: 24px; /* Change the font size of the timer text */
+    color: #333; /* Change the color of the timer text */
+    font-weight: bold; /* Make the timer text bold */
+}
+

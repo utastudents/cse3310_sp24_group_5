@@ -375,7 +375,10 @@ public class App extends WebSocketServer {
                 json=gson.toJson(G);
                 //add game to json Object to send back
                 jsonObject.addProperty("game",json);
+                
+                jsonObject.addProperty("gameId",G.getGameID());
                 //send back to all connections
+
                 broadcast(jsonObject.toString());
             break;
 
