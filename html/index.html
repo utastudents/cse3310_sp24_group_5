@@ -101,6 +101,7 @@
     
     var gameId="";
     var player=new Player();
+    
     socket.onopen = function(evt) {
         console.log("Open");
         requestGameList();
@@ -272,9 +273,13 @@
             {
                 buttonEvent(this.getAttribute("id"),1);
             });
-            cells[i].addEventListener("mouseover",function()
+            cells[i].addEventListener("mouserelease",function()
             {
                 buttonEvent(this.getAttribute("id"),2);
+            });
+            cells[i].addEventListener("mouseout",function()
+            {
+                this.style.backgroundColor="white";
             });
             
         }
