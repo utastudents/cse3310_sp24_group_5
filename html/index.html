@@ -271,7 +271,7 @@
                     this.style.backgroundColor="blue";
                 });*/
                 buttonEvent(this.getAttribute("id"),0);
-                this.style.backgroundColor="blue";
+                document.getElementById(this.getAttribute("id")).style.backgroundColor="blue";
             });
             cells[i].addEventListener("mouseover",function()
             {
