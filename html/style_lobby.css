@@ -111,7 +111,7 @@ select {
 #timerSection {
     margin-top: 20px; /* Adjust the margin as needed */
     padding: 10px; /* Add padding for space around the timer */
-    border: 4px solid #ccc; /* Add a border around the timer section */
+    border: 4px solid #0e0101; /* Add a border around the timer section */
     border-radius: 5px; /* Add rounded corners to the border */
     text-align: center; /* Center the timer text */
     height: 100px; /* Set a fixed height for the timer section */
