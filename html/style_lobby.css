@@ -127,12 +127,12 @@ select {
 
 /* Add styles for the leaderboard section */
 #leaderboardContainer {
-    flex-basis: 40%; 
+    flex-basis: 50%; 
     padding: 20px;
     background: white; 
     border: 1px solid black;
     overflow-y: scroll; 
-    overflow-x: hidden;
+    overflow-x: auto;
 }
 #leaderboardTable {
     width: 100%;
