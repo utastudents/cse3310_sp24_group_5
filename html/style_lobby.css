@@ -130,11 +130,13 @@ select {
     flex-basis: 30%; 
     padding: 20px;
     background: white; 
-    border: 1px solid black; 
+    border: 1px solid black;
+    overflow-y: auto; 
 }
 #leaderboardTable {
     width: 100%;
     border-collapse: collapse;
+    border: 1px solid black;
 }
 #leaderboardTable th,
 #leaderboardTable td {
