@@ -282,6 +282,7 @@
             if (timeLeft === 0) {
                 clearInterval(timerInterval);
                 // Handle timer expiration (e.g., reset timer, end game)
+                highlightRandomWord();
             }
         }, 1000);
     }
@@ -296,6 +297,17 @@
 
     // Call startTimer() when the page loads or when a player selects a letter
     window.onload = startTimer;
+
+    function highlightRandomWord() {
+        // Get a random word index
+        var randomIndex = Math.floor(Math.random() * wordGrid.length);
+        var randomWord = wordGrid[randomIndex];
+
+        // Highlight the first letter of the random word
+        var firstLetterId = `${randomIndex}-0`; // Assuming words are left-aligned
+        var firstLetterCell = document.getElementById(firstLetterId);
+        firstLetterCell.style.backgroundColor = "yellow";
+    }
 
 
 
