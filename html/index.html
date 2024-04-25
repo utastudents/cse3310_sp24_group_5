@@ -273,7 +273,7 @@
     var timerInterval;
 
     function startTimer() {
-        var timeLeft = 30; // 30 seconds
+        var timeLeft = 300; // 300 seconds
         updateTimerDisplay(timeLeft);
 
         timerInterval = setInterval(function() {
@@ -289,6 +289,11 @@
 
     function updateTimerDisplay(time) {
             timerElement.textContent = time;
+            if (time <= 30) {
+                timerElement.style.color = 'red'; // Change color to red when 30 seconds or less
+            } else {
+                timerElement.style.color = 'black'; // Reset color to black for other times
+            }
     }
     function resetTimer() {
         clearInterval(timerInterval);
