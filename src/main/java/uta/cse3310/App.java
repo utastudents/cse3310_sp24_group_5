@@ -141,6 +141,7 @@ public class App extends WebSocketServer {
         //Take in userEvents and make into an arrayList
         GsonBuilder builder = new GsonBuilder();
         Gson gson = builder.excludeFieldsWithoutExposeAnnotation().create();
+        //Gson gson = builder.create();
         messageHandler(gson,message,conn);
         
 
@@ -232,7 +233,9 @@ public class App extends WebSocketServer {
 
     public void joinGame(Game game, Player player) {
         // Logic for allowing a player to join a game
+        
         game.addPlayers(player);
+        System.out.println("Player List: "+game.getPlayersList().toString());
         System.out.println("gameMode:"+game.getGameMode()+" Num players "+game.getPlayersList().size());
         if(game.getPlayersList().size()==game.getGameMode())
         {
@@ -320,6 +323,8 @@ public class App extends WebSocketServer {
         //jsonObject will be sent back to client
         JsonObject jsonObject = new JsonObject();
         JsonArray jsonArray = new JsonArray();
+
+        String json = new String();
         //the way to handle a message determined by type
         switch(messageType)
         {
@@ -336,9 +341,9 @@ public class App extends WebSocketServer {
                 {
                     //if the game exists join it
                     G = i;
-                    if(i.getGameID().equals(gameId))
+                    if(G.getGameID().equals(gameId))
                     {
-                        joinGame(i,player);
+                        joinGame(G,player);
                         break;
                     }
                     else
@@ -354,19 +359,22 @@ public class App extends WebSocketServer {
                     System.out.println("creating game "+gameId);
                     joinGame(G,player);
                 }
+                jsonObject.addProperty("type","JoinGame");
                 //create data to send back
                 
-                String json = player.toString();
-                System.out.println(player.toString()+": "+player.getNick()+": "+player.getScore());
-                //jsonArray.add(json);
-                jsonObject.addProperty("type","JoinGame");
                 //add player to json object to send back
-                jsonObject.addProperty("player",gson.toJson(jsonArray));
-                //json=gson.toJson(G);
-                json= gson.toJson(G);
-                jsonArray.add(json);
+                json = gson.toJson(player);
+                jsonObject.addProperty("player",json);
+                
                 //add game to json Object to send back
-                jsonObject.addProperty("game",json);
+                if(G.grid!=null)
+                {
+                    json = gson.toJson(G.grid);
+                    jsonObject.addProperty("grid",json); 
+                }
+                
+                
+                
                 
                 jsonObject.addProperty("gameId",G.getGameID());
                 //send back to all connections
@@ -375,15 +383,18 @@ public class App extends WebSocketServer {
                 break;
 
             case("UpdateGame"):
-                
-                updateHandler(gson,jsonString,conn); 
+                JsonObject events=object.get("events").getAsJsonObject();
+                updateHandler(gson,events,conn); 
                 
                 
                 break;
 
             case("RequestGameList"):
                 jsonObject.addProperty("type","RequestGameList");
+                //FIX LATER
+                //does not end up sending the active games
                 String jsonGameList= gson.toJson(activeGames);
+                System.out.println(activeGames.toString());
                 jsonObject.addProperty("gameList",jsonGameList);
                 conn.send(jsonObject.toString());
                 break;
@@ -398,11 +409,14 @@ public class App extends WebSocketServer {
     }
 
 
-    public String updateHandler(Gson gson, String message, WebSocket conn)
+    public void updateHandler(Gson gson, JsonObject message, WebSocket conn)
     {
         UserEvent U = gson.fromJson(message,UserEvent.class);//turn message into userEvent instance
-        System.out.println(U.cell+ "was selected");
-        insertInnerMap(U,everyAttempt);//add U to arraylist
+        
+        if(U.action!=2)
+        {
+            insertInnerMap(U,everyAttempt);
+        }//add U to arraylist
         String jsonString= new String();//will be returned
         jsonString="";//if update happens, will become jsonString of updated game 
         JsonObject jsonObject=new JsonObject();//will be sent to various connections
@@ -427,26 +441,30 @@ public class App extends WebSocketServer {
            
             //System.out.println(jsonString);
             //broadcast(jsonString);
-        }
-        jsonObject.addProperty("type","UpdateGame");
-        jsonObject.addProperty("gameData",jsonString);
-        jsonObject.addProperty("attempt",attempt.toString());
-        jsonObject.addProperty("valid",String.valueOf(valid));
-        conn.send(jsonObject.toString());
-        //search through the game's player lis
-        for(Player i:G.getPlayersList())
-        {
-            //search through the key/value pairs
-            for(Entry<WebSocket,Player> entry:Connections.entrySet())
+        
+            jsonObject.addProperty("type","UpdateGame");
+            jsonObject.addProperty("gameData",jsonString);
+            jsonObject.addProperty("attempt",attempt.toString());
+            jsonObject.addProperty("valid",String.valueOf(valid));
+            conn.send(jsonObject.toString());
+            //search through the game's player list
+            ArrayList<Player> playerList=new ArrayList<Player>();
+            System.out.println("test");
+            playerList=G.getPlayersList();
+            for(Player i:playerList)
             {
-                if(entry.getValue()==i)//if the player in the map is the same as in outer loop
+                //search through the key/value pairs
+                for(Entry<WebSocket,Player> entry:Connections.entrySet())
                 {
-                    entry.getKey().send(jsonObject.toString());//send the jsonObject to their connection
-                    break;
+                    if(entry.getValue()==i)//if the player in the map is the same as in outer loop
+                    {
+                        entry.getKey().send(jsonObject.toString());//send the jsonObject to their connection
+                        break;
+                    }
                 }
             }
         }
         attempt.clear();
-        return jsonString;
+        
     }
 }

@@ -17,7 +17,7 @@ public class Game // implements Chat, Timer, GridField, LeaderBoard, Wordlist
     private GridField gridField=new GridField();
     public ArrayList<String> wordList = new ArrayList<String>();
     public ArrayList<Player> leaderboard;
-
+    public char[][] grid=null;
     public Game() {
         this.gameMode = gameMode;
         this.gameID = UUID.randomUUID().toString();
@@ -27,6 +27,10 @@ public class Game // implements Chat, Timer, GridField, LeaderBoard, Wordlist
     public ArrayList<Player> getPlayersList() // I need to add this since Lobby class needs to access the game's player
                                               // list _Liz
     {
+        if(playersList==null)
+        {
+            System.out.println("The list is null");
+        }
         return playersList;
     }
 
@@ -77,6 +81,7 @@ public class Game // implements Chat, Timer, GridField, LeaderBoard, Wordlist
         
         // gridField=new GridField(wordList);
         gridField.generateGrid(25);
+        grid=gridField.getGrid();
         gameStatus = true;
     }
 
@@ -88,7 +93,7 @@ public class Game // implements Chat, Timer, GridField, LeaderBoard, Wordlist
     // Method to update game state
     public boolean updateGame(ArrayList<UserEvent> attempt) {
         // if the first action is a click and the last action was a release
-        if ((attempt.get(0)).action == 0 && (attempt.get(attempt.size() - 1)).action == 2) {
+        //if ((attempt.get(0)).action == 0 && (attempt.get(attempt.size() - 1)).action == 2) {
             Player player = (attempt.get(0)).player;
             String word = "";
             char[][] grid = gridField.getGrid();
@@ -105,8 +110,8 @@ public class Game // implements Chat, Timer, GridField, LeaderBoard, Wordlist
                 System.out.println(word);
             }
             return wordChosen(word, player);
-        }
-        else{return false;}
+        //}
+        //else{return false;}
     }
 
     // Method for players to exit game
@@ -143,6 +148,7 @@ public class Game // implements Chat, Timer, GridField, LeaderBoard, Wordlist
      * more remaining words
      */
     public boolean wordChosen(String selectedWord, Player player) {
+        System.out.println(selectedWord);
         if (gridField.checkWord(selectedWord) == true) 
         {
             gridField.revealWord(selectedWord);// fully highlights word
@@ -172,4 +178,7 @@ public class Game // implements Chat, Timer, GridField, LeaderBoard, Wordlist
     public void displayRules() {
 
     }
+
+     
 }
+ 

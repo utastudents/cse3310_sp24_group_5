@@ -101,6 +101,7 @@
     
     var gameId="";
     var player=new Player();
+    var grid;
     var clicked=0;
     socket.onopen = function(evt) {
         console.log("Open");
@@ -117,14 +118,25 @@
             let game;
             let gameData;
             let playerData;
-            game = JSON.parse(messageData.game);
-            gameData = JSON.stringify(game);
+            //access grid when gameStart is called
+            if("grid" in messageData)
+            {
+                //store all letters inside grid variable
+                grid=JSON.parse(messageData.grid);
+                
+            }
+            console.log("Player: "+messageData.player);
+            
+            
             player= JSON.parse(messageData.player);
-            playerData = JSON.stringify(player)
+            console.log(player.nick);
+
+           
+            
             gameId= messageData.gameId;
-            console.log("Game Data: "+gameData);
             console.log("GameId: "+ gameId);
-            console.log("Player Data: "+ playerData);
+
+            
 
             
         }
@@ -259,7 +271,7 @@
                 cell.setAttribute("id",k.toString());
                 
                 
-                const cellText=document.createTextNode(`${k}`);
+                const cellText=document.createTextNode(grid[i][j]);
                 cell.appendChild(cellText);
                 row.appendChild(cell);
             }
@@ -327,7 +339,7 @@
             type: "UpdateGame",
             events: U
         };
-        socket.send(JSON.stringify(U));
+        socket.send(JSON.stringify(data));
         console.log(JSON.stringify(U));
 
         resetTimer();
