@@ -231,16 +231,25 @@ public class App extends WebSocketServer {
         return game;
     }
 
-    public void joinGame(Game game, Player player) {
+    public boolean joinGame(Game game, Player player) {
         // Logic for allowing a player to join a game
-        
-        game.addPlayers(player);
-        System.out.println("Player List: "+game.getPlayersList().toString());
-        System.out.println("gameMode:"+game.getGameMode()+" Num players "+game.getPlayersList().size());
-        if(game.getPlayersList().size()==game.getGameMode())
+        if(game.getPlayersList().size()<game.getGameMode())
         {
-            game.startGame();
+            game.addPlayers(player);
+            System.out.println("Player List: "+game.getPlayersList().toString());
+            System.out.println("gameMode:"+game.getGameMode()+" Num players "+game.getPlayersList().size());
+            if(game.getPlayersList().size()==game.getGameMode())
+            {
+                game.startGame();
+            }
+            return true;
         }
+        else if(game.getPlayersList().size()>=game.getGameMode())
+        {
+            System.out.println("This game is full");
+            return false;
+        }
+        return false;
     }
 
     public void endGame(Game game) {
@@ -329,6 +338,7 @@ public class App extends WebSocketServer {
         switch(messageType)
         {
             case ("JoinGame"):
+                boolean joined=false;
                 String gameId= object.get("gameIndex").getAsString();
                 String gameMode = object.get("modeIndex").getAsString();
                 int mode = Character.getNumericValue(gameMode.toCharArray()[0]);
@@ -343,7 +353,7 @@ public class App extends WebSocketServer {
                     G = i;
                     if(G.getGameID().equals(gameId))
                     {
-                        joinGame(G,player);
+                        joined=joinGame(G,player);
                         break;
                     }
                     else
@@ -357,31 +367,31 @@ public class App extends WebSocketServer {
                 {
                     G = createGame(gameId,mode);
                     System.out.println("creating game "+gameId);
-                    joinGame(G,player);
+                    joined=joinGame(G,player);
                 }
-                jsonObject.addProperty("type","JoinGame");
-                //create data to send back
-                
-                //add player to json object to send back
-                json = gson.toJson(player);
-                jsonObject.addProperty("player",json);
-                
-                //add game to json Object to send back
-                if(G.grid!=null)
+                //send back message to all connections if player successfully joints
+                if(joined==true)
                 {
-                    json = gson.toJson(G.grid);
-                    jsonObject.addProperty("grid",json); 
+                    jsonObject.addProperty("type","JoinGame");
+                    //create data to send back
+                    
+                    //add player to json object to send back
+                    json = gson.toJson(player);
+                    jsonObject.addProperty("player",json);
+                    
+                    //add game to json Object to send back
+                    if(G.grid!=null)
+                    {
+                        json = gson.toJson(G.grid);
+                        jsonObject.addProperty("grid",json); 
+                    }
+                    
+                    jsonObject.addProperty("gameId",G.getGameID());
+                    //send back to all connections
+
+                    broadcast(jsonObject.toString());
                 }
-                
-                
-                
-                
-                jsonObject.addProperty("gameId",G.getGameID());
-                //send back to all connections
-
-                broadcast(jsonObject.toString());
                 break;
-
             case("UpdateGame"):
                 JsonObject events=object.get("events").getAsJsonObject();
                 updateHandler(gson,events,conn); 

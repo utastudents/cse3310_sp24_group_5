@@ -101,6 +101,7 @@
     
     var gameId="";
     var player=new Player();
+    var nick="";
     var grid;
     var clicked=0;
     socket.onopen = function(evt) {
@@ -125,19 +126,18 @@
                 grid=JSON.parse(messageData.grid);
                 
             }
-            console.log("Player: "+messageData.player);
             
             
-            player= JSON.parse(messageData.player);
-            console.log(player.nick);
-
-           
+            if(nick==="")
+            {
+                console.log("Player: "+messageData.player);
+                player= JSON.parse(messageData.player);
+                nick=player.nick;
+                console.log(nick);
+                gameId= messageData.gameId;
+                console.log("GameId: "+ gameId);
+            }
             
-            gameId= messageData.gameId;
-            console.log("GameId: "+ gameId);
-
-            
-
             
         }
         else if(type==="UpdateGame")
