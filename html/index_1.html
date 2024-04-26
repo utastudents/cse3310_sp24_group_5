@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Word Search Game Lobby</title>
+    <link rel="stylesheet" href="style_lobby.css">
+</head>
+
+<body>
+    <!-- welcome -->
+    <div id="welcomeContainer">
+        <h1>Welcome to The Word Search Game</h1>
+        <form id="nickForm">
+            <label for="nickInput">Enter your nickname:</label>
+            <input type="text" id="nickInput" placeholder="Nickname" required>
+            <button type="submit">Enter Lobby</button>
+            <p id="error" style="color: red; display: none;">Your nick is already taken, please reenter.</p>
+        </form>
+    </div>
+
+      <!-- lobby -->
+
+    <div id="lobbyContainer">
+        <div id="userInputSection">
+            <button id="helpButton">HELP</button>
+            <button id="standbyButton">PUT ON STANDBY</button>
+
+            <!--
+            <div>
+                <label for="nickInput">Insert Nick:</label>
+                <input type="text" id="nickInput" placeholder="Type here">
+            </div>
+            -->
+            
+            <div>
+                <label for="gameSelect">Game:</label>
+                <select id="gameSelect">
+                  
+                    <option value="game1">Game1</option>
+                    <option value="game2">Game2</option>
+                    <option value="game3">Game3</option>
+                    <option value="game4">Game4</option>
+                    <option value="game5">Game5</option>
+
+
+                </select>
+            </div>
+            <div>
+                <label for="modeSelect">Game Mode:</label>
+                <select id="modeSelect">
+
+                    <option value="2players">2 Players</option>
+                    <option value="3players">3 Players</option>
+                    <option value="4players">4 Players</option>
+
+                </select>
+            </div>
+            <button id="confirmButton" >CONFIRM</button>
+            <h1>The Word Search Game</h1>
+            <button id="startButton">START</button>
+            <button id="leaveButton">LEAVE</button>
+            <button id="refreshButton">Refresh</button>
+        </div>
+        <div id="gameListSection">
+
+    </div>
+
+    
+
+    <!-- Leaderboard section -->
+    <div id="leaderboardContainer">
+        <h2>Leaderboard</h2>
+        <table id="leaderboardTable">
+            <thead>
+                <tr>
+                    <th>Rank</th>
+                    <th>Nickname</th>
+                    <th>Score</th>
+                </tr>
+            </thead>
+            <tbody id="leaderboardBody">
+                <!-- Leaderboard rows will be dynamically added here -->
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Timer section -->
+    <div id="timerSection">
+        <h2>Timer: <span id="timer">30</span> seconds</h2>
+    </div>
+
+    <!--Grid table-->
+    
+    <div>
+        <input type="button" value="Generate Grid" onclick="generateGrid()"/>
+        <table id="wordGrid">
+            
+        </table>
+    </div>
+</body>
+<script>
+    var socket = new WebSocket("ws://"+ window.location.hostname+":9105");
+    
+    class Player
+    {
+        nick="";
+        score=0;
+        status;
+        totalPoints=0;
+        gameWins=0;
+    }
+
+    class UserEvent
+    {
+        gameId=-1;
+        player="";
+        cell=-1;
+        action=-1;
+    }
+
+    
+    var gameId="";
+    var player=new Player();
+    var nick="";
+    var grid;
+    var clicked=0;
+    socket.onopen = function(evt) {
+        console.log("Open");
+        requestGameList();
+    };
+
+    socket.onmessage = function(evt) {
+       // console.log("Message received: " + evt.data);
+        let messageData = JSON.parse(evt.data);
+        console.log("Message received: " + messageData);
+        const type= messageData.type;
+        if(type==="JoinGame")
+        {
+            let game;
+            let gameData;
+            let playerData;
+            //access grid when gameStart is called
+            if("grid" in messageData)
+            {
+                //store all letters inside grid variable
+                grid=JSON.parse(messageData.grid);
+                
+            }
+            
+            
+            if(nick==="")
+            {
+                console.log("Player: "+messageData.player);
+                player= JSON.parse(messageData.player);
+                nick=player.nick;
+                console.log(nick);
+                gameId= messageData.gameId;
+                console.log("GameId: "+ gameId);
+            }
+            
+            
+        }
+        else if(type==="UpdateGame")
+        {
+            if(messageData.valid==="true")
+            {
+                let U= new UserEvent();
+                const attemptArr= JSON.parse(messageData.attempt)
+                for(let i=0;i<attemptArr.length();i++)
+                {
+                    U =attemptArr[i];
+                    document.getElementById(U.cell.toString()).style.backgroundColor="red";
+
+                }
+            }
+        }
+        else if(type==="RequestGameList")
+        {
+            console.log(messageData.gameList)
+        }
+
+    };
+
+        socket.onclose = function(evt) {
+            console.log("WebSocket connection closed.");
+            var nick = document.getElementById('nickInput').value.trim();
+            if (nick) {
+                leaveGame(nick);
+            }
+            document.getElementById("topMessage").innerText = "Server Offline";
+        };
+
+
+    socket.onerror = function(evt) {
+        console.error("WebSocket error: " + evt.message);
+    };
+
+    
+
+    function requestGameList() {
+        var data = { type: "RequestGameList" };
+        socket.send(JSON.stringify(data));
+    }
+
+    function updateGameList(serverData) 
+    {
+        var gameListSection = document.getElementById('gameListSection');
+        gameListSection.innerHTML = ''; 
+
+        serverData.forEach(function(game) {
+            var gameDiv = document.createElement('div');
+            gameDiv.innerHTML = '<span>' + game.gameName + '</span>' +
+                            '<span>' + game.filledSlots + '/' + game.maxSlots + '</span>' +
+                            '<button onclick="joinGame(' + game.gameId + ')">Join</button>';
+            gameListSection.appendChild(gameDiv);
+    });
+    }
+
+    // event listeners for user actions
+    document.getElementById('confirmButton').addEventListener('click', function() {
+        var nick = document.getElementById('nickInput').value.trim();
+        var gameIndex = document.getElementById('gameSelect').value;
+        var mode = document.getElementById('modeSelect').value;
+
+        if (!nick) 
+        {
+            alert('Please enter a nickname.');
+            return;
+        }
+        if (!gameIndex || !mode) 
+        {
+            alert('Please select a game and mode.');
+            return;
+        }
+        joinGame(nick, gameIndex, mode);
+    });
+
+
+    // replace joinGame function with one that sends a WebSocket message
+    function joinGame(nick, gameIndex, mode) {
+        var data = {
+            type: "JoinGame",
+            nick: nick,
+            gameIndex: gameIndex,
+            modeIndex: mode
+        };
+
+        socket.send(JSON.stringify(data));
+        console.log(JSON.stringify(data));
+    }
+
+    // replace leaveGame function with one that sends a WebSocket message
+    function leaveGame(nick) {
+        var data = {
+            type: "LeaveGame",
+            nick: nick
+        };
+        socket.send(JSON.stringify(data));
+    }
+
+    // event listener for the leave button
+    document.getElementById('leaveButton').addEventListener('click', function() {
+        var nick = document.getElementById('nickInput').value;
+        leaveGame(nick);
+    });
+
+    // add an event listener for the refresh button to request the game list
+    document.getElementById('refreshButton').addEventListener('click', function() {
+        requestGameList();
+    });
+
+
+    //generate 25*25 grid
+
+    //too big may have to do smaller grid or smaller cells
+    function generateGrid()
+    {
+        const tbl = document.createElement("table");
+        const tblBody = document.createElement("tbody");
+        //create cells
+
+        for(let i=0,k=0;i<25;i++)
+        {
+            //create rows
+            const row = document.createElement("tr");
+            for(let j=0;j<25;j++,k++)
+
+            {
+                //create cells and add it to the row
+                const cell = document.createElement("td");
+                cell.setAttribute("id",k.toString());
+                
+                
+                const cellText=document.createTextNode(grid[i][j]);
+                cell.appendChild(cellText);
+                row.appendChild(cell);
+            }
+
+            //add row to the table body
+            tblBody.appendChild(row);
+        }
+        tbl.appendChild(tblBody);
+        document.body.appendChild(tbl);
+        tbl.setAttribute("border","1.5");
+        eventListener();
+       
+    }
+    function eventListener()
+    {
+        var cells = document.querySelectorAll("td");
+        for(var i=0;i<cells.length;i++)
+        {
+            cells[i].addEventListener("mousedown",function()
+            {
+                /*this.addEventListener("mouseover",function(){
+                    this.style.backgroundColor="blue";
+                });*/
+                buttonEvent(this.getAttribute("id"),0);
+                document.getElementById(this.getAttribute("id")).style.backgroundColor="blue";
+                clicked++;
+            });
+            cells[i].addEventListener("mouseover",function()
+            {
+                if(clicked>0)
+                {
+                    buttonEvent(this.getAttribute("id"),1);
+                    document.getElementById(this.getAttribute("id")).style.backgroundColor="blue";
+                }
+                
+            });
+            cells[i].addEventListener("mouseup",function()
+            {
+                buttonEvent(this.getAttribute("id"),2);
+                document.getElementById(this.getAttribute("id")).style.backgroundColor="blue";
+                clicked--;
+            });
+            cells[i].addEventListener("mouseout",function()
+            {
+                if(clicked<=0)
+                {
+                   this.style.backgroundColor="white"; 
+                }
+                
+            });
+            
+        }
+    }
+    function buttonEvent(cell,action)
+    {
+        let button= document.getElementById(cell);
+        //button.style.backgroundColor="blue";
+        U = new UserEvent();
+        U.cell=parseInt(cell);
+        U.action=action;
+        U.player=player;
+        U.gameId=gameId;
+
+        var data = {
+            type: "UpdateGame",
+            events: U
+        };
+        socket.send(JSON.stringify(data));
+        console.log(JSON.stringify(U));
+
+        resetTimer();
+    }
+
+    // Timer countdown logic
+    var timerElement = document.getElementById('timer');
+    var timerInterval;
+
+    function startTimer() {
+        var timeLeft = 300; // 300 seconds
+        updateTimerDisplay(timeLeft);
+
+        timerInterval = setInterval(function() {
+            timeLeft--;
+            updateTimerDisplay(timeLeft);
+            if (timeLeft === 0) {
+                clearInterval(timerInterval);
+                // Handle timer expiration (e.g., reset timer, end game)
+                highlightRandomWord();
+            }
+        }, 1000);
+    }
+
+    function updateTimerDisplay(time) {
+            timerElement.textContent = time;
+            if (time <= 30) {
+                timerElement.style.color = 'red'; // Change color to red when 30 seconds or less
+                //timerSectionElement.style.border = '4px solid red'; // Add red border when 30 seconds or less
+            } else {
+                timerElement.style.color = 'black'; // Reset color to black for other times
+                //timerSectionElement.style.border = '4px solid black'; // Reset border to black for other times
+            }
+    }
+    function resetTimer() {
+        clearInterval(timerInterval);
+        startTimer();
+    }
+
+    // Call startTimer() when the page loads or when a player selects a letter
+    window.onload = startTimer;
+
+    function highlightRandomWord() {
+        // Get a random word index
+        var randomIndex = Math.floor(Math.random() * wordGrid.length);
+        var randomWord = wordGrid[randomIndex];
+
+        // Highlight the first letter of the random word
+        var firstLetterId = `${randomIndex}-0`; // Assuming words are left-aligned
+        var firstLetterCell = document.getElementById(firstLetterId);
+        firstLetterCell.style.backgroundColor = "yellow";
+    }
+
+    // Update leaderboard function
+    function updateLeaderboard(players) {
+        const leaderboardList = document.getElementById('leaderboardList');
+        leaderboardList.innerHTML = ''; // Clear existing leaderboard
+
+        players.forEach(function(player, index) {
+            const listItem = document.createElement('li');
+            listItem.textContent = `${index + 1}. ${player.nick} - Score: ${player.score}`;
+            leaderboardList.appendChild(listItem);
+        });
+}
+
+
+</script>
+
