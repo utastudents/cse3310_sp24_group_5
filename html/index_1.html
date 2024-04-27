@@ -17,7 +17,17 @@
             <p id="error" style="color: red; display: none;">Your nick is already taken, please reenter.</p>
         </form>
     </div>
-
+<!--Grid table-->
+    
+<div id="Game" style="display: none";>
+    <!-- Timer section -->
+    <div id="timerSection">
+        <h2>Timer: <span id="timer">30</span> seconds</h2>
+    </div>
+    <table id="wordGrid">
+        
+    </table>
+</div>
       <!-- lobby -->
 
     <div id="lobbyContainer">
@@ -55,12 +65,12 @@
 
                 </select>
             </div>
-            <button id="confirmButton" >CONFIRM</button>
-            <h1>The Word Search Game</h1>
-            <button id="startButton">START</button>
-            <button id="leaveButton">LEAVE</button>
-            <button id="refreshButton">Refresh</button>
-        </div>
+                <button id="confirmButton" >CONFIRM</button>
+                <h1>The Word Search Game</h1>
+                <button id="startButton">START</button>
+                <button id="leaveButton">LEAVE</button>
+                <button id="refreshButton">Refresh</button>
+            </div>
         <div id="gameListSection">
 
     </div>
@@ -86,17 +96,11 @@
 
     
 
-    <!--Grid table-->
     
-    <div id="Game">
-        <!-- Timer section -->
-        <div id="timerSection">
-            <h2>Timer: <span id="timer">30</span> seconds</h2>
-        </div>
-        <table id="wordGrid">
-            
-        </table>
+    <div id="LobbyChatRoom">
+        <p>Message:Talk to other players here</p>
     </div>
+
 </body>
 <script>
     var socket = new WebSocket("ws://"+ window.location.hostname+":9105");
@@ -161,7 +165,10 @@
             
             if("ready" in messageData && messageData.ready==="true")
             {
+                document.getElementById("lobbyContainer").style.display="none";
                 generateGrid();
+                document.getElementById("Game").style.display="block";
+                startTimer();
             }
         }
         else if(type==="UpdateGame")
@@ -415,7 +422,7 @@
     }
 
     // Call startTimer() when the page loads or when a player selects a letter
-    window.onload = startTimer;
+    //window.onload = startTimer;
 
     function highlightRandomWord() {
         // Get a random word index
