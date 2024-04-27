@@ -436,10 +436,9 @@
 
 
 document.getElementById('nickForm').addEventListener('submit', function(event) {
-    event.preventDefault(); // Prevent the default form submission
+    event.preventDefault(); 
     var nickInput = document.getElementById('nickInput').value.trim();
 
-    // Simulate a check for nickname uniqueness
     if (nickInput && isNickUnique(nickInput)) { // Implement isNickUnique() to check the nickname
         document.getElementById('welcomeContainer').style.display = 'none';
         document.getElementById('lobbyContainer').style.display = 'block';
@@ -450,7 +449,6 @@ document.getElementById('nickForm').addEventListener('submit', function(event) {
 });
 
 function isNickUnique(nick) {
-    // This function should ideally make an AJAX call to the server to check nickname uniqueness
     return true; // Placeholder return
 }
 
