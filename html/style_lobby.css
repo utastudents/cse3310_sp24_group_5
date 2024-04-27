@@ -16,6 +16,7 @@ body {
 }
 #Game {
     width: 100vh;
+    user-select: none;
 }
 td {
     height: 25px;
@@ -31,7 +32,7 @@ td {
 
 #userInputSection, #gameListSection {
     flex-basis: 40%; 
-    padding: 20px;
+    padding: 10px;
     background: white; 
     border: 1px solid black; 
     display: flex;
@@ -159,4 +160,9 @@ select {
     width: 100%;
     border-collapse: collapse;
     border: 1px solid black;
+}
+/* get rid of blue selection highlight*/
+::selection {
+    color: none;
+    background: none;
 }

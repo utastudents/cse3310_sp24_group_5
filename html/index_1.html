@@ -93,13 +93,11 @@
             </tbody>
         </table>
     </div>
-
-    
-
-    
-    <div id="LobbyChatRoom">
-        <p>Message:Talk to other players here</p>
-    </div>
+<!--LobbyChat-->
+<div id="LobbyChatRoom">
+    <p>Message:Talk to other players here</p>
+    <button id="send">Send</button>
+</div>
 
 </body>
 <script>
@@ -340,6 +338,7 @@
                 buttonEvent(this.getAttribute("id"),0);
                 document.getElementById(this.getAttribute("id")).style.backgroundColor="blue";
                 clicked++;
+                console.log("clicked="+clicked);
             });
             cells[i].addEventListener("mouseover",function()
             {
@@ -355,6 +354,7 @@
                 buttonEvent(this.getAttribute("id"),2);
                 document.getElementById(this.getAttribute("id")).style.backgroundColor="blue";
                 clicked--;
+                console.log("clicked="+clicked);
             });
             /*cells[i].addEventListener("mouseout",function()
             {
