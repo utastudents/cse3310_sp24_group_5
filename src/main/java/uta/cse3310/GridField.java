@@ -5,19 +5,18 @@ import java.util.Random;
 
 public class GridField {
     private char[][] grid;
-    private ArrayList<String> wordList;
+    private ArrayList<String> wordList=new ArrayList<String>();
     private int remainingWords;
 
     public GridField(ArrayList<String> wordList) {
         this.wordList = wordList;
-        this.remainingWords = wordList.size();
-        generateGrid(5); // Initialize grid with default size (e.g., 5x5)
+        this.remainingWords=wordList.size();
+        generateGrid(5); // Initialize grid with default size (e.g., 5x5)  <-no need -muktar
     }
     public GridField() {
         this.wordList = WordList.getWordList("Data/words");
         this.wordList = WordList.updatedWordList(wordList);
-        this.remainingWords = wordList.size();
-         // Initialize grid with default size (e.g., 5x5)
+        
     }
 
 
@@ -37,7 +36,7 @@ public class GridField {
                 grid[i][j] = (char) ('A' + random.nextInt(26)); // Randomly fill grid with alphabets
             }
         }
-        this.addWord("group",0,0,Direction.Directions.HORIZONTAL);
+        //this.addWord("group",0,0,Direction.Directions.HORIZONTAL); was testing selection function
     }
 
     public boolean checkWord(String word) {
@@ -76,7 +75,7 @@ public class GridField {
         }
         wordList.add(word);
         //remainingWords starts off as the size of the updated wordlist
-        //remainingWords++;
+        remainingWords++;
     }
 
     public void displayGrid() {

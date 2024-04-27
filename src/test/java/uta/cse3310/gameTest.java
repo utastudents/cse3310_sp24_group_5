@@ -127,8 +127,7 @@ public class gameTest extends TestCase
         GridField gridField=new GridField(wordList);
         game.setGridField(gridField);
         game.startGame();
-        game.setGridField(gridField);
-        game.startGame();
+        
         char[][] grid =gridField.getGrid();
         //test word
         String word="";
@@ -166,6 +165,10 @@ public class gameTest extends TestCase
         
         
         boolean var=game.updateGame(attempt);
+        for(int i=0;i<wordList.size();i++)
+        {
+            System.out.println(wordList.get(i));
+        }
         assertTrue(wordList.size()==5);
 
     }
