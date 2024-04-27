@@ -9,6 +9,15 @@
         #lobbyContainer {
             display: none;
         }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
     </style>
 </head>
 
@@ -68,10 +77,22 @@
             <button id="startButton">START</button>
             <button id="leaveButton">LEAVE</button>
             <button id="refreshButton">Refresh</button>
+            
+            <!-- Game List Section -->
+            <div id="gameListSection">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Game Name</th>
+                        <th>Slots Filled/Needed</th>
+                        <th>Players</th>
+                    </tr>
+                </thead>
+                <tbody id="gameListBody"></tbody>
+            </table>
         </div>
-        <div id="gameListSection">
-
     </div>
+
 
     
 
@@ -133,6 +154,9 @@
     var nick="";
     var grid;
     var clicked=0;
+
+  
+
     socket.onopen = function(evt) {
         console.log("Open");
         requestGameList();
@@ -205,7 +229,7 @@
     };
 
     
-
+/*
     function requestGameList() {
         var data = { type: "RequestGameList" };
         socket.send(JSON.stringify(data));
@@ -277,8 +301,97 @@
     document.getElementById('refreshButton').addEventListener('click', function() {
         requestGameList();
     });
+    */
 
+  //////////////////////////////////////////////
+    //Welcome and Lobby
 
+    document.getElementById('nickForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            var nick = document.getElementById('nickInput').value.trim();
+            if (nick) {
+                socket.send(JSON.stringify({ type: "CheckNick", nick: nick }));
+            }
+        });
+
+        document.getElementById('confirmButton').addEventListener('click', function() {
+            var game = document.getElementById('gameSelect').value;
+            var mode = document.getElementById('modeSelect').value;
+            socket.send(JSON.stringify({ type: "JoinGame", game: game, mode: mode }));
+        });
+
+        socket.onmessage = function(event) {
+            var data = JSON.parse(event.data);
+            switch (data.type) {
+                case "NickChecked":
+                    if (data.isUnique) {
+                        document.getElementById('welcomeContainer').style.display = 'none';
+                        document.getElementById('lobbyContainer').style.display = 'block';
+                    } else {
+                        document.getElementById('error').style.display = 'block';
+                        document.getElementById('error').textContent = 'Nickname already taken, please try another one.';
+                    }
+                    break;
+                case "UpdateGameList":
+                    updateGameList(data.games);
+                    break;
+                case "GameReady":
+                    document.getElementById('startButton').disabled = false;
+                    break;
+            }
+        };
+
+        function updateGameList(games) {
+            var tbody = document.getElementById('gameListBody');
+            tbody.innerHTML = '';
+            games.forEach(function(game) {
+                var row = '<tr>' +
+                          '<td>' + game.gameName + '</td>' +
+                          '<td>' + game.filledSlots + '/' + game.maxSlots + '</td>' +
+                          '<td>' + game.players.join(', ') + '</td>' +
+                          '</tr>';
+                tbody.innerHTML += row;
+            });
+        }
+
+        document.getElementById('startButton').addEventListener('click', function() {
+            if (!this.disabled) {
+                socket.send(JSON.stringify({ type: "StartGame" }));
+            }
+        });
+
+        document.getElementById('leaveButton').addEventListener('click', function() {
+            var nick = document.getElementById('nickInput').value;
+            socket.send(JSON.stringify({ type: "LeaveGame", nick: nick }));
+        });
+
+        document.getElementById('refreshButton').addEventListener('click', function() {
+            socket.send(JSON.stringify({ type: "RequestGameList" }));
+        });
+
+/*
+    
+document.getElementById('nickForm').addEventListener('submit', function(event) {
+    event.preventDefault(); // Prevent the default form submission
+    var nickInput = document.getElementById('nickInput').value.trim();
+
+    // Simulate a check for nickname uniqueness
+    if (nickInput && isNickUnique(nickInput)) { // Implement isNickUnique() to check the nickname
+        document.getElementById('welcomeContainer').style.display = 'none';
+        document.getElementById('lobbyContainer').style.display = 'block';
+    } else {
+        document.getElementById('error').style.display = 'block';
+        document.getElementById('error').textContent = 'Nickname already taken, please try another one.';
+    }
+});
+
+function isNickUnique(nick) {
+    // This function should ideally make an AJAX call to the server to check nickname uniqueness
+    return true; // Placeholder return
+}
+*/
+
+///////////////////////////////////////////////////////////////////////////////
     //generate 25*25 grid
 
     //too big may have to do smaller grid or smaller cells
@@ -435,24 +548,7 @@
 }
 
 
-document.getElementById('nickForm').addEventListener('submit', function(event) {
-    event.preventDefault(); // Prevent the default form submission
-    var nickInput = document.getElementById('nickInput').value.trim();
 
-    // Simulate a check for nickname uniqueness
-    if (nickInput && isNickUnique(nickInput)) { // Implement isNickUnique() to check the nickname
-        document.getElementById('welcomeContainer').style.display = 'none';
-        document.getElementById('lobbyContainer').style.display = 'block';
-    } else {
-        document.getElementById('error').style.display = 'block';
-        document.getElementById('error').textContent = 'Nickname already taken, please try another one.';
-    }
-});
-
-function isNickUnique(nick) {
-    // This function should ideally make an AJAX call to the server to check nickname uniqueness
-    return true; // Placeholder return
-}
 
 
 
