@@ -124,6 +124,7 @@
     var nick="";
     var grid;
     var clicked=0;
+    var attemptArr;
     socket.onopen = function(evt) {
         console.log("Open");
         requestGameList();
@@ -167,12 +168,22 @@
         {
             if(messageData.valid==="true")
             {
-                let U= new UserEvent();
-                const attemptArr= JSON.parse(messageData.attempt)
-                for(let i=0;i<attemptArr.length();i++)
+                
+                attemptArr= JSON.parse(messageData.attempt);
+                for(let i=0;i<attemptArr.length;i++)
                 {
-                    U =attemptArr[i];
-                    document.getElementById(U.cell.toString()).style.backgroundColor="red";
+                    document.getElementById(attemptArr[i].toString()).style.backgroundColor="red";
+
+                }
+            }
+            else//if attempt was not valid make cells white again
+            {
+                let U= new UserEvent();
+                attemptArr= JSON.parse(messageData.attempt);
+                console.log(attemptArr);
+                for(let i=0;i<attemptArr.length;i++)
+                {
+                    document.getElementById(attemptArr[i].toString()).style.backgroundColor="white";
 
                 }
             }
@@ -306,7 +317,7 @@
         myDiv=document.getElementById("Game");
         myDiv.appendChild(tbl);
         tbl.setAttribute("border","1.5");
-        //eventListener();
+        eventListener();
        
     }
     function eventListener()
@@ -338,14 +349,14 @@
                 document.getElementById(this.getAttribute("id")).style.backgroundColor="blue";
                 clicked--;
             });
-            cells[i].addEventListener("mouseout",function()
+            /*cells[i].addEventListener("mouseout",function()
             {
                 if(clicked<=0)
                 {
                    this.style.backgroundColor="white"; 
                 }
                 
-            });
+            });*/
             
         }
     }
