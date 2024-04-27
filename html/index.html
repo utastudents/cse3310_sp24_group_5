@@ -64,14 +64,14 @@
         </table>
     </div>
 
-    <!-- Timer section -->
-    <div id="timerSection">
-        <h2>Timer: <span id="timer">30</span> seconds</h2>
-    </div>
-
-    <!--Grid table-->
+    <!--Game-->
     
-    <div>
+    <div id="Game">
+         <!-- Timer section -->
+        <div id="timerSection">
+            <h2>Timer: <span id="timer">30</span> seconds</h2>
+        </div>
+        <!--Grid table-->
         <input type="button" value="Generate Grid" onclick="generateGrid()"/>
         <table id="wordGrid">
             
@@ -99,11 +99,11 @@
     }
 
     
-    var gameId="";
-    var player=new Player();
-    var nick="";
-    var grid;
-    var clicked=0;
+    letgameId="";
+    let score;
+    let nick="";
+    let grid;
+    let clicked=0;
     socket.onopen = function(evt) {
         console.log("Open");
         requestGameList();
@@ -145,12 +145,31 @@
             if(messageData.valid==="true")
             {
                 let U= new UserEvent();
-                const attemptArr= JSON.parse(messageData.attempt)
-                for(let i=0;i<attemptArr.length();i++)
+                let attemptArr= messageData.attempt;
+                console.log(attemptArr);
+                for(let i=0;i<attemptArr.length;i++)
                 {
-                    U =attemptArr[i];
-                    document.getElementById(U.cell.toString()).style.backgroundColor="red";
-
+                   
+                    var cellColor=document.getElementById(attemptArr[i].toString());
+                    if(cellColor!=null)//check null before changing color;
+                    {
+                        cellColor.style.backgroundColor="red";
+                    }
+                }
+            }
+            else
+            {
+                let U= new UserEvent();
+                let attemptArr= messageData.attempt;
+                console.log(attemptArr);
+                for(let i=0;i<attemptArr.length;i++)
+                {
+                   
+                    var cellColor=document.getElementById(attemptArr[i].toString());
+                    if(cellColor!=null)//check null before changing color;
+                    {
+                        cellColor.style.backgroundColor="white";
+                    }
                 }
             }
         }
@@ -311,28 +330,26 @@
             cells[i].addEventListener("mouseup",function()
             {
                 buttonEvent(this.getAttribute("id"),2);
-                document.getElementById(this.getAttribute("id")).style.backgroundColor="blue";
                 clicked--;
             });
-            cells[i].addEventListener("mouseout",function()
+            /*cells[i].addEventListener("mouseout",function()
             {
-                if(clicked<=0)
-                {
-                   this.style.backgroundColor="white"; 
+                if(clicked>=0)
+                {    
+                    this.style.backgroundColor="white"; 
                 }
-                
-            });
+            });*/
             
         }
     }
     function buttonEvent(cell,action)
     {
+        
         let button= document.getElementById(cell);
-        //button.style.backgroundColor="blue";
+        
         U = new UserEvent();
         U.cell=parseInt(cell);
         U.action=action;
-        U.player=player;
         U.gameId=gameId;
 
         var data = {

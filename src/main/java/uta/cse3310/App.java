@@ -159,13 +159,15 @@ public class App extends WebSocketServer {
             
             events.add(U);
             innerMap.put((U.player).getNick(),events);
+            
         }
         else
         {
             //events.add(U);
             innerMap.get(U.player.getNick()).add(U);
+            
         }
-        return events;
+        return innerMap.get(U.player.getNick());
     }
     public void insertInnerMap(UserEvent U,HashMap<String, HashMap<String, ArrayList<UserEvent>>> everyAttempt)
     {
@@ -175,8 +177,8 @@ public class App extends WebSocketServer {
         //if inner map is null create it and add the events,then put it in the outer map
         if(innerMap==null)
         {
+            
             innerMap=new HashMap<String,ArrayList<UserEvent>>();
-            //System.out.println((U.player.getNick()));
             ArrayList<UserEvent> events=insertEvent(U,innerMap);
             innerMap.put(U.player.getNick(),events);
             everyAttempt.put(U.gameId,innerMap);
@@ -421,45 +423,61 @@ public class App extends WebSocketServer {
 
     public void updateHandler(Gson gson, JsonObject message, WebSocket conn)
     {
+        String evtMessage=message.toString();
+        System.out.println(evtMessage);
         UserEvent U = gson.fromJson(message,UserEvent.class);//turn message into userEvent instance
+        U.action = Integer.valueOf(message.get("action").getAsString());
+        U.cell = Integer.valueOf(message.get("cell").getAsString());
+        U.player = Connections.get(conn);
+        U.gameId = message.get("gameId").getAsString();
         
         if(U.action!=2)
         {
             insertInnerMap(U,everyAttempt);
+            
         }//add U to arraylist
+        
         String jsonString= new String();//will be returned
         jsonString="";//if update happens, will become jsonString of updated game 
         JsonObject jsonObject=new JsonObject();//will be sent to various connections
-        Game G = null;
+        Game G = new Game();
         boolean valid=false;//will determine if word is valid
         ArrayList<UserEvent> attempt= new ArrayList<UserEvent>();//series of userevents that make up an attempted word
         if(U.action==2)
         {
+            
             attempt=everyAttempt.get(U.gameId).get(U.player.getNick());
+            int [] cells= new int[attempt.size()];
+            int k=0;
+            for(UserEvent i: attempt)
+            {
+                cells[k]=i.cell;
+                k++;
+            }
             
             for(Game i : activeGames)
             {
                 if(i.getGameID().equals(U.gameId))
                 {
                     G = i;
-                    G.updateGame(attempt);
+                    valid=G.updateGame(attempt);
+                    System.out.println("Was it a valid word? : "+valid);
                     break;
                 }
             }
             
             jsonString = gson.toJson(G);
-           
-            //System.out.println(jsonString);
-            //broadcast(jsonString);
+            System.out.println("GameId= "+U.gameId+" G's GameId= "+G.getGameID());
+            
         
             jsonObject.addProperty("type","UpdateGame");
             jsonObject.addProperty("gameData",jsonString);
-            jsonObject.addProperty("attempt",attempt.toString());
+            jsonObject.addProperty("attempt",gson.toJson(cells));
             jsonObject.addProperty("valid",String.valueOf(valid));
+            jsonObject.addProperty("score",String.valueOf(U.player.getScore()));
             conn.send(jsonObject.toString());
             //search through the game's player list
             ArrayList<Player> playerList=new ArrayList<Player>();
-            System.out.println("test");
             playerList=G.getPlayersList();
             for(Player i:playerList)
             {

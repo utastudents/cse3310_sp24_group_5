@@ -13,4 +13,8 @@ public class UserEvent {
         in order will create the selecting functionality
 
     */
+   public String toString()
+   {
+        return "action: "+action;
+   }
 }

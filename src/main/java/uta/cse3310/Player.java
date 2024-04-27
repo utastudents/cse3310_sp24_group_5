@@ -1,9 +1,9 @@
 package uta.cse3310;
-import com.google.gson.annotations.Expose;
+
 
 public class Player 
 {
-    @Expose
+    
     private String nick=new String();
     private int score;
     private PlayerStatus status; // Using enum for clearer status management
@@ -91,8 +91,9 @@ public class Player
     @Override
     public String toString() 
     {
+        
         return "Player{" +
-               "nick='" + nick + '\'' +
+               "nick=" + nick  +
                ", score=" + score +
                ", status=" + status +
                ", totalPoints=" + totalPoints +

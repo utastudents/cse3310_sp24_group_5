@@ -37,6 +37,7 @@ public class GridField {
                 grid[i][j] = (char) ('A' + random.nextInt(26)); // Randomly fill grid with alphabets
             }
         }
+        this.addWord("group",0,0,Direction.Directions.HORIZONTAL);
     }
 
     public boolean checkWord(String word) {
@@ -74,7 +75,8 @@ public class GridField {
             column += dc;
         }
         wordList.add(word);
-        remainingWords++;
+        //remainingWords starts off as the size of the updated wordlist
+        //remainingWords++;
     }
 
     public void displayGrid() {

@@ -111,7 +111,7 @@ public class Game // implements Chat, Timer, GridField, LeaderBoard, Wordlist
             }
             return wordChosen(word, player);
         //}
-        //else{return false;}
+       
     }
 
     // Method for players to exit game

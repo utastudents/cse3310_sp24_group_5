@@ -41,10 +41,10 @@ public class WordList //extends Direction
         int index = 0;
         ArrayList<String> updatedList = new ArrayList<>();
 
-        while (totalCharacters < 2000 && index < wordBank.size())
+        while (totalCharacters < 500 && index < wordBank.size())
         {
             String word = wordBank.get(index);
-            if (totalCharacters + word.length() <= 2000)
+            if (totalCharacters < 500)
             {
                 updatedList.add(word);
                 totalCharacters += word.length();
