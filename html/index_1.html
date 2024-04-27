@@ -4,15 +4,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Word Search Game Lobby</title>
     <link rel="stylesheet" href="style_lobby.css">
-
-    <style>
-        #lobbyContainer {
-            display: none;
-        }
-    </style>
 </head>
-
-
 
 <body>
     <!-- welcome -->
@@ -72,8 +64,6 @@
         <div id="gameListSection">
 
     </div>
-    <script src="lobby.js"></script>
-
 
     
 
@@ -94,14 +84,14 @@
         </table>
     </div>
 
-    <!--Game-->
+    <!-- Timer section -->
+    <div id="timerSection">
+        <h2>Timer: <span id="timer">30</span> seconds</h2>
+    </div>
+
+    <!--Grid table-->
     
-    <div id="Game">
-         <!-- Timer section -->
-        <div id="timerSection">
-            <h2>Timer: <span id="timer">30</span> seconds</h2>
-        </div>
-        <!--Grid table-->
+    <div>
         <input type="button" value="Generate Grid" onclick="generateGrid()"/>
         <table id="wordGrid">
             
@@ -109,7 +99,6 @@
     </div>
 </body>
 <script>
-
     var socket = new WebSocket("ws://"+ window.location.hostname+":9105");
     
     class Player
@@ -130,11 +119,11 @@
     }
 
     
-    letgameId="";
-    let score;
-    let nick="";
-    let grid;
-    let clicked=0;
+    var gameId="";
+    var player=new Player();
+    var nick="";
+    var grid;
+    var clicked=0;
     socket.onopen = function(evt) {
         console.log("Open");
         requestGameList();
@@ -176,31 +165,12 @@
             if(messageData.valid==="true")
             {
                 let U= new UserEvent();
-                let attemptArr= messageData.attempt;
-                console.log(attemptArr);
-                for(let i=0;i<attemptArr.length;i++)
+                const attemptArr= JSON.parse(messageData.attempt)
+                for(let i=0;i<attemptArr.length();i++)
                 {
-                   
-                    var cellColor=document.getElementById(attemptArr[i].toString());
-                    if(cellColor!=null)//check null before changing color;
-                    {
-                        cellColor.style.backgroundColor="red";
-                    }
-                }
-            }
-            else
-            {
-                let U= new UserEvent();
-                let attemptArr= messageData.attempt;
-                console.log(attemptArr);
-                for(let i=0;i<attemptArr.length;i++)
-                {
-                   
-                    var cellColor=document.getElementById(attemptArr[i].toString());
-                    if(cellColor!=null)//check null before changing color;
-                    {
-                        cellColor.style.backgroundColor="white";
-                    }
+                    U =attemptArr[i];
+                    document.getElementById(U.cell.toString()).style.backgroundColor="red";
+
                 }
             }
         }
@@ -361,26 +331,28 @@
             cells[i].addEventListener("mouseup",function()
             {
                 buttonEvent(this.getAttribute("id"),2);
+                document.getElementById(this.getAttribute("id")).style.backgroundColor="blue";
                 clicked--;
             });
-            /*cells[i].addEventListener("mouseout",function()
+            cells[i].addEventListener("mouseout",function()
             {
-                if(clicked>=0)
-                {    
-                    this.style.backgroundColor="white"; 
+                if(clicked<=0)
+                {
+                   this.style.backgroundColor="white"; 
                 }
-            });*/
+                
+            });
             
         }
     }
     function buttonEvent(cell,action)
     {
-        
         let button= document.getElementById(cell);
-        
+        //button.style.backgroundColor="blue";
         U = new UserEvent();
         U.cell=parseInt(cell);
         U.action=action;
+        U.player=player;
         U.gameId=gameId;
 
         var data = {
@@ -452,25 +424,6 @@
             leaderboardList.appendChild(listItem);
         });
 }
-
-
-document.getElementById('nickForm').addEventListener('submit', function(event) {
-    event.preventDefault(); 
-    var nickInput = document.getElementById('nickInput').value.trim();
-
-    if (nickInput && isNickUnique(nickInput)) { // Implement isNickUnique() to check the nickname
-        document.getElementById('welcomeContainer').style.display = 'none';
-        document.getElementById('lobbyContainer').style.display = 'block';
-    } else {
-        document.getElementById('error').style.display = 'block';
-        document.getElementById('error').textContent = 'Nickname already taken, please try another one.';
-    }
-});
-
-function isNickUnique(nick) {
-    return true; // Placeholder return
-}
-
 
 
 </script>
