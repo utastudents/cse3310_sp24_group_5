@@ -154,10 +154,8 @@
             if("grid" in messageData)
             {
                 //store all letters inside grid variable
-                grid=JSON.parse(messageData.grid);
-                
+                grid=JSON.parse(messageData.grid);  
             }
-            
             
             if(nick==="")
             {
@@ -167,6 +165,11 @@
                 console.log(nick);
                 gameId= messageData.gameId;
                 console.log("GameId: "+ gameId);
+            }
+            
+            if("ready" in messageData && messageData.ready==="true")
+            {
+                generateGrid();
             }
             
             

@@ -84,15 +84,15 @@
         </table>
     </div>
 
-    <!-- Timer section -->
-    <div id="timerSection">
-        <h2>Timer: <span id="timer">30</span> seconds</h2>
-    </div>
+    
 
     <!--Grid table-->
     
-    <div>
-        <input type="button" value="Generate Grid" onclick="generateGrid()"/>
+    <div id="Game">
+        <!-- Timer section -->
+        <div id="timerSection">
+            <h2>Timer: <span id="timer">30</span> seconds</h2>
+        </div>
         <table id="wordGrid">
             
         </table>
@@ -158,7 +158,10 @@
                 console.log("GameId: "+ gameId);
             }
             
-            
+            if("ready" in messageData && messageData.ready==="true")
+            {
+                generateGrid();
+            }
         }
         else if(type==="UpdateGame")
         {
@@ -275,7 +278,7 @@
     //too big may have to do smaller grid or smaller cells
     function generateGrid()
     {
-        const tbl = document.createElement("table");
+        const tbl = document.getElementById("wordGrid");
         const tblBody = document.createElement("tbody");
         //create cells
 
@@ -300,9 +303,10 @@
             tblBody.appendChild(row);
         }
         tbl.appendChild(tblBody);
-        document.body.appendChild(tbl);
+        myDiv=document.getElementById("Game");
+        myDiv.appendChild(tbl);
         tbl.setAttribute("border","1.5");
-        eventListener();
+        //eventListener();
        
     }
     function eventListener()

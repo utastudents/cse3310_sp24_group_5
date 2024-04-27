@@ -389,6 +389,12 @@ public class App extends WebSocketServer {
                     }
                     
                     jsonObject.addProperty("gameId",G.getGameID());
+                    //if enough players joined, automatically start game
+                    if(G.getPlayersList().size()==G.getGameMode())
+                    {
+                        jsonObject.addProperty("ready","true");
+                    }
+                    
                     //send back to all connections
 
                     broadcast(jsonObject.toString());
