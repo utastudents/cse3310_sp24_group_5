@@ -4,7 +4,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Word Search Game Lobby</title>
     <link rel="stylesheet" href="style_lobby.css">
+
+    <style>
+        #lobbyContainer {
+            display: none;
+        }
+    </style>
 </head>
+
+
 
 <body>
     <!-- welcome -->
@@ -99,6 +107,7 @@
     </div>
 </body>
 <script>
+
     var socket = new WebSocket("ws://"+ window.location.hostname+":9105");
     
     class Player
@@ -424,6 +433,27 @@
             leaderboardList.appendChild(listItem);
         });
 }
+
+
+document.getElementById('nickForm').addEventListener('submit', function(event) {
+    event.preventDefault(); // Prevent the default form submission
+    var nickInput = document.getElementById('nickInput').value.trim();
+
+    // Simulate a check for nickname uniqueness
+    if (nickInput && isNickUnique(nickInput)) { // Implement isNickUnique() to check the nickname
+        document.getElementById('welcomeContainer').style.display = 'none';
+        document.getElementById('lobbyContainer').style.display = 'block';
+    } else {
+        document.getElementById('error').style.display = 'block';
+        document.getElementById('error').textContent = 'Nickname already taken, please try another one.';
+    }
+});
+
+function isNickUnique(nick) {
+    // This function should ideally make an AJAX call to the server to check nickname uniqueness
+    return true; // Placeholder return
+}
+
 
 
 </script>
