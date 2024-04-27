@@ -306,68 +306,70 @@
   //////////////////////////////////////////////
     //Welcome and Lobby
 
-    document.getElementById('nickForm').addEventListener('submit', function(event) {
-            event.preventDefault();
-            var nick = document.getElementById('nickInput').value.trim();
-            if (nick) {
-                socket.send(JSON.stringify({ type: "CheckNick", nick: nick }));
+   // var socket = new WebSocket("ws://" + window.location.hostname + ":9105");
+
+document.getElementById('nickForm').addEventListener('submit', function(event) {
+    event.preventDefault(); // Prevent the default form submission
+    var nick = document.getElementById('nickInput').value.trim();
+    if (nick) {
+        // Send nickname to the server for uniqueness check
+        socket.send(JSON.stringify({type: "CheckNick", nick: nick}));
+    }
+});
+
+// Handling messages from the server
+socket.onmessage = function(event) {
+    var data = JSON.parse(event.data);
+    switch (data.type) {
+        case "NickResponse":
+            if (data.isUnique) {
+                // If the nickname is unique, display the lobby
+                document.getElementById('welcomeContainer').style.display = 'none';
+                document.getElementById('lobbyContainer').style.display = 'block';
+            } else {
+                // If the nickname is not unique, show an error message
+                document.getElementById('error').style.display = 'block';
+                document.getElementById('error').textContent = 'Nickname already taken, please try another one.';
             }
-        });
+            break;
+        case "UpdateGameList":
+            updateGameList(data.games);
+            break;
+        case "GameReady":
+            // Enable the start button if the game is ready
+            document.getElementById('startButton').disabled = false;
+            break;
+    }
+};
 
-        document.getElementById('confirmButton').addEventListener('click', function() {
-            var game = document.getElementById('gameSelect').value;
-            var mode = document.getElementById('modeSelect').value;
-            socket.send(JSON.stringify({ type: "JoinGame", game: game, mode: mode }));
-        });
+function updateGameList(games) {
+    var tbody = document.getElementById('gameListBody');
+    tbody.innerHTML = '';
+    games.forEach(function(game) {
+        var row = '<tr>' +
+                  '<td>' + game.gameName + '</td>' +
+                  '<td>' + game.filledSlots + '/' + game.maxSlots + '</td>' +
+                  '<td>' + game.players.join(', ') + '</td>' +
+                  '</tr>';
+        tbody.innerHTML += row;
+    });
+}
 
-        socket.onmessage = function(event) {
-            var data = JSON.parse(event.data);
-            switch (data.type) {
-                case "NickChecked":
-                    if (data.isUnique) {
-                        document.getElementById('welcomeContainer').style.display = 'none';
-                        document.getElementById('lobbyContainer').style.display = 'block';
-                    } else {
-                        document.getElementById('error').style.display = 'block';
-                        document.getElementById('error').textContent = 'Nickname already taken, please try another one.';
-                    }
-                    break;
-                case "UpdateGameList":
-                    updateGameList(data.games);
-                    break;
-                case "GameReady":
-                    document.getElementById('startButton').disabled = false;
-                    break;
-            }
-        };
+document.getElementById('startButton').addEventListener('click', function() {
+    if (!this.disabled) {
+        socket.send(JSON.stringify({ type: "StartGame" }));
+    }
+});
 
-        function updateGameList(games) {
-            var tbody = document.getElementById('gameListBody');
-            tbody.innerHTML = '';
-            games.forEach(function(game) {
-                var row = '<tr>' +
-                          '<td>' + game.gameName + '</td>' +
-                          '<td>' + game.filledSlots + '/' + game.maxSlots + '</td>' +
-                          '<td>' + game.players.join(', ') + '</td>' +
-                          '</tr>';
-                tbody.innerHTML += row;
-            });
-        }
+document.getElementById('leaveButton').addEventListener('click', function() {
+    var nick = document.getElementById('nickInput').value;
+    socket.send(JSON.stringify({ type: "LeaveGame", nick: nick }));
+});
 
-        document.getElementById('startButton').addEventListener('click', function() {
-            if (!this.disabled) {
-                socket.send(JSON.stringify({ type: "StartGame" }));
-            }
-        });
+document.getElementById('refreshButton').addEventListener('click', function() {
+    socket.send(JSON.stringify({ type: "RequestGameList" }));
+});
 
-        document.getElementById('leaveButton').addEventListener('click', function() {
-            var nick = document.getElementById('nickInput').value;
-            socket.send(JSON.stringify({ type: "LeaveGame", nick: nick }));
-        });
-
-        document.getElementById('refreshButton').addEventListener('click', function() {
-            socket.send(JSON.stringify({ type: "RequestGameList" }));
-        });
 
 /*
     
