@@ -7,6 +7,11 @@
 </head>
 
 <body>
+    <!--LobbyChat-->
+<div id="LobbyChatRoom" style="display: none;">
+    <p>Message:Talk to other players here</p>
+    <button id="send">Send</button>
+</div>
     <!-- welcome -->
     <div id="welcomeContainer">
         <h1>Welcome to The Word Search Game</h1>
@@ -164,6 +169,8 @@
             if("ready" in messageData && messageData.ready==="true")
             {
                 document.getElementById("lobbyContainer").style.display="none";
+                document.getElementById("LobbyChatRoom").style.display="block";
+                document.getElementById("welcomeContainer").style.display="none";
                 generateGrid();
                 document.getElementById("Game").style.display="block";
                 startTimer();
