@@ -5,20 +5,21 @@ import java.util.Random;
 
 public class GridField {
     private char[][] grid;
-    private ArrayList<String> wordList=new ArrayList<String>();
+    private ArrayList<String> wordList;
     private int remainingWords;
 
     public GridField(ArrayList<String> wordList) {
         this.wordList = wordList;
-        this.remainingWords=wordList.size();
-        generateGrid(5); // Initialize grid with default size (e.g., 5x5)  <-no need -muktar
+        this.remainingWords = wordList.size();
+        generateGrid(5); // Initialize grid with default size (e.g., 5x5)
     }
+
     public GridField() {
         this.wordList = WordList.getWordList("Data/words");
         this.wordList = WordList.updatedWordList(wordList);
-        
+        this.remainingWords = wordList.size();
+        generateGrid(5); // Initialize grid with default size (e.g., 5x5)
     }
-
 
     public char[][] getGrid() {
         return grid;
@@ -36,7 +37,6 @@ public class GridField {
                 grid[i][j] = (char) ('A' + random.nextInt(26)); // Randomly fill grid with alphabets
             }
         }
-        //this.addWord("group",0,0,Direction.Directions.HORIZONTAL); was testing selection function
     }
 
     public boolean checkWord(String word) {
@@ -74,7 +74,6 @@ public class GridField {
             column += dc;
         }
         wordList.add(word);
-        //remainingWords starts off as the size of the updated wordlist
         remainingWords++;
     }
 
@@ -85,5 +84,44 @@ public class GridField {
             }
             System.out.println();
         }
+    }
+
+    public void placeRandomWords() {
+        Random random = new Random();
+        for (String word : wordList) {
+            boolean added = false;
+            while (!added) {
+                int row = random.nextInt(grid.length);
+                int col = random.nextInt(grid[0].length);
+                Direction.Directions dir = Direction.Directions.values()[random.nextInt(Direction.Directions.values().length)];
+                if (canPlaceWord(word, row, col, dir)) {
+                    addWord(word, row, col, dir);
+                    added = true;
+                }
+            }
+        }
+    }
+
+    private boolean canPlaceWord(String word, int row, int col, Direction.Directions direction) {
+        int len = word.length();
+        int dr = 0, dc = 0;
+        switch (direction) {
+            case HORIZONTAL:
+                dc = 1;
+                break;
+            case VERTICAL:
+                dr = 1;
+                break;
+            case DIAGONAL:
+                dr = 1;
+                dc = 1;
+                break;
+        }
+        int endRow = row + dr * (len - 1);
+        int endCol = col + dc * (len - 1);
+        if (endRow >= 0 && endRow < grid.length && endCol >= 0 && endCol < grid[0].length) {
+            return true;
+        }
+        return false;
     }
 }
