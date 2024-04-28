@@ -33,13 +33,14 @@
         
     </table>
 </div>
+
       <!-- lobby -->
 
     <div id="lobbyContainer">
         <div id="userInputSection">
             <button id="helpButton">HELP</button>
             <button id="standbyButton">PUT ON STANDBY</button>
-
+        
             <!--
             <div>
                 <label for="nickInput">Insert Nick:</label>
@@ -51,23 +52,23 @@
                 <label for="gameSelect">Game:</label>
                 <select id="gameSelect">
                   
-                    <option value="game1">Game1</option>
-                    <option value="game2">Game2</option>
-                    <option value="game3">Game3</option>
-                    <option value="game4">Game4</option>
-                    <option value="game5">Game5</option>
-
-
+                    <option value="Game1">Game1</option>
+                    <option value="Game2">Game2</option>
+                    <option value="Game3">Game3</option>
+                    <option value="Game4">Game4</option>
+                    <option value="Game5">Game5</option>
+        
+        
                 </select>
             </div>
             <div>
                 <label for="modeSelect">Game Mode:</label>
                 <select id="modeSelect">
-
+        
                     <option value="2players">2 Players</option>
                     <option value="3players">3 Players</option>
                     <option value="4players">4 Players</option>
-
+        
                 </select>
             </div>
                 <button id="confirmButton" >CONFIRM</button>
@@ -77,32 +78,40 @@
                 <button id="refreshButton">Refresh</button>
             </div>
         <div id="gameListSection">
+            <p>Game     Slots Filled    Player</p>
+            <div class="Room" id="Game1" style="display: block;">
+                <p>Game1</p>
+                <p>Slots</p>
+            </div>
+            <div class="Room" id="Game2" style="display: block;">text</div>
+            <div class="Room" id="Game3" style="display: block;">text</div>
+            <div class="Room" id="Game4" style="display: block;">text</div>
+            <div class="Room" id="Game5" style="display: block;">text</div>
+        </div>
 
+
+    <!-- Leaderboard section -->
+        <div id="leaderboardContainer">
+            <h2>Leaderboard</h2>
+            <table id="leaderboardTable">
+                <thead>
+                    <tr>
+                        <th>Rank</th>
+                        <th>Nickname</th>
+                        <th>Score</th>
+                    </tr>
+                </thead>
+                <tbody id="leaderboardBody">
+                    <!-- Leaderboard rows will be dynamically added here -->
+                </tbody>
+            </table>
+        </div>
     </div>
 
     
 
-    <!-- Leaderboard section -->
-    <div id="leaderboardContainer">
-        <h2>Leaderboard</h2>
-        <table id="leaderboardTable">
-            <thead>
-                <tr>
-                    <th>Rank</th>
-                    <th>Nickname</th>
-                    <th>Score</th>
-                </tr>
-            </thead>
-            <tbody id="leaderboardBody">
-                <!-- Leaderboard rows will be dynamically added here -->
-            </tbody>
-        </table>
-    </div>
-<!--LobbyChat-->
-<div id="LobbyChatRoom">
-    <p>Message:Talk to other players here</p>
-    <button id="send">Send</button>
-</div>
+   
+
 
 </body>
 <script>
@@ -130,8 +139,9 @@
     var player=new Player();
     var nick="";
     var grid;
-    var clicked=0;
-    var attemptArr;
+    var clicked=0;//helps with selection of letters
+    var attemptArr;//array of cell numbers in an attempt
+    var score;
     socket.onopen = function(evt) {
         console.log("Open");
         requestGameList();
@@ -147,40 +157,38 @@
             let game;
             let gameData;
             let playerData;
-            //access grid when gameStart is called
-            if("grid" in messageData)
-            {
-                //store all letters inside grid variable
-                grid=JSON.parse(messageData.grid);
-                
-            }
             
             
-            if(nick==="")
-            {
-                console.log("Player: "+messageData.player);
-                player= JSON.parse(messageData.player);
-                nick=player.nick;
-                console.log(nick);
-                gameId= messageData.gameId;
-                console.log("GameId: "+ gameId);
-            }
+            console.log(messageData.ready==="true");
             
             if("ready" in messageData && messageData.ready==="true")
-            {
+            {   
+                console.log(messageData.gameId);
+                //access grid when gameStart is called
+                if("grid" in messageData)
+                {
+                    //store all letters inside grid variable
+                    grid=JSON.parse(messageData.grid);
+                    
+                    
+                }
                 document.getElementById("lobbyContainer").style.display="none";
                 document.getElementById("LobbyChatRoom").style.display="block";
                 document.getElementById("welcomeContainer").style.display="none";
                 generateGrid();
+                score=0;
                 document.getElementById("Game").style.display="block";
                 startTimer();
             }
+            document.addEventListener("DOMContentLoaded",updateLobby());
+            //updateLobby();
         }
         else if(type==="UpdateGame")
         {
             if(messageData.valid==="true")
             {
-                
+                score=messageData.score;
+                console.log(messageData.score);
                 attemptArr= JSON.parse(messageData.attempt);
                 for(let i=0;i<attemptArr.length;i++)
                 {
@@ -203,6 +211,29 @@
         else if(type==="RequestGameList")
         {
             console.log(messageData.gameList)
+        }
+        else if(type==="endGame")
+        {
+            if(nick===messageData.winner)
+            {
+                console.log("You won")
+            }
+            else
+            {
+                console.log(messageData.winner+"is the winner");
+            }
+            nick="";
+            gameId="";
+            score=0;
+        }
+        else if(type==="updateLobby")
+        {
+            let keys = JSON.parse(messageData.keys);
+            //let values = JSON.parse(messageData.values);
+            console.log(keys);
+            console.log(values);
+            //go through lobbyData
+            
         }
 
     };
@@ -245,7 +276,9 @@
     // event listeners for user actions
     document.getElementById('confirmButton').addEventListener('click', function() {
         var nick = document.getElementById('nickInput').value.trim();
+        console.log(nick);
         var gameIndex = document.getElementById('gameSelect').value;
+        var gameId=parseInt(gameIndex);
         var mode = document.getElementById('modeSelect').value;
 
         if (!nick) 
@@ -258,7 +291,9 @@
             alert('Please select a game and mode.');
             return;
         }
+        
         joinGame(nick, gameIndex, mode);
+        
     });
 
 
@@ -332,16 +367,14 @@
         eventListener();
        
     }
-    function eventListener()
+    function eventListener()//bug occurs when rightclick and select option like inspect over the grid
     {
         var cells = document.querySelectorAll("td");
         for(var i=0;i<cells.length;i++)
         {
             cells[i].addEventListener("mousedown",function()
             {
-                /*this.addEventListener("mouseover",function(){
-                    this.style.backgroundColor="blue";
-                });*/
+                
                 buttonEvent(this.getAttribute("id"),0);
                 document.getElementById(this.getAttribute("id")).style.backgroundColor="blue";
                 clicked++;
@@ -363,14 +396,7 @@
                 clicked--;
                 console.log("clicked="+clicked);
             });
-            /*cells[i].addEventListener("mouseout",function()
-            {
-                if(clicked<=0)
-                {
-                   this.style.backgroundColor="white"; 
-                }
-                
-            });*/
+           
             
         }
     }
@@ -407,6 +433,7 @@
             updateTimerDisplay(timeLeft);
             if (timeLeft === 0) {
                 clearInterval(timerInterval);
+                endGame("OutOfTime");
                 // Handle timer expiration (e.g., reset timer, end game)
                 highlightRandomWord();
             }
@@ -454,6 +481,26 @@
         });
 }
 
+function endGame(reason)
+{
+    var data=
+    {
+        type: "endGame",
+        reason: reason,
+        gameId: gameId
 
+    };
+    socket.send(JSON.stringify(data));
+    
+    
+}
+
+function updateLobby()
+{
+    var data={
+        type: "updateLobby"
+    }
+    socket.send(JSON.stringify(data));
+}
 </script>
 

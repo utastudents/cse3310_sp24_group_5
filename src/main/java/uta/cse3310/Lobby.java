@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 
 public class Lobby {
     private Map<String, Game> games;
-    private Map<String, String> playerToGameMap;
+    public Map<String, String> playerToGameMap;
     public ArrayList<Game> openGames=new ArrayList<Game>(); // Games open to join
     public HashMap<String, ArrayList<Player>> LeaderBoard=new HashMap<String, ArrayList<Player>>(); // Concurrent Leaderboard
 
@@ -112,5 +112,20 @@ public class Lobby {
             }
         }
 
+    }
+
+    //turning playerToGameMap into a string so it can be converted in javascript
+    public String mapToString()
+    {
+        String pairs= new String();
+        for(Map.Entry<String,String> element: playerToGameMap.entrySet())
+        {
+            String key= element.getKey();
+            System.out.println("Key:"+key);
+            String value = element.getValue();
+            System.out.println("Values: "+value);
+            pairs=pairs+key+":"+value+",";
+        }
+        return pairs;
     }
 }

@@ -117,13 +117,7 @@ public class App extends WebSocketServer {
         Player newPlayer = new Player();
         Connections.put(conn, newPlayer);
         Actives.put(id, newPlayer);
-        lobbies.updateLobby(activeGames);
-        JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty("screen", "landing");
-        jsonObject.addProperty("type", "newSession");
-        jsonObject.addProperty("id", id);
-        jsonObject.addProperty("lobby", gson.toJson(lobbies));
-        conn.send(jsonObject.toString()); // Sendinfo about lobby & ID to the client
+        //updateLobby(gson);
 
     }
 
@@ -207,8 +201,36 @@ public class App extends WebSocketServer {
     }
 
 
-    public void updateLobby() {
+    public void updateLobby(Gson gson,JsonObject jsonObject) {
         // Logic for updating the lobby
+        lobbies.updateLobby(activeGames);
+        jsonObject.addProperty("type", "updateLobby");
+        //jsonObject.addProperty("id", id);//not sure of the purpose -muktar
+        //get String version of playerToGameMap -muktar
+        String map=new String();
+        map=lobbies.mapToString();
+        //parse map into array of keys and values-muktar
+        String[]mapParts=map.split(",");
+        //Split each element of mapParts by ":" to get keys and values -muktar
+        String []keys =new String[Connections.size()];
+        String []values=new String[Connections.size()];
+        for(int i=0;i<Connections.size();i++)
+        {
+            for(String part : mapParts)
+            {
+                if(part!="")
+                {
+                    String[] temp = part.split(":");
+                    keys[i]=temp[0].trim();
+                    values[i]=temp[1].trim();
+                }
+            }
+        }
+        //send the keys and values to every connection -muktar
+        jsonObject.addProperty("keys", gson.toJson(keys));
+        //jsonObject.addProperty("values",gson.toJson(values));
+        System.out.println(lobbies.toString());
+        broadcast(jsonObject.toString()); // Sendinfo about lobby & ID to the client
     }
 
     public void help() {
@@ -254,8 +276,28 @@ public class App extends WebSocketServer {
         return false;
     }
 
-    public void endGame(Game game) {
+    public void endGame(Game game,Gson gson) 
+    {
         // Logic for ending a game
+        game.exitGame(game.getPlayersList());
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("type","endGame");
+        jsonObject.addProperty("winner",game.winner.getNick());
+        ArrayList<Player> playerList=new ArrayList<Player>();
+            playerList=game.getPlayersList();
+            for(Player i:playerList)
+            {
+                //search through the key/value pairs
+                for(Entry<WebSocket,Player> entry:Connections.entrySet())
+                {
+                    if(entry.getValue()==i)//if the player in the map is the same as in outer loop
+                    {
+                        entry.getKey().send(jsonObject.toString());//send the jsonObject to their connection
+                        break;
+                    }
+                }
+            }
+        activeGames.remove(game);
     }
 
     public void toLobby() {
@@ -346,6 +388,9 @@ public class App extends WebSocketServer {
                 int mode = Character.getNumericValue(gameMode.toCharArray()[0]);
                 Player player= Connections.get(conn);
                 player.setNick(object.get("nick").getAsString());
+
+                //update playerToGameMap in the lobby
+                lobbies.playerToGameMap.put(player.getNick(),gameId);
                 int numGames= 0;
                 Game G = new Game();
                 //search through active games
@@ -392,7 +437,12 @@ public class App extends WebSocketServer {
                     //if enough players joined, automatically start game
                     if(G.getPlayersList().size()==G.getGameMode())
                     {
+                        System.out.println("This game has "+ G.getPlayersList().size()+ " many people in it");
                         jsonObject.addProperty("ready","true");
+                    }
+                    else
+                    {
+                        jsonObject.addProperty("ready","false");
                     }
                     
                     //send back to all connections
@@ -415,6 +465,44 @@ public class App extends WebSocketServer {
                 System.out.println(activeGames.toString());
                 jsonObject.addProperty("gameList",jsonGameList);
                 conn.send(jsonObject.toString());
+                break;
+            case("endGame"):
+                //find game from active games
+                for(Game i:activeGames)
+                {
+                    if(i.getGameID().equals(object.get("gameId").getAsString()))
+                    {   
+                        if(object.get("reason").equals("OutOfTime"))
+                        {
+                            endGame(i,gson);
+                            break;
+                        }
+                        else if(object.get("reason").equals("Player Disconnected"))
+                        {
+                            activeGames.remove(i);
+                            break;
+                        }
+                    }
+                }
+
+                break;
+            case("updateLobby"):
+                updateLobby(gson,jsonObject);
+                /*ArrayList<String>lobbyData=new ArrayList<String>();
+                ArrayList<Player> players=new ArrayList<Player>(); 
+                for(Game i : activeGames)
+                {
+                    gameId=i.getGameID();
+                    lobbyData.add(gameId);
+                    players=i.getPlayersList();
+                    for(Player j :players)
+                    {
+                        lobbyData.add(j.getNick());
+                    }
+                }
+                jsonObject.addProperty("type","updateLobby");
+                jsonObject.addProperty("lobbyData",lobbyData.toString());
+                broadcast(jsonObject.toString());*/
                 break;
             default:
                 System.out.println("Unexpected message");

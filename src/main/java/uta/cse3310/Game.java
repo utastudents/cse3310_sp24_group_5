@@ -137,7 +137,7 @@ public class Game // implements Chat, Timer, GridField, LeaderBoard, Wordlist
 
         }
         // remove players
-        playersList.clear();
+        //playersList.clear();
         gameStatus = false;
     }
 
