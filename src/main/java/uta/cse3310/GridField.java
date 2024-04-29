@@ -77,7 +77,15 @@ public class GridField {
         Random random = new Random();
         for (String word : wordList) {
             boolean wordPlaced = false;
+            int attemptCount = 0; // Track the number of attempts to place the word
             while (!wordPlaced) {
+                attemptCount++;
+                if (attemptCount > 100) {
+                    // Add a safeguard to prevent infinite loops; abort if attempts exceed a certain threshold
+                    System.out.println("Failed to place word: " + word);
+                    break;
+                }
+
                 int len = word.length();
                 int row = random.nextInt(grid.length);
                 int col = random.nextInt(grid[0].length);
