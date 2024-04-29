@@ -259,7 +259,10 @@
 
     function requestGameList() {
         var data = { type: "RequestGameList" };
-        socket.send(JSON.stringify(data));
+        if(socket.readyState===1)
+        {
+            socket.send(JSON.stringify(data));
+        }
     }
 
     function updateGameList(serverData) 
@@ -310,7 +313,11 @@
             modeIndex: mode
         };
 
-        socket.send(JSON.stringify(data));
+        
+        if(socket.readyState===1)
+        {
+            socket.send(JSON.stringify(data));
+        }
         console.log(JSON.stringify(data));
     }
 
@@ -418,7 +425,10 @@
             type: "UpdateGame",
             events: U
         };
-        socket.send(JSON.stringify(data));
+        if(socket.readyState===1)
+        {
+            socket.send(JSON.stringify(data));
+        }
         console.log(JSON.stringify(U));
 
         resetTimer();
@@ -504,7 +514,10 @@ function updateLobby()
     var data={
         type: "updateLobby"
     }
-    socket.send(JSON.stringify(data));
+    if(socket.readyState===1)
+    {
+        socket.send(JSON.stringify(data));
+    }
 }
 </script>
 
