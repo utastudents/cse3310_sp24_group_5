@@ -1,7 +1,6 @@
 package uta.cse3310;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Random;
 
 public class GridField {
@@ -94,6 +93,8 @@ public class GridField {
             }
             if (wordPlaced) {
                 remainingWords.remove(word); // Remove the word from remainingWords if successfully placed
+            } else {
+                System.out.println("Failed to place word: " + word); // Print a message if the word cannot be placed
             }
         }
     }
