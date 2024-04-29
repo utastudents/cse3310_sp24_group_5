@@ -229,7 +229,7 @@
         else if(type==="updateLobby")
         {
             let keys = JSON.parse(messageData.keys);
-            //let values = JSON.parse(messageData.values);
+            let values = JSON.parse(messageData.values);
             console.log(keys);
             console.log(values);
             //go through lobbyData
@@ -240,10 +240,11 @@
 
         socket.onclose = function(evt) {
             console.log("WebSocket connection closed.");
-            var nick = document.getElementById('nickInput').value.trim();
+           /* var nick = document.getElementById('nickInput').value.trim();
             if (nick) {
                 leaveGame(nick);
-            }
+            }*/
+            endGame("Player Disconnected");
             document.getElementById("topMessage").innerText = "Server Offline";
         };
 

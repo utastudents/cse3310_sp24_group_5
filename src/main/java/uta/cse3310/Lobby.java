@@ -121,9 +121,9 @@ public class Lobby {
         for(Map.Entry<String,String> element: playerToGameMap.entrySet())
         {
             String key= element.getKey();
-            System.out.println("Key:"+key);
+            
             String value = element.getValue();
-            System.out.println("Values: "+value);
+            
             pairs=pairs+key+":"+value+",";
         }
         return pairs;
