@@ -1,7 +1,6 @@
 package uta.cse3310;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Random;
 
 public class GridField {
@@ -16,7 +15,8 @@ public class GridField {
     }
 
     public GridField() {
-        this(WordList.getWordList("Data/words")); // Using WordList class to fetch word list
+        this.wordList = WordList.getWordList("Data/words");
+        this.wordList = WordList.updatedWordList(wordList);
     }
 
     public char[][] getGrid() {
@@ -64,14 +64,28 @@ public class GridField {
         remainingWords++;
     }
 
+    public void displayGrid() {
+        for (char[] row : grid) {
+            for (char cell : row) {
+                System.out.print(cell + " ");
+            }
+            System.out.println();
+        }
+    }
+
     public void placeRandomWords() {
         Random random = new Random();
-        ArrayList<String> remainingWords = new ArrayList<>(wordList); // Create a copy of the wordList to track remaining words
-        for (int i = 0; i < wordList.size(); i++) {
-            String word = remainingWords.get(random.nextInt(remainingWords.size())); // Select a random word from the remaining words
+        for (String word : wordList) {
             boolean wordPlaced = false;
-            int attempt = 0;
-            while (!wordPlaced && attempt < 100) { // Limit the number of attempts to prevent infinite loops
+            int attemptCount = 0; // Track the number of attempts to place the word
+            while (!wordPlaced) {
+                attemptCount++;
+                if (attemptCount > 100) {
+                    // Add a safeguard to prevent infinite loops; abort if attempts exceed a certain threshold
+                    System.out.println("Failed to place word: " + word);
+                    break;
+                }
+
                 int len = word.length();
                 int row = random.nextInt(grid.length);
                 int col = random.nextInt(grid[0].length);
@@ -80,12 +94,6 @@ public class GridField {
                     addWord(word, row, col, direction);
                     wordPlaced = true;
                 }
-                attempt++;
-            }
-            if (wordPlaced) {
-                remainingWords.remove(word); // Remove the word from remainingWords if successfully placed
-            } else {
-                System.out.println("Failed to place word: " + word);
             }
         }
     }
@@ -95,21 +103,12 @@ public class GridField {
         int dr = direction.getRowIncrement();
         int dc = direction.getColumnIncrement();
         for (int i = 0; i < len; i++) {
-            if (row < 0 || row >= grid.length || column < 0 || column >= grid[0].length || grid[row][column] != 0) {
+            if (row < 0 || row >= grid.length || column < 0 || column >= grid[0].length|| grid[row][column] != 0){
                 return false; // Check if the word goes out of bounds or overlaps with existing letters
             }
             row += dr;
             column += dc;
         }
         return true;
-    }
-
-    public void displayGrid() {
-        for (char[] row : grid) {
-            for (char cell : row) {
-                System.out.print(cell + " ");
-            }
-            System.out.println();
-        }
     }
 }
