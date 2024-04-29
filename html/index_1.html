@@ -160,7 +160,7 @@
             let gameData;
             let playerData;
             
-            
+            console.log(nick+"has joined");
             console.log(messageData.ready==="true");
             
             if("ready" in messageData && messageData.ready==="true")
@@ -314,10 +314,8 @@
         };
 
         
-        if(socket.readyState===1)
-        {
-            socket.send(JSON.stringify(data));
-        }
+        
+        socket.send(JSON.stringify(data));
         console.log(JSON.stringify(data));
     }
 
