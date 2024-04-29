@@ -1,6 +1,7 @@
 package uta.cse3310;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 
 public class GridField {
@@ -15,8 +16,7 @@ public class GridField {
     }
 
     public GridField() {
-        this.wordList = WordList.getWordList("Data/words");
-        this.wordList = WordList.updatedWordList(wordList);
+        this(WordList.getWordList("Data/words")); // Using WordList class to fetch word list
     }
 
     public char[][] getGrid() {
@@ -64,15 +64,6 @@ public class GridField {
         remainingWords++;
     }
 
-    public void displayGrid() {
-        for (char[] row : grid) {
-            for (char cell : row) {
-                System.out.print(cell + " ");
-            }
-            System.out.println();
-        }
-    }
-
     public void placeRandomWords() {
         Random random = new Random();
         ArrayList<String> remainingWords = new ArrayList<>(wordList); // Create a copy of the wordList to track remaining words
@@ -94,7 +85,7 @@ public class GridField {
             if (wordPlaced) {
                 remainingWords.remove(word); // Remove the word from remainingWords if successfully placed
             } else {
-                System.out.println("Failed to place word: " + word); // Print a message if the word cannot be placed
+                System.out.println("Failed to place word: " + word);
             }
         }
     }
@@ -111,5 +102,14 @@ public class GridField {
             column += dc;
         }
         return true;
+    }
+
+    public void displayGrid() {
+        for (char[] row : grid) {
+            for (char cell : row) {
+                System.out.print(cell + " ");
+            }
+            System.out.println();
+        }
     }
 }
