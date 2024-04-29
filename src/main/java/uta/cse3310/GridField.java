@@ -11,7 +11,7 @@ public class GridField {
     public GridField(ArrayList<String> wordList) {
         this.wordList = wordList;
         this.remainingWords = wordList.size();
-        generateGrid(5); // Initialize grid with default size (e.g., 5x5)
+        generateGrid(5); // Initialize grid with default size (e.g., 5x5) and place random words
     }
 
     public GridField() {
@@ -35,6 +35,9 @@ public class GridField {
                 grid[i][j] = (char) ('A' + random.nextInt(26)); // Randomly fill grid with alphabets
             }
         }
+        
+        // Place random words on the grid
+        placeRandomWords();
     }
 
     public boolean checkWord(String word) {
@@ -77,15 +80,7 @@ public class GridField {
         Random random = new Random();
         for (String word : wordList) {
             boolean wordPlaced = false;
-            int attemptCount = 0; // Track the number of attempts to place the word
             while (!wordPlaced) {
-                attemptCount++;
-                if (attemptCount > 100) {
-                    // Add a safeguard to prevent infinite loops; abort if attempts exceed a certain threshold
-                    System.out.println("Failed to place word: " + word);
-                    break;
-                }
-
                 int len = word.length();
                 int row = random.nextInt(grid.length);
                 int col = random.nextInt(grid[0].length);
