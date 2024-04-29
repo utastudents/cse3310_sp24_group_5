@@ -84,7 +84,7 @@ public class GridField {
             boolean wordPlaced = false;
             int attemptCount = 0; // Track the number of attempts to place the word
             while (!wordPlaced) {
-                attemptCount++;
+                
                 if (attemptCount > 100) {
                     // Add a safeguard to prevent infinite loops; abort if attempts exceed a certain threshold
                     System.out.println("Failed to place word: " + word);
@@ -99,10 +99,11 @@ public class GridField {
                     addWord(word, row, col, direction);
                     wordPlaced = true;
                 }
-                attempt++;
+                attemptCount++;
             }
             if (wordPlaced) {
-                remainingWords.remove(word); // Remove the word from remainingWords if successfully placed
+                //remainingWords.remove(word); // Remove the word from remainingWords if successfully placed
+                System.out.println("Word placement successful: " + word);
             } else {
                 System.out.println("Failed to place word: " + word);
             }
@@ -123,13 +124,6 @@ public class GridField {
         return true;
     }
 
-    public void displayGrid() {
-        for (char[] row : grid) {
-            for (char cell : row) {
-                System.out.print(cell + " ");
-            }
-            System.out.println();
-        }
-    }
+    
 
 }
