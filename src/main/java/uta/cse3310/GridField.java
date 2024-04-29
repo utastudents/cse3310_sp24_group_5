@@ -11,13 +11,12 @@ public class GridField {
     public GridField(ArrayList<String> wordList) {
         this.wordList = wordList;
         this.remainingWords = wordList.size();
-        generateGrid(5); // Initialize grid with default size (e.g., 5x5) and place random words
+        generateGrid(5); // Initialize grid with default size (e.g., 5x5)
     }
 
     public GridField() {
         this.wordList = WordList.getWordList("Data/words");
         this.wordList = WordList.updatedWordList(wordList);
-        generateGrid(5); // Initialize grid with default size (e.g., 5x5) and place random words
     }
 
     public char[][] getGrid() {
@@ -36,9 +35,6 @@ public class GridField {
                 grid[i][j] = (char) ('A' + random.nextInt(26)); // Randomly fill grid with alphabets
             }
         }
-        
-        // Place random words on the grid
-        placeRandomWords();
     }
 
     public boolean checkWord(String word) {
@@ -50,7 +46,8 @@ public class GridField {
     }
 
     public void revealWord(String word) {
-        if (wordList.remove(word)) {
+        if (wordList.contains(word)) {
+            wordList.remove(word);
             remainingWords--;
         }
     }
