@@ -51,7 +51,7 @@ public class GridFieldTest {
     public void testAddWord() {
         ArrayList<String> wordList = new ArrayList<>();
         GridField gridField = new GridField(wordList);
-        gridField.addWord("HELLO", 0, 0, Direction.Directions.HORIZONTAL); // Adjusted here
+        gridField.addWord("HELLO", 0, 0, Direction.Directions.HORIZONTAL);
         assertEquals(1, gridField.getRemainingWords());
         assertTrue(gridField.checkWord("HELLO"));
     }

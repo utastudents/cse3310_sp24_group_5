@@ -16,7 +16,10 @@ public class GridField {
     }
 
     public GridField() {
-        this(WordList.getWordList("Data/words")); // Using WordList class to fetch word list
+        this.wordList = WordList.getWordList("Data/words");
+        this.wordList = WordList.updatedWordList(wordList);
+        this.remainingWords = wordList.size();
+        //generateGrid(5); // Initialize grid with default size (e.g., 5x5)
     }
 
     public char[][] getGrid() {
@@ -66,14 +69,28 @@ public class GridField {
         remainingWords++;
     }
 
+    public void displayGrid() {
+        for (char[] row : grid) {
+            for (char cell : row) {
+                System.out.print(cell + " ");
+            }
+            System.out.println();
+        }
+    }
+
     public void placeRandomWords() {
         Random random = new Random();
-        ArrayList<String> remainingWords = new ArrayList<>(wordList); // Create a copy of the wordList to track remaining words
-        for (int i = 0; i < wordList.size(); i++) {
-            String word = remainingWords.get(random.nextInt(remainingWords.size())); // Select a random word from the remaining words
+        for (String word : wordList) {
             boolean wordPlaced = false;
-            int attempt = 0;
-            while (!wordPlaced && attempt < 100) { // Limit the number of attempts to prevent infinite loops
+            int attemptCount = 0; // Track the number of attempts to place the word
+            while (!wordPlaced) {
+                attemptCount++;
+                if (attemptCount > 100) {
+                    // Add a safeguard to prevent infinite loops; abort if attempts exceed a certain threshold
+                    System.out.println("Failed to place word: " + word);
+                    break;
+                }
+
                 int len = word.length();
                 int row = random.nextInt(grid.length);
                 int col = random.nextInt(grid[0].length);
@@ -85,7 +102,6 @@ public class GridField {
                 attempt++;
             }
             if (wordPlaced) {
-                System.out.println("Word was placed: "+ word);
                 remainingWords.remove(word); // Remove the word from remainingWords if successfully placed
             } else {
                 System.out.println("Failed to place word: " + word);
