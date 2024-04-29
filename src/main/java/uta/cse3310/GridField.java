@@ -11,13 +11,12 @@ public class GridField {
     public GridField(ArrayList<String> wordList) {
         this.wordList = wordList;
         this.remainingWords = wordList.size();
-        generateGrid(5); // Initialize grid with default size (e.g., 5x5)  <-no need -muktar
+        generateGrid(5); // Initialize grid with default size (e.g., 5x5)
     }
 
     public GridField() {
         this.wordList = WordList.getWordList("Data/words");
         this.wordList = WordList.updatedWordList(wordList);
-
     }
 
     public char[][] getGrid() {
@@ -36,7 +35,6 @@ public class GridField {
                 grid[i][j] = (char) ('A' + random.nextInt(26)); // Randomly fill grid with alphabets
             }
         }
-        //this.addWord("group",0,0,Direction.Directions.HORIZONTAL); was testing selection function
     }
 
     public boolean checkWord(String word) {
@@ -55,26 +53,14 @@ public class GridField {
 
     public void addWord(String word, int row, int column, Direction.Directions direction) {
         int len = word.length();
-        int dr = 0, dc = 0;
-        switch (direction) {
-            case HORIZONTAL:
-                dc = 1;
-                break;
-            case VERTICAL:
-                dr = 1;
-                break;
-            case DIAGONAL:
-                dr = 1;
-                dc = 1;
-                break;
-        }
+        int dr = direction.getRowIncrement();
+        int dc = direction.getColumnIncrement();
         for (int i = 0; i < len; i++) {
             grid[row][column] = word.charAt(i);
             row += dr;
             column += dc;
         }
         wordList.add(word);
-        //remainingWords starts off as the size of the updated wordlist
         remainingWords++;
     }
 
@@ -87,12 +73,19 @@ public class GridField {
         }
     }
 
-    // Method to randomly place words from the word list on the grid
     public void placeRandomWords() {
         Random random = new Random();
         for (String word : wordList) {
             boolean wordPlaced = false;
+            int attemptCount = 0; // Track the number of attempts to place the word
             while (!wordPlaced) {
+                attemptCount++;
+                if (attemptCount > 100) {
+                    // Add a safeguard to prevent infinite loops; abort if attempts exceed a certain threshold
+                    System.out.println("Failed to place word: " + word);
+                    break;
+                }
+
                 int len = word.length();
                 int row = random.nextInt(grid.length);
                 int col = random.nextInt(grid[0].length);
@@ -107,19 +100,8 @@ public class GridField {
 
     private boolean canPlaceWord(String word, int row, int column, Direction.Directions direction) {
         int len = word.length();
-        int dr = 0, dc = 0;
-        switch (direction) {
-            case HORIZONTAL:
-                dc = 1;
-                break;
-            case VERTICAL:
-                dr = 1;
-                break;
-            case DIAGONAL:
-                dr = 1;
-                dc = 1;
-                break;
-        }
+        int dr = direction.getRowIncrement();
+        int dc = direction.getColumnIncrement();
         for (int i = 0; i < len; i++) {
             if (row < 0 || row >= grid.length || column < 0 || column >= grid[0].length|| grid[row][column] != 0){
                 return false; // Check if the word goes out of bounds or overlaps with existing letters
