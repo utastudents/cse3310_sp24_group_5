@@ -71,12 +71,14 @@
         
                 </select>
             </div>
+            <div>
                 <button id="confirmButton" >CONFIRM</button>
                 <h1>The Word Search Game</h1>
                 <button id="startButton">START</button>
                 <button id="leaveButton">LEAVE</button>
                 <button id="refreshButton">Refresh</button>
             </div>
+        </div>
         <div id="gameListSection">
             <p>Game     Slots Filled    Player</p>
             <div class="Room" id="Game1" style="display: block;">
@@ -181,7 +183,7 @@
                 startTimer();
             }
             document.addEventListener("DOMContentLoaded",updateLobby());
-            //updateLobby();
+            updateLobby();
         }
         else if(type==="UpdateGame")
         {
@@ -279,7 +281,8 @@
         var nick = document.getElementById('nickInput').value.trim();
         console.log(nick);
         var gameIndex = document.getElementById('gameSelect').value;
-        var gameId=parseInt(gameIndex);
+        var gameId=gameIndex;
+        console.log("GameId after confirmation: "+gameId);
         var mode = document.getElementById('modeSelect').value;
 
         if (!nick) 

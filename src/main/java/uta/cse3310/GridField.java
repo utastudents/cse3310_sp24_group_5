@@ -35,6 +35,8 @@ public class GridField {
                 grid[i][j] = (char) ('A' + random.nextInt(26)); // Randomly fill grid with alphabets
             }
         }
+
+        //placeRandomWords();
     }
 
     public boolean checkWord(String word) {
@@ -83,6 +85,7 @@ public class GridField {
                 attempt++;
             }
             if (wordPlaced) {
+                System.out.println("Word was placed: "+ word);
                 remainingWords.remove(word); // Remove the word from remainingWords if successfully placed
             } else {
                 System.out.println("Failed to place word: " + word);
@@ -112,5 +115,5 @@ public class GridField {
             System.out.println();
         }
     }
-    
+
 }
