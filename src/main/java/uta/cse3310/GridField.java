@@ -17,6 +17,8 @@ public class GridField {
     public GridField() {
         this.wordList = WordList.getWordList("Data/words");
         this.wordList = WordList.updatedWordList(wordList);
+        this.remainingWords = wordList.size();
+        generateGrid(5); // Initialize grid with default size (e.g., 5x5)
     }
 
     public char[][] getGrid() {
@@ -103,7 +105,7 @@ public class GridField {
         int dr = direction.getRowIncrement();
         int dc = direction.getColumnIncrement();
         for (int i = 0; i < len; i++) {
-            if (row < 0 || row >= grid.length || column < 0 || column >= grid[0].length|| grid[row][column] != 0){
+            if (row < 0 || row >= grid.length || column < 0 || column >= grid[0].length || grid[row][column] != 0) {
                 return false; // Check if the word goes out of bounds or overlaps with existing letters
             }
             row += dr;
