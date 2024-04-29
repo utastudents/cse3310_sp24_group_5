@@ -63,20 +63,18 @@ public class GridFieldTest {
 
         // Create a grid field
         GridField gridField = new GridField(wordList);
-
+        System.out.println("Finished");
         // Place random words on the grid
         gridField.placeRandomWords();
-
+        System.out.println("Finished\n"+gridField.getGrid());
         // Get the grid from the grid field
         char[][] grid = gridField.getGrid();
 
         // Check if the grid is not null
         assertNotNull(grid);
-
         // Check if the grid size is within a reasonable range
         assertTrue(grid.length >= 5 && grid.length <= 10);
         assertTrue(grid[0].length >= 5 && grid[0].length <= 10);
-
         // Check if all words from the word list are placed on the grid
         for (String word : wordList) {
             assertTrue(gridField.checkWord(word));

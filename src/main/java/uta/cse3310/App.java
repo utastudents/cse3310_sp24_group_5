@@ -223,12 +223,15 @@ public class App extends WebSocketServer {
                     String[] temp = part.split(":");
                     keys[i]=temp[0].trim();
                     values[i]=temp[1].trim();
+                    System.out.println("Key: "+keys[i]);
+                    System.out.println("Values: "+values[i]);
                 }
+                i++;
             }
         }
         //send the keys and values to every connection -muktar
         jsonObject.addProperty("keys", gson.toJson(keys));
-        //jsonObject.addProperty("values",gson.toJson(values));
+        jsonObject.addProperty("values",gson.toJson(values));
         System.out.println(lobbies.toString());
         broadcast(jsonObject.toString()); // Sendinfo about lobby & ID to the client
     }
@@ -276,13 +279,20 @@ public class App extends WebSocketServer {
         return false;
     }
 
-    public void endGame(Game game,Gson gson) 
+    public void endGame(Game game,Gson gson,String reason) 
     {
         // Logic for ending a game
         game.exitGame(game.getPlayersList());
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("type","endGame");
-        jsonObject.addProperty("winner",game.winner.getNick());
+        if(reason.equals("Player Disconnected"))
+        {
+            jsonObject.addProperty("winner","Game Canceled");
+        }
+        else
+        {
+            jsonObject.addProperty("winner",game.winner.getNick());
+        }
         ArrayList<Player> playerList=new ArrayList<Player>();
             playerList=game.getPlayersList();
             for(Player i:playerList)
@@ -298,6 +308,7 @@ public class App extends WebSocketServer {
                 }
             }
         activeGames.remove(game);
+        //Connections.remove(conn);
     }
 
     public void toLobby() {
@@ -437,7 +448,7 @@ public class App extends WebSocketServer {
                     //if enough players joined, automatically start game
                     if(G.getPlayersList().size()==G.getGameMode())
                     {
-                        System.out.println("This game has "+ G.getPlayersList().size()+ " many people in it");
+                        System.out.println("This game has "+ G.getPlayersList().size()+ "people in it");
                         jsonObject.addProperty("ready","true");
                     }
                     else
@@ -472,16 +483,9 @@ public class App extends WebSocketServer {
                 {
                     if(i.getGameID().equals(object.get("gameId").getAsString()))
                     {   
-                        if(object.get("reason").equals("OutOfTime"))
-                        {
-                            endGame(i,gson);
-                            break;
-                        }
-                        else if(object.get("reason").equals("Player Disconnected"))
-                        {
-                            activeGames.remove(i);
-                            break;
-                        }
+                        
+                        endGame(i,gson,object.get("reason").getAsString());
+                        break;
                     }
                 }
 

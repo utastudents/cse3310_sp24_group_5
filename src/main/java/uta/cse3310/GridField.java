@@ -98,7 +98,7 @@ public class GridField {
         int dr = direction.getRowIncrement();
         int dc = direction.getColumnIncrement();
         for (int i = 0; i < len; i++) {
-            if (row < 0 || row >= grid.length || column < 0 || column >= grid[0].length || grid[row][column] != 0) {
+            if (row < 0 || row >= grid.length || column < 0 || column >= grid[0].length|| grid[row][column] != 0){
                 return false; // Check if the word goes out of bounds or overlaps with existing letters
             }
             row += dr;
