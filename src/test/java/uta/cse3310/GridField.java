@@ -7,7 +7,7 @@ public class GridField {
     private char[][] grid;
     private ArrayList<String> wordList = new ArrayList<>();
     private int remainingWords;
-   
+
     public GridField(ArrayList<String> wordList) {
         this.wordList = wordList;
         this.remainingWords = wordList.size();
