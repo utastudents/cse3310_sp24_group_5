@@ -112,4 +112,5 @@ public class GridField {
             System.out.println();
         }
     }
+    
 }
