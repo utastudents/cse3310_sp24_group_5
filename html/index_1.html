@@ -161,8 +161,8 @@
             let playerData;
             
             console.log(nick+"has joined");
-           // console.log(messageData.ready==="true");
-            
+            console.log(messageData.ready==="true");
+            console.log("My game ID: "+ gameId +"\ngame joined: "+ messageData.gameId);
             if("ready" in messageData && messageData.ready==="true" && messageData.gameId==gameId)
             {   
                 console.log(messageData.gameId);
@@ -183,7 +183,7 @@
                 startTimer();
             }
             document.addEventListener("DOMContentLoaded",updateLobby());
-            updateLobby();
+        
         }
         else if(type==="UpdateGame")
         {
@@ -283,7 +283,8 @@
         var nick = document.getElementById('nickInput').value.trim();
         console.log(nick);
         var gameIndex = document.getElementById('gameSelect').value;
-        var gameId=gameIndex;
+        gameId=gameIndex;
+        console.log("Game id from options: "+gameId);
         console.log("GameId after confirmation: "+gameId);
         var mode = document.getElementById('modeSelect').value;
 
