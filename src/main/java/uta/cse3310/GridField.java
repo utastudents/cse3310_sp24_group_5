@@ -11,14 +11,15 @@ public class GridField {
 
     public GridField(ArrayList<String> wordList) {
         this.wordList = wordList;
-        this.remainingWords = wordList.size();
-        generateGrid(5); // Initialize grid with default size (e.g., 5x5)
+        //this.remainingWords = wordList.size();
+        this.remainingWords =0;
+        generateGrid(15); // Initialize grid with default size (e.g., 5x5)
     }
 
     public GridField() {
         this.wordList = WordList.getWordList("Data/words");
         this.wordList = WordList.updatedWordList(wordList);
-        this.remainingWords = wordList.size();
+        this.remainingWords = 0;
         //generateGrid(5); // Initialize grid with default size (e.g., 5x5)
     }
 
@@ -35,11 +36,23 @@ public class GridField {
         Random random = new Random();
         for (int i = 0; i < gridSize; i++) {
             for (int j = 0; j < gridSize; j++) {
-                grid[i][j] = (char) ('A' + random.nextInt(26)); // Randomly fill grid with alphabets
+                grid[i][j] = '-'; // Randomly fill grid with 0s
             }
         }
-
-        //placeRandomWords();
+        
+        placeRandomWords();
+        //fill remaining space with random letters
+        for (int i = 0; i < gridSize; i++) 
+        {
+            for (int j = 0; j < gridSize; j++) 
+            {
+                if(grid[i][j]=='-')
+                {
+                    grid[i][j] = (char) ('A' + random.nextInt(26));
+                }
+                
+            }
+        }
     }
 
     public boolean checkWord(String word) {
@@ -65,8 +78,7 @@ public class GridField {
             row += dr;
             column += dc;
         }
-        wordList.add(word);
-        remainingWords++;
+        remainingWords++;//words that actually make it into the grid get counted
     }
 
     public void displayGrid() {
@@ -101,13 +113,9 @@ public class GridField {
                 }
                 attemptCount++;
             }
-            if (wordPlaced) {
-                //remainingWords.remove(word); // Remove the word from remainingWords if successfully placed
-                System.out.println("Word placement successful: " + word);
-            } else {
-                System.out.println("Failed to place word: " + word);
-            }
+            
         }
+        this.displayGrid();
     }
 
     private boolean canPlaceWord(String word, int row, int column, Direction.Directions direction) {
@@ -115,8 +123,13 @@ public class GridField {
         int dr = direction.getRowIncrement();
         int dc = direction.getColumnIncrement();
         for (int i = 0; i < len; i++) {
-            if (row < 0 || row >= grid.length || column < 0 || column >= grid[0].length || grid[row][column] != 0) {
-                return false; // Check if the word goes out of bounds or overlaps with existing letters
+            if (row < 0 || row >= grid.length || column < 0 || column >= grid[0].length ||( grid[row][column] != '-' && grid[row][column]!=word.charAt(i))) {
+                if(row < 0 || row >= grid.length || column < 0 || column >= grid[0].length)
+                {
+                    return false;
+                }
+                System.out.println("Current cell value: "+grid[row][column]+"\nletter to add :"+word.charAt(i));
+                return false; // Check if the word goes out of bounds or overlaps with existing letters that don't match (allows for intersecting words)
             }
             row += dr;
             column += dc;
