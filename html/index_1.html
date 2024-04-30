@@ -161,9 +161,9 @@
             let playerData;
             
             console.log(nick+"has joined");
-            console.log(messageData.ready==="true");
+           // console.log(messageData.ready==="true");
             
-            if("ready" in messageData && messageData.ready==="true")
+            if("ready" in messageData && messageData.ready==="true" && messageData.gameId==gameId)
             {   
                 console.log(messageData.gameId);
                 //access grid when gameStart is called

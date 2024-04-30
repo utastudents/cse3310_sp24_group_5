@@ -159,7 +159,10 @@ public class Game // implements Chat, Timer, GridField, LeaderBoard, Wordlist
             }
             return true;
         }
-        else{return false;}
+        else
+        {
+            return false;
+        }
         
     }
 

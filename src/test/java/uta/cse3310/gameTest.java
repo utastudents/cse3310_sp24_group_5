@@ -171,6 +171,7 @@ public class gameTest extends TestCase
             System.out.println(wordList.get(i));
         }
         System.out.println(wordList.size());
+        System.out.println(var);
         assertTrue(wordList.size()==5);
 
     }
