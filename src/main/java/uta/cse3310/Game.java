@@ -92,25 +92,25 @@ public class Game // implements Chat, Timer, GridField, LeaderBoard, Wordlist
 
     // Method to update game state
     public boolean updateGame(ArrayList<UserEvent> attempt) {
-        // if the first action is a click and the last action was a release
-        //if ((attempt.get(0)).action == 0 && (attempt.get(attempt.size() - 1)).action == 2) {
-            Player player = (attempt.get(0)).player;
-            String word = "";
-            char[][] grid = gridField.getGrid();
-            Iterator i = attempt.iterator();
-            // iterate through each event and get the character that was affected
-            // concatenate each letter until a word is formed
-            while (i.hasNext()) {
-                UserEvent U = (UserEvent) i.next();
-                int index = U.cell;
-                int row = index / 25;
-                int column = index % 25;
 
-                word = word + grid[row][column];
-                System.out.println(word);
-            }
-            return wordChosen(word, player);
-        //}
+        Player player = (attempt.get(0)).player;
+        String word = "";
+        char[][] grid = gridField.getGrid();
+        Iterator i = attempt.iterator();
+        // iterate through each event and get the character that was affected
+        // concatenate each letter until a word is formed
+        while (i.hasNext()) {
+            UserEvent U = (UserEvent) i.next();
+            int index = U.cell;
+            int row = index / 25;
+            int column = index % 25;
+
+            word = word + grid[row][column];
+            word=word.toLowerCase();
+            System.out.println(word);
+        }
+        return wordChosen(word, player);
+        
        
     }
 

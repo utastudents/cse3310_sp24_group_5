@@ -135,7 +135,8 @@ public class gameTest extends TestCase
         {
             word=word+ String.valueOf(grid[1][i]);
         }
-        gridField.getWordList().add(word);
+        gridField.getWordList().add(word.toLowerCase());
+        System.out.println("GameTest added this word to word list: "+word.toLowerCase());
         //user event array
         UserEvent U1= new UserEvent();
         UserEvent U2= new UserEvent();
@@ -169,6 +170,7 @@ public class gameTest extends TestCase
         {
             System.out.println(wordList.get(i));
         }
+        System.out.println(wordList.size());
         assertTrue(wordList.size()==5);
 
     }

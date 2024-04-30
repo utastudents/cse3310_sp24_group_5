@@ -21,8 +21,8 @@ public class GridFieldTest {
     @Test
     public void testCheckWord() {
         ArrayList<String> wordList = new ArrayList<>();
-        wordList.add("HELLO");
-        wordList.add("WORLD");
+        wordList.add("hello");
+        wordList.add("world");
         GridField gridField = new GridField(wordList);
         assertTrue(gridField.checkWord("HELLO"));
         assertFalse(gridField.checkWord("GOODBYE"));
@@ -59,7 +59,7 @@ public class GridFieldTest {
     @Test
     public void testPlaceRandomWords() {
         // Create a word list with some words
-        ArrayList<String> wordList = new ArrayList<>(Arrays.asList("HELLO", "WORLD", "JAVA", "PROGRAMMING"));
+        ArrayList<String> wordList = new ArrayList<>(Arrays.asList("hello", "world", "java", "programming"));
 
         // Create a grid field
         GridField gridField = new GridField(wordList);
@@ -79,7 +79,7 @@ public class GridFieldTest {
 
         // Check if all words from the word list are placed on the grid
         for (String word : wordList) {
-            assertTrue(gridField.checkWord(word));
+            assertTrue(gridField.checkWord(word.toLowerCase()));
         }
     }
 }
