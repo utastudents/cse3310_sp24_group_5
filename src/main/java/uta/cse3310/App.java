@@ -472,8 +472,15 @@ public class App extends WebSocketServer {
                 jsonObject.addProperty("type","RequestGameList");
                 //FIX LATER
                 //does not end up sending the active games
-                String jsonGameList= gson.toJson(activeGames);
-                System.out.println(activeGames.toString());
+                String[] activeGameArr= new String[activeGames.size()];
+                int j=0;
+                for(Game i: activeGames)
+                {
+                    activeGameArr[j]=i.getGameID();
+                    j++;
+                }
+                String jsonGameList= gson.toJson(activeGameArr.toString());
+                System.out.println(activeGameArr.toString());
                 jsonObject.addProperty("gameList",jsonGameList);
                 conn.send(jsonObject.toString());
                 break;

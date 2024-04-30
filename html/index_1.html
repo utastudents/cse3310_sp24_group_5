@@ -259,10 +259,8 @@
 
     function requestGameList() {
         var data = { type: "RequestGameList" };
-        if(socket.readyState===1)
-        {
-            socket.send(JSON.stringify(data));
-        }
+        
+        socket.send(JSON.stringify(data));
     }
 
     function updateGameList(serverData) 
@@ -361,7 +359,7 @@
                 cell.setAttribute("id",k.toString());
                 
                 
-                const cellText=document.createTextNode(grid[i][j]);
+                const cellText=document.createTextNode(grid[i][j].toUpperCase());
                 cell.appendChild(cellText);
                 row.appendChild(cell);
             }
@@ -512,10 +510,8 @@ function updateLobby()
     var data={
         type: "updateLobby"
     }
-    if(socket.readyState===1)
-    {
-        socket.send(JSON.stringify(data));
-    }
+    socket.send(JSON.stringify(data));
+    
 }
 </script>
 
