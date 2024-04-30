@@ -129,7 +129,7 @@ public class App extends WebSocketServer {
     @Override
     public void onMessage(WebSocket conn, String message) {
         // Logic for handling websocket message event
-        System.out.println(conn +": " +message);
+        //System.out.println(conn +": " +message);
 
         //Bring in data from the webpage
         //Take in userEvents and make into an arrayList
@@ -218,7 +218,7 @@ public class App extends WebSocketServer {
         {
             for(String part : mapParts)
             {
-                if(part!="")
+                if(part!="" && part!=null)
                 {
                     String[] temp = part.split(":");
                     keys[i]=temp[0].trim();
@@ -480,7 +480,7 @@ public class App extends WebSocketServer {
                     j++;
                 }
                 String jsonGameList= gson.toJson(activeGameArr.toString());
-                System.out.println(activeGameArr.toString());
+                //System.out.println(activeGameArr.toString());
                 jsonObject.addProperty("gameList",jsonGameList);
                 conn.send(jsonObject.toString());
                 break;
@@ -499,21 +499,6 @@ public class App extends WebSocketServer {
                 break;
             case("updateLobby"):
                 updateLobby(gson,jsonObject);
-                /*ArrayList<String>lobbyData=new ArrayList<String>();
-                ArrayList<Player> players=new ArrayList<Player>(); 
-                for(Game i : activeGames)
-                {
-                    gameId=i.getGameID();
-                    lobbyData.add(gameId);
-                    players=i.getPlayersList();
-                    for(Player j :players)
-                    {
-                        lobbyData.add(j.getNick());
-                    }
-                }
-                jsonObject.addProperty("type","updateLobby");
-                jsonObject.addProperty("lobbyData",lobbyData.toString());
-                broadcast(jsonObject.toString());*/
                 break;
             default:
                 System.out.println("Unexpected message");
@@ -529,7 +514,8 @@ public class App extends WebSocketServer {
     public void updateHandler(Gson gson, JsonObject message, WebSocket conn)
     {
         String evtMessage=message.toString();
-        System.out.println(evtMessage);
+        System.out.println("Evt Message"+evtMessage);
+        
         UserEvent U = gson.fromJson(message,UserEvent.class);//turn message into userEvent instance
         U.action = Integer.valueOf(message.get("action").getAsString());
         U.cell = Integer.valueOf(message.get("cell").getAsString());
@@ -580,6 +566,7 @@ public class App extends WebSocketServer {
             jsonObject.addProperty("attempt",gson.toJson(cells));
             jsonObject.addProperty("valid",String.valueOf(valid));
             jsonObject.addProperty("score",String.valueOf(U.player.getScore()));
+            jsonObject.addProperty("color",message.get("playerColor").getAsString());
             conn.send(jsonObject.toString());
             //search through the game's player list
             ArrayList<Player> playerList=new ArrayList<Player>();

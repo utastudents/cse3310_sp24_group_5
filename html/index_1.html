@@ -72,9 +72,19 @@
                 </select>
             </div>
             <div>
+                <label for="playerColor">Player Color:</label>
+                <select id="playerColor">
+        
+                    <option value="red">red</option>
+                    <option value="yellow">yellow</option>
+                    <option value="purple">purple</option>
+                    <option value="gold">gold</option>
+                    <option value="pink">pink</option>
+                </select>
+            </div>
+            <div>
                 <button id="confirmButton" >CONFIRM</button>
                 <h1>The Word Search Game</h1>
-                <button id="startButton">START</button>
                 <button id="leaveButton">LEAVE</button>
                 <button id="refreshButton">Refresh</button>
             </div>
@@ -134,6 +144,7 @@
         player="";
         cell=-1;
         action=-1;
+        playerColor="";
     }
 
     
@@ -144,6 +155,7 @@
     var clicked=0;//helps with selection of letters
     var attemptArr;//array of cell numbers in an attempt
     var score;
+    var playerColor="";
     socket.onopen = function(evt) {
         console.log("Open");
         requestGameList();
@@ -154,6 +166,7 @@
         let messageData = JSON.parse(evt.data);
         console.log("Message received: " + messageData);
         const type= messageData.type;
+        console.log(messageData.color);
         if(type==="JoinGame")
         {
             let game;
@@ -161,6 +174,7 @@
             let playerData;
             
             console.log(nick+"has joined");
+            console.log("My color is: "+playerColor);
             console.log(messageData.ready==="true");
             console.log("My game ID: "+ gameId +"\ngame joined: "+ messageData.gameId);
             if("ready" in messageData && messageData.ready==="true" && messageData.gameId==gameId)
@@ -171,7 +185,7 @@
                 {
                     //store all letters inside grid variable
                     grid=JSON.parse(messageData.grid);
-                    
+                
                     
                 }
                 document.getElementById("lobbyContainer").style.display="none";
@@ -191,11 +205,12 @@
             if(messageData.valid==="true")
             {
                 score=messageData.score;
+                player.score=score;
                 console.log(messageData.score);
                 attemptArr= JSON.parse(messageData.attempt);
                 for(let i=0;i<attemptArr.length;i++)
                 {
-                    document.getElementById(attemptArr[i].toString()).style.backgroundColor="red";
+                    document.getElementById(attemptArr[i].toString()).style.backgroundColor=messageData.color;
 
                 }
             }
@@ -287,7 +302,10 @@
         console.log("Game id from options: "+gameId);
         console.log("GameId after confirmation: "+gameId);
         var mode = document.getElementById('modeSelect').value;
+        playerColor = document.getElementById('playerColor').value;
 
+        player.nick=nick;
+        
         if (!nick) 
         {
             alert('Please enter a nickname.');
@@ -387,7 +405,7 @@
             {
                 
                 buttonEvent(this.getAttribute("id"),0);
-                document.getElementById(this.getAttribute("id")).style.backgroundColor="blue";
+                document.getElementById(this.getAttribute("id")).style.backgroundColor=playerColor;
                 clicked++;
                 console.log("clicked="+clicked);
             });
@@ -396,14 +414,14 @@
                 if(clicked>0)
                 {
                     buttonEvent(this.getAttribute("id"),1);
-                    document.getElementById(this.getAttribute("id")).style.backgroundColor="blue";
+                    document.getElementById(this.getAttribute("id")).style.backgroundColor=playerColor;
                 }
                 
             });
             cells[i].addEventListener("mouseup",function()
             {
                 buttonEvent(this.getAttribute("id"),2);
-                document.getElementById(this.getAttribute("id")).style.backgroundColor="blue";
+                document.getElementById(this.getAttribute("id")).style.backgroundColor=playerColor;
                 clicked--;
                 console.log("clicked="+clicked);
             });
@@ -414,22 +432,20 @@
     function buttonEvent(cell,action)
     {
         let button= document.getElementById(cell);
-        //button.style.backgroundColor="blue";
+        
         U = new UserEvent();
         U.cell=parseInt(cell);
         U.action=action;
         U.player=player;
         U.gameId=gameId;
+        U.playerColor= playerColor;
 
         var data = {
             type: "UpdateGame",
             events: U
         };
-        if(socket.readyState===1)
-        {
-            socket.send(JSON.stringify(data));
-        }
-        console.log(JSON.stringify(U));
+        socket.send(JSON.stringify(data));
+        console.log(JSON.stringify(data));
 
         resetTimer();
     }
