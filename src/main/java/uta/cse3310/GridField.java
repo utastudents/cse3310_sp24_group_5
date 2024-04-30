@@ -56,7 +56,7 @@ public class GridField {
     }
 
     public boolean checkWord(String word) {
-        return wordList.contains(word);
+        return wordList.contains(word.toLowerCase());//.contains is case sensitive
     }
 
     public int getRemainingWords() {

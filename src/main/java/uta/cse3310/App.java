@@ -550,7 +550,7 @@ public class App extends WebSocketServer {
         ArrayList<UserEvent> attempt= new ArrayList<UserEvent>();//series of userevents that make up an attempted word
         if(U.action==2)
         {
-            
+            //create array of numbers, each number represents a cell in the grid that contains a letter 
             attempt=everyAttempt.get(U.gameId).get(U.player.getNick());
             int [] cells= new int[attempt.size()];
             int k=0;
@@ -559,7 +559,7 @@ public class App extends WebSocketServer {
                 cells[k]=i.cell;
                 k++;
             }
-            
+            //find game the the player belongs to
             for(Game i : activeGames)
             {
                 if(i.getGameID().equals(U.gameId))
