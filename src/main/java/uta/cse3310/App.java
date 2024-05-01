@@ -212,9 +212,10 @@ public class App extends WebSocketServer {
         //parse map into array of keys and values-muktar
         String[]mapParts=map.split(",");
         //Split each element of mapParts by ":" to get keys and values -muktar
-        String []keys =new String[Connections.size()];
-        String []values=new String[Connections.size()];
-        for(int i=0;i<Connections.size();i++)
+        String []keys =new String[mapParts.length];
+        String []values=new String[mapParts.length];
+        System.out.println("The number of active connections is: "+ Connections.size());
+        for(int i=0;i<mapParts.length;i++)
         {
             for(String part : mapParts)
             {
@@ -232,7 +233,8 @@ public class App extends WebSocketServer {
         //send the keys and values to every connection -muktar
         jsonObject.addProperty("keys", gson.toJson(keys));
         jsonObject.addProperty("values",gson.toJson(values));
-        System.out.println(lobbies.toString());
+        
+        System.out.println(lobbies);
         broadcast(jsonObject.toString()); // Sendinfo about lobby & ID to the client
     }
 
@@ -479,7 +481,7 @@ public class App extends WebSocketServer {
                     activeGameArr[j]=i.getGameID();
                     j++;
                 }
-                String jsonGameList= gson.toJson(activeGameArr.toString());
+                String jsonGameList= gson.toJson(activeGameArr);
                 //System.out.println(activeGameArr.toString());
                 jsonObject.addProperty("gameList",jsonGameList);
                 conn.send(jsonObject.toString());

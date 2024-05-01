@@ -4,14 +4,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Word Search Game Lobby</title>
     <link rel="stylesheet" href="style_lobby.css">
+
+    <style>
+        #lobbyContainer {
+            display: none;
+        }
+    </style>
 </head>
 
+
+
 <body>
-    <!--LobbyChat-->
-<div id="LobbyChatRoom" style="display: none;">
-    <p>Message:Talk to other players here</p>
-    <button id="send">Send</button>
-</div>
     <!-- welcome -->
     <div id="welcomeContainer">
         <h1>Welcome to The Word Search Game</h1>
@@ -22,17 +25,6 @@
             <p id="error" style="color: red; display: none;">Your nick is already taken, please reenter.</p>
         </form>
     </div>
-<!--Grid table-->
-    
-<div id="Game" style="display: none";>
-    <!-- Timer section -->
-    <div id="timerSection">
-        <h2>Timer: <span id="timer">30</span> seconds</h2>
-    </div>
-    <table id="wordGrid">
-        
-    </table>
-</div>
 
       <!-- lobby -->
 
@@ -40,7 +32,7 @@
         <div id="userInputSection">
             <button id="helpButton">HELP</button>
             <button id="standbyButton">PUT ON STANDBY</button>
-        
+
             <!--
             <div>
                 <label for="nickInput">Insert Nick:</label>
@@ -52,81 +44,71 @@
                 <label for="gameSelect">Game:</label>
                 <select id="gameSelect">
                   
-                    <option value="Game1">Game1</option>
-                    <option value="Game2">Game2</option>
-                    <option value="Game3">Game3</option>
-                    <option value="Game4">Game4</option>
-                    <option value="Game5">Game5</option>
-        
-        
+                    <option value="game1">Game1</option>
+                    <option value="game2">Game2</option>
+                    <option value="game3">Game3</option>
+                    <option value="game4">Game4</option>
+                    <option value="game5">Game5</option>
+
+
                 </select>
             </div>
             <div>
                 <label for="modeSelect">Game Mode:</label>
                 <select id="modeSelect">
-        
+
                     <option value="2players">2 Players</option>
                     <option value="3players">3 Players</option>
                     <option value="4players">4 Players</option>
-        
+
                 </select>
             </div>
-            <div>
-                <label for="playerColor">Player Color:</label>
-                <select id="playerColor">
-        
-                    <option value="red">red</option>
-                    <option value="yellow">yellow</option>
-                    <option value="purple">purple</option>
-                    <option value="gold">gold</option>
-                    <option value="pink">pink</option>
-                </select>
-            </div>
-            <div>
-                <button id="confirmButton" >CONFIRM</button>
-                <h1>The Word Search Game</h1>
-                <button id="leaveButton">LEAVE</button>
-                <button id="refreshButton">Refresh</button>
-            </div>
+            <button id="confirmButton" >CONFIRM</button>
+            <h1>The Word Search Game</h1>
+            <button id="startButton">START</button>
+            <button id="leaveButton">LEAVE</button>
+            <button id="refreshButton">Refresh</button>
         </div>
         <div id="gameListSection">
-            <p>Game     Slots Filled    Player</p>
-            <div class="Room" id="Game1" style="display: block;">
-                <p>Game1</p>
-                <p>Slots</p>
-            </div>
-            <div class="Room" id="Game2" style="display: block;">text</div>
-            <div class="Room" id="Game3" style="display: block;">text</div>
-            <div class="Room" id="Game4" style="display: block;">text</div>
-            <div class="Room" id="Game5" style="display: block;">text</div>
-        </div>
 
-
-    <!-- Leaderboard section -->
-        <div id="leaderboardContainer">
-            <h2>Leaderboard</h2>
-            <table id="leaderboardTable">
-                <thead>
-                    <tr>
-                        <th>Rank</th>
-                        <th>Nickname</th>
-                        <th>Score</th>
-                    </tr>
-                </thead>
-                <tbody id="leaderboardBody">
-                    <!-- Leaderboard rows will be dynamically added here -->
-                </tbody>
-            </table>
-        </div>
     </div>
+
 
     
 
-   
+    <!-- Leaderboard section -->
+    <div id="leaderboardContainer">
+        <h2>Leaderboard</h2>
+        <table id="leaderboardTable">
+            <thead>
+                <tr>
+                    <th>Rank</th>
+                    <th>Nickname</th>
+                    <th>Score</th>
+                </tr>
+            </thead>
+            <tbody id="leaderboardBody">
+                <!-- Leaderboard rows will be dynamically added here -->
+            </tbody>
+        </table>
+    </div>
 
-
+    <!--Game-->
+    
+    <div id="Game">
+         <!-- Timer section -->
+        <div id="timerSection">
+            <h2>Timer: <span id="timer">30</span> seconds</h2>
+        </div>
+        <!--Grid table-->
+        <input type="button" value="Generate Grid" onclick="generateGrid()"/>
+        <table id="wordGrid">
+            
+        </table>
+    </div>
 </body>
 <script>
+
     var socket = new WebSocket("ws://"+ window.location.hostname+":9105");
     
     class Player
@@ -144,18 +126,14 @@
         player="";
         cell=-1;
         action=-1;
-        playerColor="";
     }
 
     
-    var gameId="";
-    var player=new Player();
-    var nick="";
-    var grid;
-    var clicked=0;//helps with selection of letters
-    var attemptArr;//array of cell numbers in an attempt
-    var score;
-    var playerColor="";
+    letgameId="";
+    let score;
+    let nick="";
+    let grid;
+    let clicked=0;
     socket.onopen = function(evt) {
         console.log("Open");
         requestGameList();
@@ -166,63 +144,65 @@
         let messageData = JSON.parse(evt.data);
         console.log("Message received: " + messageData);
         const type= messageData.type;
-        console.log(messageData.color);
         if(type==="JoinGame")
         {
             let game;
             let gameData;
             let playerData;
-            
-            console.log(nick+"has joined");
-            console.log("My color is: "+playerColor);
-            console.log(messageData.ready==="true");
-            console.log("My game ID: "+ gameId +"\ngame joined: "+ messageData.gameId);
-            if("ready" in messageData && messageData.ready==="true" && messageData.gameId==gameId)
-            {   
-                console.log(messageData.gameId);
-                //access grid when gameStart is called
-                if("grid" in messageData)
-                {
-                    //store all letters inside grid variable
-                    grid=JSON.parse(messageData.grid);
-                
-                    
-                }
-                document.getElementById("lobbyContainer").style.display="none";
-                document.getElementById("LobbyChatRoom").style.display="block";
-                document.getElementById("welcomeContainer").style.display="none";
-                generateGrid();
-                score=0;
-                document.getElementById("Game").style.display="block";
-                startTimer();
+            //access grid when gameStart is called
+            if("grid" in messageData)
+            {
+                //store all letters inside grid variable
+                grid=JSON.parse(messageData.grid);  
             }
-            document.addEventListener("DOMContentLoaded",updateLobby());
-        
+            
+            if(nick==="")
+            {
+                console.log("Player: "+messageData.player);
+                player= JSON.parse(messageData.player);
+                nick=player.nick;
+                console.log(nick);
+                gameId= messageData.gameId;
+                console.log("GameId: "+ gameId);
+            }
+            
+            if("ready" in messageData && messageData.ready==="true")
+            {
+                generateGrid();
+            }
+            
+            
         }
         else if(type==="UpdateGame")
         {
-            console.log(messageData.valid);
             if(messageData.valid==="true")
             {
-                score=messageData.score;
-                player.score=score;
-                console.log(messageData.score);
-                attemptArr= JSON.parse(messageData.attempt);
-                for(let i=0;i<attemptArr.length;i++)
-                {
-                    document.getElementById(attemptArr[i].toString()).style.backgroundColor=messageData.color;
-
-                }
-            }
-            else//if attempt was not valid make cells white again
-            {
                 let U= new UserEvent();
-                attemptArr= JSON.parse(messageData.attempt);
+                let attemptArr= messageData.attempt;
                 console.log(attemptArr);
                 for(let i=0;i<attemptArr.length;i++)
                 {
-                    document.getElementById(attemptArr[i].toString()).style.backgroundColor="white";
-
+                   
+                    var cellColor=document.getElementById(attemptArr[i].toString());
+                    if(cellColor!=null)//check null before changing color;
+                    {
+                        cellColor.style.backgroundColor="red";
+                    }
+                }
+            }
+            else
+            {
+                let U= new UserEvent();
+                let attemptArr= messageData.attempt;
+                console.log(attemptArr);
+                for(let i=0;i<attemptArr.length;i++)
+                {
+                   
+                    var cellColor=document.getElementById(attemptArr[i].toString());
+                    if(cellColor!=null)//check null before changing color;
+                    {
+                        cellColor.style.backgroundColor="white";
+                    }
                 }
             }
         }
@@ -230,39 +210,15 @@
         {
             console.log(messageData.gameList)
         }
-        else if(type==="endGame")
-        {
-            if(nick===messageData.winner)
-            {
-                console.log("You won")
-            }
-            else
-            {
-                console.log(messageData.winner+"is the winner");
-            }
-            nick="";
-            gameId="";
-            score=0;
-        }
-        else if(type==="updateLobby")
-        {
-            let keys = JSON.parse(messageData.keys);
-            let values = JSON.parse(messageData.values);
-            console.log(keys);
-            console.log(values);
-            //go through lobbyData
-            
-        }
 
     };
 
         socket.onclose = function(evt) {
             console.log("WebSocket connection closed.");
-           /* var nick = document.getElementById('nickInput').value.trim();
+            var nick = document.getElementById('nickInput').value.trim();
             if (nick) {
                 leaveGame(nick);
-            }*/
-            endGame("Player Disconnected");
+            }
             document.getElementById("topMessage").innerText = "Server Offline";
         };
 
@@ -275,7 +231,6 @@
 
     function requestGameList() {
         var data = { type: "RequestGameList" };
-        
         socket.send(JSON.stringify(data));
     }
 
@@ -296,16 +251,9 @@
     // event listeners for user actions
     document.getElementById('confirmButton').addEventListener('click', function() {
         var nick = document.getElementById('nickInput').value.trim();
-        console.log(nick);
         var gameIndex = document.getElementById('gameSelect').value;
-        gameId=gameIndex;
-        console.log("Game id from options: "+gameId);
-        console.log("GameId after confirmation: "+gameId);
         var mode = document.getElementById('modeSelect').value;
-        playerColor = document.getElementById('playerColor').value;
 
-        player.nick=nick;
-        
         if (!nick) 
         {
             alert('Please enter a nickname.');
@@ -316,9 +264,7 @@
             alert('Please select a game and mode.');
             return;
         }
-        
         joinGame(nick, gameIndex, mode);
-        
     });
 
 
@@ -331,8 +277,6 @@
             modeIndex: mode
         };
 
-        
-        
         socket.send(JSON.stringify(data));
         console.log(JSON.stringify(data));
     }
@@ -354,8 +298,6 @@
 
     // add an event listener for the refresh button to request the game list
     document.getElementById('refreshButton').addEventListener('click', function() {
-        var gameId="";
-        var nick="";
         requestGameList();
     });
 
@@ -365,7 +307,7 @@
     //too big may have to do smaller grid or smaller cells
     function generateGrid()
     {
-        const tbl = document.getElementById("wordGrid");
+        const tbl = document.createElement("table");
         const tblBody = document.createElement("tbody");
         //create cells
 
@@ -381,7 +323,7 @@
                 cell.setAttribute("id",k.toString());
                 
                 
-                const cellText=document.createTextNode(grid[i][j].toUpperCase());
+                const cellText=document.createTextNode(grid[i][j]);
                 cell.appendChild(cellText);
                 row.appendChild(cell);
             }
@@ -390,62 +332,65 @@
             tblBody.appendChild(row);
         }
         tbl.appendChild(tblBody);
-        myDiv=document.getElementById("Game");
-        myDiv.appendChild(tbl);
+        document.body.appendChild(tbl);
         tbl.setAttribute("border","1.5");
         eventListener();
        
     }
-    function eventListener()//bug occurs when rightclick and select option like inspect over the grid
+    function eventListener()
     {
         var cells = document.querySelectorAll("td");
         for(var i=0;i<cells.length;i++)
         {
             cells[i].addEventListener("mousedown",function()
             {
-                
+                /*this.addEventListener("mouseover",function(){
+                    this.style.backgroundColor="blue";
+                });*/
                 buttonEvent(this.getAttribute("id"),0);
-                document.getElementById(this.getAttribute("id")).style.backgroundColor=playerColor;
+                document.getElementById(this.getAttribute("id")).style.backgroundColor="blue";
                 clicked++;
-                console.log("clicked="+clicked);
             });
             cells[i].addEventListener("mouseover",function()
             {
                 if(clicked>0)
                 {
                     buttonEvent(this.getAttribute("id"),1);
-                    document.getElementById(this.getAttribute("id")).style.backgroundColor=playerColor;
+                    document.getElementById(this.getAttribute("id")).style.backgroundColor="blue";
                 }
                 
             });
             cells[i].addEventListener("mouseup",function()
             {
                 buttonEvent(this.getAttribute("id"),2);
-                document.getElementById(this.getAttribute("id")).style.backgroundColor=playerColor;
                 clicked--;
-                console.log("clicked="+clicked);
             });
-           
+            /*cells[i].addEventListener("mouseout",function()
+            {
+                if(clicked>=0)
+                {    
+                    this.style.backgroundColor="white"; 
+                }
+            });*/
             
         }
     }
     function buttonEvent(cell,action)
     {
+        
         let button= document.getElementById(cell);
         
         U = new UserEvent();
         U.cell=parseInt(cell);
         U.action=action;
-        U.player=player;
         U.gameId=gameId;
-        U.playerColor= playerColor;
 
         var data = {
             type: "UpdateGame",
             events: U
         };
         socket.send(JSON.stringify(data));
-        console.log(JSON.stringify(data));
+        console.log(JSON.stringify(U));
 
         resetTimer();
     }
@@ -463,7 +408,6 @@
             updateTimerDisplay(timeLeft);
             if (timeLeft === 0) {
                 clearInterval(timerInterval);
-                endGame("OutOfTime");
                 // Handle timer expiration (e.g., reset timer, end game)
                 highlightRandomWord();
             }
@@ -486,7 +430,7 @@
     }
 
     // Call startTimer() when the page loads or when a player selects a letter
-    //window.onload = startTimer;
+    window.onload = startTimer;
 
     function highlightRandomWord() {
         // Get a random word index
@@ -511,27 +455,25 @@
         });
 }
 
-function endGame(reason)
-{
-    var data=
-    {
-        type: "endGame",
-        reason: reason,
-        gameId: gameId
 
-    };
-    socket.send(JSON.stringify(data));
-    
-    
-}
+document.getElementById('nickForm').addEventListener('submit', function(event) {
+    event.preventDefault(); 
+    var nickInput = document.getElementById('nickInput').value.trim();
 
-function updateLobby()
-{
-    var data={
-        type: "updateLobby"
+    if (nickInput && isNickUnique(nickInput)) { // Implement isNickUnique() to check the nickname
+        document.getElementById('welcomeContainer').style.display = 'none';
+        document.getElementById('lobbyContainer').style.display = 'block';
+    } else {
+        document.getElementById('error').style.display = 'block';
+        document.getElementById('error').textContent = 'Nickname already taken, please try another one.';
     }
-    socket.send(JSON.stringify(data));
-    
+});
+
+function isNickUnique(nick) {
+    return true; // Placeholder return
 }
+
+
+
 </script>
 
