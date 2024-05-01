@@ -124,16 +124,13 @@ public class GridField {
         int dc = direction.getColumnIncrement();
         for (int i = 0; i < len; i++) {
             if (row < 0 || row >= grid.length || column < 0 || column >= grid[0].length ||( grid[row][column] != '-' && grid[row][column]!=word.charAt(i))) {
-                if(row < 0 || row >= grid.length || column < 0 || column >= grid[0].length)
-                {
-                    return false;
-                }
-                System.out.println("Current cell value: "+grid[row][column]+"\nletter to add :"+word.charAt(i));
+                
                 return false; // Check if the word goes out of bounds or overlaps with existing letters that don't match (allows for intersecting words)
             }
             row += dr;
             column += dc;
         }
+        System.out.println("Word added: "+word);
         return true;
     }
 

@@ -219,13 +219,18 @@ public class App extends WebSocketServer {
         {
             for(String part : mapParts)
             {
+                System.out.println("mapParts: "+part);
                 if(part!="" && part!=null)
                 {
                     String[] temp = part.split(":");
-                    keys[i]=temp[0].trim();
-                    values[i]=temp[1].trim();
-                    System.out.println("Key: "+keys[i]);
-                    System.out.println("Values: "+values[i]);
+                    if(temp.length==2)
+                    {
+                        keys[i]=temp[0].trim();
+                        values[i]=temp[1].trim();
+                        System.out.println("Key: "+keys[i]);
+                        System.out.println("Values: "+values[i]);
+                    }
+                    
                 }
                 i++;
             }
