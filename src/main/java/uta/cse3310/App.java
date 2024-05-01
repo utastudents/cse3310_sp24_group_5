@@ -322,8 +322,15 @@ public class App extends WebSocketServer {
         // Logic for navigating to the lobby
     }
 
-    public void globalChat() {
-        // Logic for handling global chat
+    public void globalChat(Gson gson, JsonObject object)
+    {
+        // Logic for handling local chat
+        JsonObject jsonObject=new JsonObject();
+        jsonObject.addProperty("type","message");
+        jsonObject.addProperty("message",object.get("message").getAsString());
+        jsonObject.addProperty("player",object.get("player").getAsString());
+
+        broadcast(jsonObject.toString());
     }
 
     public void getPlayerColor() {
@@ -506,6 +513,9 @@ public class App extends WebSocketServer {
                 break;
             case("updateLobby"):
                 updateLobby(gson,jsonObject);
+                break;
+            case("message"):
+                globalChat(gson,object);
                 break;
             default:
                 System.out.println("Unexpected message");

@@ -18,7 +18,6 @@
         <form id="nickForm">
             <label for="nickInput">Enter your nickname:</label>
             <input type="text" id="nickInput" placeholder="Nickname" required>
-            <button type="submit">Enter Lobby</button>
             <p id="error" style="color: red; display: none;">Your nick is already taken, please reenter.</p>
         </form>
     </div>
@@ -91,15 +90,15 @@
         </div>
         <div id="gameListSection">
             <p style="display: inline;">Game1</p>
-            <div class="Room" id="Game1" style="display: block;">text</div>
+            <div class="Room" id="Game1" style="display: block;"></div>
             <p style="display: inline;">Game2</p>
-            <div class="Room" id="Game2" style="display: block;">text</div>
+            <div class="Room" id="Game2" style="display: block;"></div>
             <p style="display: inline;">Game3</p>
-            <div class="Room" id="Game3" style="display: block;">text</div>
+            <div class="Room" id="Game3" style="display: block;"></div>
             <p style="display: inline;">Game4</p>
-            <div class="Room" id="Game4" style="display: block;">text</div>
+            <div class="Room" id="Game4" style="display: block;"></div>
             <p style="display: inline;">Game5</p>
-            <div class="Room" id="Game5" style="display: block;">text</div>
+            <div class="Room" id="Game5" style="display: block;"></div>
         </div>
 
 
@@ -157,6 +156,8 @@
     var attemptArr;//array of cell numbers in an attempt
     var score;
     var playerColor="";
+    var message="";
+    var allMessages=new Array();
     socket.onopen = function(evt) {
         console.log("Open");
         requestGameList();
@@ -254,10 +255,15 @@
             document.getElementsByClassName("Room").innerHTML="";
             for(i=0;i<keys.length;i++)
             {
-                lobbyInfo = "Slots filled: \n"
+                
                 document.getElementById(values[i]).innerHTML=keys[i]+"\n";
             }
             
+        }
+        else if(type==="message")
+        {
+            allMessages.push(messageData.player+": "+ messageData.message);
+            console.log(allMessages);
         }
 
     };
@@ -309,7 +315,6 @@
         console.log("GameId after confirmation: "+gameId);
         var mode = document.getElementById('modeSelect').value;
         playerColor = document.getElementById('playerColor').value;
-
         player.nick=nick;
         
         if (!nick) 
@@ -322,7 +327,7 @@
             alert('Please select a game and mode.');
             return;
         }
-        
+        sendChat(nick,document.getElementById('nickInput').value.trim());
         joinGame(nick, gameIndex, mode);
         
     });
@@ -538,6 +543,16 @@ function updateLobby()
     }
     socket.send(JSON.stringify(data));
     
+}
+
+function sendChat(nick,message)
+{
+    var data={
+        type: "message",
+        message: message,
+        player: nick
+    }
+    socket.send(JSON.stringify(data));
 }
 </script>
 
