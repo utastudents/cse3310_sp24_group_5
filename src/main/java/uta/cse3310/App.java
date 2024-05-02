@@ -327,6 +327,8 @@ public class App extends WebSocketServer {
         // Logic for handling local chat
         JsonObject jsonObject=new JsonObject();
         jsonObject.addProperty("type","message");
+        System.out.println(object.get("message").getAsString());
+        System.out.println(object.get("player").getAsString());
         jsonObject.addProperty("message",object.get("message").getAsString());
         jsonObject.addProperty("player",object.get("player").getAsString());
 

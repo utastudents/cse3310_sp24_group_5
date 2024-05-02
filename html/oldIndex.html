@@ -14,12 +14,18 @@
 </div>
     <!-- welcome -->
     <div id="welcomeContainer">
+        <div id="chat-box"></div>
+        <input type="text" id="message-input" placeholder="Type your message...">
+        <button id="send-button">Send</button>
         <h1>Welcome to The Word Search Game</h1>
         <form id="nickForm">
             <label for="nickInput">Enter your nickname:</label>
             <input type="text" id="nickInput" placeholder="Nickname" required>
             <p id="error" style="color: red; display: none;">Your nick is already taken, please reenter.</p>
         </form>
+        
+    
+    
     </div>
 <!--Grid table-->
     
@@ -263,7 +269,9 @@
         else if(type==="message")
         {
             allMessages.push(messageData.player+": "+ messageData.message);
+            var chatMessage=messageData.player+": "+ messageData.message;
             console.log(allMessages);
+            addMessageToChat(chatMessage);
         }
 
     };
@@ -307,7 +315,7 @@
 
     // event listeners for user actions
     document.getElementById('confirmButton').addEventListener('click', function() {
-        var nick = document.getElementById('nickInput').value.trim();
+        nick = document.getElementById('nickInput').value.trim();
         console.log(nick);
         var gameIndex = document.getElementById('gameSelect').value;
         gameId=gameIndex;
@@ -327,7 +335,6 @@
             alert('Please select a game and mode.');
             return;
         }
-        sendChat(nick,document.getElementById('nickInput').value.trim());
         joinGame(nick, gameIndex, mode);
         
     });
@@ -552,7 +559,36 @@ function sendChat(nick,message)
         message: message,
         player: nick
     }
+    console.log("Message: "+ message);
     socket.send(JSON.stringify(data));
 }
+
+function addMessageToChat(message) 
+{
+    const messageElement = document.createElement('div');
+    messageElement.textContent = message;
+    document.getElementById("chat-box").appendChild(messageElement);
+    //document.getElementById("chat-box").scrollTop = document.getElementById("chat-box").scrollHeight;
+}
+
+// Function to send message
+function sendMessage() 
+{
+    //if(nick!="")
+   // {
+        const messageInput = document.getElementById('message-input');
+        const message = messageInput.value.trim();
+        console.log("Message in sendMessage funct: "+ message);
+        console.log("nick to be sent with message: "+nick);
+        if (message !== '') {
+            sendChat(nick,message);
+            messageInput.value = ''; // Clear input field after sending message
+        }
+    //}
+}
+
+document.getElementById('send-button').addEventListener('click', sendMessage);
+
+
 </script>
 
