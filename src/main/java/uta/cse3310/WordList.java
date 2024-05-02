@@ -44,7 +44,6 @@ public class WordList {
 
     // Method to shuffle words in the static list
     public static void shuffleWords() {
-        // Shuffling the list to randomize word order
         Collections.shuffle(list);
     }
 
@@ -68,20 +67,3 @@ public class WordList {
 
         return updatedList;
     }
-
-    // Method to remove duplicate words from the list
-    public static void removeDuplicates() {
-        // Create a temporary list to store unique words
-        List<String> uniqueWords = new ArrayList<>();
-
-        // Iterate through the list and add unique words to temporary list
-        for (String word : list) {
-            if (!uniqueWords.contains(word)) {
-                uniqueWords.add(word);
-            }
-        }
-
-        // Replace the original list with the list of unique words
-        list = uniqueWords;
-    }
-}
