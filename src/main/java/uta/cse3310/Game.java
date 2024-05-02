@@ -4,8 +4,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Scanner;
 import java.util.UUID;
-import java.util.Set;
 import java.util.HashSet;
+import java.util.Set;
+
 public class Game // implements Chat, Timer, GridField, LeaderBoard, Wordlist
 {
     private int gameMode;
