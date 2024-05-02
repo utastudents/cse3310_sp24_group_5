@@ -9,6 +9,7 @@ public class Game // implements Chat, Timer, GridField, LeaderBoard, Wordlist
 {
     private int gameMode;
     private String gameID;
+    private Set<String> usedColors;
     private ArrayList<Player> playersList = new ArrayList<Player>();
     public Player winner = null;
     public boolean gameStatus;
@@ -22,6 +23,7 @@ public class Game // implements Chat, Timer, GridField, LeaderBoard, Wordlist
         this.gameMode = gameMode;
         this.gameID = UUID.randomUUID().toString();
         gameStatus = false;
+        usedColors = new HashSet<>();
     }
 
     public ArrayList<Player> getPlayersList() // I need to add this since Lobby class needs to access the game's player
@@ -182,6 +184,31 @@ public class Game // implements Chat, Timer, GridField, LeaderBoard, Wordlist
 
     }
 
+    public boolean addPlayer(Player newPlayer) {
+        if (isUniquePlayerName(newPlayer.getNick())) {
+            if (isUniquePlayerColor(newPlayer.getColor())) {
+                playersList.add(newPlayer);
+                return true; 
+            } else {
+                System.out.println("Color is already in use.");
+            }
+        } else {
+            System.out.println("Player name is already in use.");
+        }
+        return false; 
+    }
      
+    private boolean isUniquePlayerName(String playerName) {
+        for (Player player : playersList) {
+            if (player.getNick().equals(playerName)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean isUniquePlayerColor(String playerColor) {
+        return !usedColors.contains(playerColor);
+    }
 }
  
