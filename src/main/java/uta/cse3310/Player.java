@@ -9,7 +9,7 @@ public class Player
     private PlayerStatus status; // Using enum for clearer status management
     private int totalPoints;
     private int gameWins; // Renamed for clarity
-
+    private String color;
     public enum PlayerStatus 
     {
         ACTIVE, INACTIVE, DISCONNECTED
@@ -102,5 +102,10 @@ public class Player
                ", totalPoints=" + totalPoints +
                ", gameWins=" + gameWins +
                '}';
+    }
+
+    public String getColor()
+    {
+        return color;
     }
 }
