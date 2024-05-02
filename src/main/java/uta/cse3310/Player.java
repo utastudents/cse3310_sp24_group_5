@@ -57,10 +57,14 @@ public class Player
     }
 
     // Method to increase player score
-    public void increaseScore(int points) 
+    public void increaseScore(int points)
     {
-        this.score += points;
-        this.totalPoints += points; // Assuming totalPoints accumulates all points ever scored
+        if (points >= 0) {
+            this.score += points;
+            this.totalPoints += points;
+        } else {
+            throw new IllegalArgumentException("Points must be non-negative.");
+        }
     }
 
     // Getter for player status
@@ -91,9 +95,8 @@ public class Player
     @Override
     public String toString() 
     {
-        
         return "Player{" +
-               "nick=" + nick  +
+               "nick='" + nick + '\'' +
                ", score=" + score +
                ", status=" + status +
                ", totalPoints=" + totalPoints +
