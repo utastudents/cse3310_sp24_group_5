@@ -26,34 +26,49 @@ public class HttpServer
         dirname = dirName;
     }
     //method begin
-    public void begin() 
-    {
-        try
-        {
+    // Method to start the HTTP server
+    public void begin() {
+        try {
+            // Create a File object representing the directory
             File dir = new File(dirname);
+
+            // Check if directory is readable, throw exception if not
             if (!dir.canRead())
                 throw new FileNotFoundException(dir.getAbsolutePath());
 
+            // Create an HTTPServer instance listening on the specified port
             HTTPServer server = new HTTPServer(port);
-            VirtualHost host = server.getVirtualHost(null); 
-            host.setAllowGeneratedIndex(true); 
+
+            // Get the default virtual host from the server
+            VirtualHost host = server.getVirtualHost(null);
+
+            // Allow generated index for the virtual host
+            host.setAllowGeneratedIndex(true);
+
+            // Add context for serving files from root directory
             host.addContext("/", new FileContextHandler(dir));
-            host.addContext("/api/time", new ContextHandler()
-            {
-                public int serve(Request req, Response resp) throws IOException
-                {
+
+            // Add context for serving current time
+            host.addContext("/api/time", new ContextHandler() {
+                // Serve method to handle requests for current time
+                public int serve(Request req, Response resp) throws IOException {
+                    // Get current time in milliseconds
                     long now = System.currentTimeMillis();
+
+                    // Set content type header
                     resp.getHeaders().add("Content-Type", "text/plain");
+
+                    // Send response with current time
                     resp.send(200, String.format("%tF %<tT", now));
                     return 0;
                 }
             });
+
+            // Start the HTTP server
             server.start();
-        } catch (Exception e) 
-        {
+        } catch (Exception e) {
+            // Print error message if any exception occurs
             System.err.println("error: " + e);
         }
-
     }
-
 }
